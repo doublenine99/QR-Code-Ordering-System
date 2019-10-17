@@ -12,7 +12,7 @@ const mapStateToProps = state => {
         menu: state.menu,
     }
 }
-// what does this addcomment and dispatch means
+
 const mapDispatchToProps = dispatch => ({
     fetchMenu: () => dispatch(fetchMenu())
 });
@@ -23,7 +23,8 @@ class Main extends Component {
     }
 
     render() {
-        // console.log("aaaaaa");
+        // console.log("main state is:" + state.menu);
+        console.log("main props is:" + JSON.stringify(this.props));
         // const HomePage = () => {
         //   return (
         //     <Home
@@ -55,13 +56,14 @@ class Main extends Component {
         // };
 
         return (
+            
             <div>
                 <Switch location={this.props.location}>
                     {/* <Route path='/home' component={HomePage} /> */}
 
-                    <Route exact path='/menu' component={() => <Menu dishes={this.props.dishes} />} />
+                    <Route  path='/menu' component={() => <Menu menu={this.props.menu} />} />
                     {/* <Route path='/menu/:dishId' component={DishWithId} /> */}
-                    {/* <Redirect to="/home" /> */}
+                    {/* <Redirect to="/menu" /> */}
                 </Switch>
             </div>
         );

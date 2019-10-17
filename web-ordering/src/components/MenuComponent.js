@@ -11,9 +11,9 @@ function RenderMenuItem({ dish, onClick }) {
         <Card key={dish.id}>
             {/* <Link to={`/menu/${dish.id}`}> */}
             {/* <CardImg width="100%" src={baseUrl + dish.image} alt={dish.name} /> */}
-                <CardImgOverlay>
-                    <CardTitle>{dish.name}</CardTitle>
-                </CardImgOverlay>
+            <CardImgOverlay>
+                <CardTitle>{dish.name}</CardTitle>
+            </CardImgOverlay>
             {/* </Link> */}
         </Card>
 
@@ -21,29 +21,29 @@ function RenderMenuItem({ dish, onClick }) {
 }
 
 const Menu = (props) => {
-    console.log(props);
-    // const menu = props.foods.fodds.map((dish) => {
-    //     return (
-    //         <div className="col-12 col-md-5 m-1">
-    //             <RenderMenuItem dish={dish} />
-    //         </div>
-    //     );
-    // });
-
+    console.log("props in MenuComponent is " + JSON.stringify(props));
+    const menu =  Array.from(props.menu).map((dish) => {
         return (
-            <div className="container">
-                <div className="row">
-                    <div className="col-12">
-                        <h3>Menu</h3>
-                        <hr />
-                    </div>
-                </div>
-                <div className="row">
-                    {props}
-                </div>
+            <div className="col-12 col-md-5 m-1">
+                <RenderMenuItem dish={dish} />
             </div>
         );
-    
+    });
+
+    return (
+        <div className="container">
+            <div className="row">
+                <div className="col-12">
+                    <h3>Menu</h3>
+                    <hr />
+                </div>
+            </div>
+            <div className="row">
+                {menu}
+            </div>
+        </div>
+    );
+
 }
 
 export default Menu;

@@ -11,7 +11,7 @@ import menuReducer from './reducers/menuReducer';
 export const ConfigureStore = () => {
     const store = createStore(
         combineReducers({
-            menuReducer
+            menu: menuReducer
         }),
         applyMiddleware(thunk, logger)
     );
