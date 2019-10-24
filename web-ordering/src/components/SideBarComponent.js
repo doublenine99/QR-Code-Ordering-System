@@ -10,6 +10,10 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 
+import ListIcon from '@material-ui/icons/List';
+import StarsIcon from '@material-ui/icons/Stars';
+import LocalBarIcon from '@material-ui/icons/LocalBar';
+
 // const useStyles = makeStyles({
 //   list: {
 //     width: 150,
@@ -51,9 +55,18 @@ class SideBar extends Component {
       onKeyDown={this.toggleDrawer(false)}
     >
       <List>
-        {['Promoted', 'All', 'Appitizer', 'Boiled'].map((text, index) => (
+        {['All', 'Promoted'].map((text, index) => (
           <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+            <ListItemIcon>{index % 2 === 0 ? <ListIcon /> : <StarsIcon />}</ListItemIcon>
+            <ListItemText primary={text} />
+          </ListItem>
+        ))}
+      </List>
+      <Divider />
+      <List>
+        {['Appitizer', 'Boiled'].map((text, index) => (
+          <ListItem button key={text}>
+            {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
             <ListItemText primary={text} />
           </ListItem>
         ))}
@@ -62,7 +75,7 @@ class SideBar extends Component {
       <List>
         {['Milk Tea', 'Fruit Tea', 'Juice'].map((text, index) => (
           <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+            {/* <ListItemIcon>{<LocalBarIcon />}</ListItemIcon> */}
             <ListItemText primary={text} />
           </ListItem>
         ))}
@@ -73,7 +86,7 @@ class SideBar extends Component {
   render() {
     return (
       <div>
-        <Button onClick={this.toggleDrawer('left', true)}>Open Left</Button>
+        {/* <Button onClick={this.toggleDrawer('left', true)}>Open Left</Button> */}
         <Drawer open={this.state.left} onClose={this.toggleDrawer(false)}>
           {this.sideList()}
         </Drawer>
