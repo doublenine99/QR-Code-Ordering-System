@@ -4,6 +4,8 @@ import {
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { baseUrl } from '../shared/baseUrl';
+import SideBar from './SideBarComponent';
+import TopAppBar from './AppBarComponent';
 
 function RenderMenuItem({ dish, onClick }) {
     //TODO: 
@@ -21,10 +23,11 @@ function RenderMenuItem({ dish, onClick }) {
 }
 
 const Menu = (props) => {
-    console.log("props in MenuComponent is " + JSON.stringify(props));
+    // console.log("props in MenuComponent is " + JSON.stringify(props));
     const menu =  Array.from(props.menu).map((dish) => {
         return (
             <div className="col-12 col-md-5 m-1">
+              
                 <RenderMenuItem dish={dish} />
             </div>
         );
@@ -34,7 +37,9 @@ const Menu = (props) => {
         <div className="container">
             <div className="row">
                 <div className="col-12">
-                    <h3>Menu</h3>
+                    {/* <h3>Menu</h3> */}
+                    <TopAppBar/>
+                      {/* <SideBar left = {true}/> */}
                     <hr />
                 </div>
             </div>

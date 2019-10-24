@@ -24,7 +24,7 @@ class Main extends Component {
 
     render() {
         // console.log("main state is:" + state.menu);
-        console.log("main props is:" + JSON.stringify(this.props));
+        // console.log("main props is:" + JSON.stringify(this.props));
         // const HomePage = () => {
         //   return (
         //     <Home
@@ -63,7 +63,7 @@ class Main extends Component {
 
                     <Route  path='/menu' component={() => <Menu menu={this.props.menu} />} />
                     {/* <Route path='/menu/:dishId' component={DishWithId} /> */}
-                    {/* <Redirect to="/menu" /> */}
+                    <Redirect to="/menu" />
                 </Switch>
             </div>
         );
