@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -14,7 +14,6 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 // import MoreIcon from '@material-ui/icons/MoreVert';
 
 import Sidebar from './SideBarComponent';
-
 
 
 const useStyles = makeStyles(theme => ({
@@ -64,35 +63,16 @@ const useStyles = makeStyles(theme => ({
         [theme.breakpoints.up('md')]: {
             width: 200,
         },
-    },
-    sectionDesktop: {
-        display: 'none',
-        [theme.breakpoints.up('md')]: {
-            display: 'flex',
-        },
-    },
-    sectionMobile: {
-        display: 'flex',
-        [theme.breakpoints.up('md')]: {
-            display: 'none',
-        },
-    },
+    }
 }));
 
 const TopAppBar = () => {
-
-
-
     const classes = useStyles();
 
     const [SideBarOpen, setSideBarState] = React.useState(null);
-
-
     const handleSideBarOpen = () => {
         setSideBarState(!SideBarOpen);
     }
-
-
     const renderSideBar = (
         <Sidebar SideBarOpen={true} />
     );

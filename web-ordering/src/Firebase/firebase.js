@@ -13,9 +13,9 @@ var FirebaseConfig = {
 firebase.initializeApp(FirebaseConfig)
 
 const db = firebase.firestore();
-db.settings({
-    timestampsInSnapshots: true
-});
+// db.settings({
+//     timestampsInSnapshots: true
+// });
 export const koiSushiMenu = db.collection("koisushiMenu");
 // const databaseRef = firebase.database().ref();
 // export const menuRef = databaseRef.child("menu").child("koisushi")

@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { ConfigureStore } from './redux/configureStore';
 
-import { koiSushiMenu } from './Firebase/firebase'; // test
+// import { koiSushiMenu } from './Firebase/firebase'; // test
 
 const store = ConfigureStore();
 
