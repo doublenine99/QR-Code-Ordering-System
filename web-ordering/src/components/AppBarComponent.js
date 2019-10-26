@@ -3,7 +3,6 @@ import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
 import Badge from '@material-ui/core/Badge';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -11,10 +10,19 @@ import SearchIcon from '@material-ui/icons/Search';
 import HistoryIcon from '@material-ui/icons/History';
 import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-// import MoreIcon from '@material-ui/icons/MoreVert';
 
 import Sidebar from './SideBarComponent';
+import { connect } from 'react-redux';
+import { fetchCategories } from '../redux/ActionCreators';
 
+const mapStateToProps = (state) => {
+    return {
+        categories: state.categories,
+    }
+}
+const mapDispatchToProps = dispatch => ({
+    fetchCategories: () => dispatch(fetchCategories())
+});
 
 const useStyles = makeStyles(theme => ({
     grow: {
@@ -66,15 +74,22 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const TopAppBar = () => {
+
+export const TopAppBar = (props) => {
+
+    // React.useEffect(() => {
+    //     props.fetchCategories();
+    // });
+
     const classes = useStyles();
 
     const [SideBarOpen, setSideBarState] = React.useState(null);
     const handleSideBarOpen = () => {
+        // console.log(props.categories);
         setSideBarState(!SideBarOpen);
     }
     const renderSideBar = (
-        <Sidebar SideBarOpen={true} />
+        <Sidebar SideBarOpen={true} categories={props.categories} />
     );
 
     return (
@@ -90,9 +105,6 @@ const TopAppBar = () => {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography className={classes.title} variant="h6" noWrap>
-                        Material-UI
-                     </Typography>
                     <div className={classes.search}>
                         <div className={classes.searchIcon}>
                             <SearchIcon />
@@ -129,4 +141,5 @@ const TopAppBar = () => {
         </div>
     );
 }
-export default TopAppBar;
+// export default TopAppBar;
+export default (connect(mapStateToProps, mapDispatchToProps)(TopAppBar));

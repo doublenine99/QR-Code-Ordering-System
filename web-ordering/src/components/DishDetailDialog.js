@@ -54,7 +54,7 @@ const DialogActions = withStyles(theme => ({
   }
 }))(MuiDialogActions);
 
-export default function CustomizedDialogs() {
+export default function DishDetailDialog() {
   const [open, setOpen] = React.useState(false);
 
   const handleClose = () => {
@@ -77,7 +77,7 @@ export default function CustomizedDialogs() {
               "https://firebasestorage.googleapis.com/v0/b/qr-code-ordering-system.appspot.com/o/koisushiMenu%2Fxiaolongbao.png?alt=media&token=b4c31508-b269-4d62-8729-27c385993e32"
             }
             alt={"xiaolongbao"}
-            // onClick={}
+          // onClick={}
           />
           <Typography gutterBottom>
             Cras mattis consectetur purus sit amet fermentum. Cras justo odio,

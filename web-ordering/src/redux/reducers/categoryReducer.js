@@ -1,8 +1,9 @@
 import * as ActionTypes from '../ActionTypes';
 
-const menuReducer = (state = {}, action) => {
+
+const categoryReducer = (state = {}, action) => {
     switch (action.type) {
-        case ActionTypes.FETCH_MENU:
+        case ActionTypes.FETCH_CATEGORIES:
             // console.log("menu reduer return: " + JSON.stringify(action.payload));
             return action.payload;
         default:
@@ -10,4 +11,4 @@ const menuReducer = (state = {}, action) => {
     }
 };
 
-export default menuReducer;
+export default categoryReducer;

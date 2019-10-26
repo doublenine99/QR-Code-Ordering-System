@@ -1,14 +1,13 @@
 /**
  * all the actions should be create from here
  */
-import { koiSushiMenu } from '../Firebase/firebase';
+import { koiSushiMenu, koiSushiRestaurant } from '../Firebase/firebase';
 import * as ActionTypes from './ActionTypes';
 
-
+// define menu page actions
 export const fetchMenu = () => async dispatch => {
-
-
-  koiSushiMenu.get()
+  koiSushiMenu
+    .get()
     .then(snapshot => {
       const menu = snapshot.docs.map(doc => doc.data());
       // console.log("ready to dispatch menu: " + JSON.stringify(menu)); // array of food
@@ -20,13 +19,21 @@ export const fetchMenu = () => async dispatch => {
     .catch((err) => {
       console.log('Error fetching menu', err);
     });
-  // koiSushiMenu.get()
-  //   .then(snapshot => {
-  //     dispatch({
-  //       type: ActionTypes.FETCH_MENU,
-  //       payload: snapshot
-  //     });
-  //   });
 };
 
-//TODO: more actions
+
+// define sidebar actions
+export const fetchCategories = () => async dispatch => {
+  koiSushiRestaurant
+    .onSnapshot(docSnapshot => {
+      const categories = docSnapshot.data().categories;
+      // console.log("Received doc snapshot: " + (docSnapshot.data().categories));
+      dispatch({
+        type: ActionTypes.FETCH_CATEGORIES,
+        payload: categories
+      });
+    },
+      err => {
+        console.log(`Encountered error: ${err}`);
+      });
+};

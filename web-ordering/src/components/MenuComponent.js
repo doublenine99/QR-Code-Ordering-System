@@ -5,9 +5,7 @@ import React from 'react';
 // import { Link } from 'react-router-dom';
 // import { baseUrl } from '../shared/baseUrl';
 import TopAppBar from './AppBarComponent';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-
-
+import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -16,6 +14,9 @@ import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import IconButton from '@material-ui/core/IconButton';
+
+import DishDetailDialog from './DishDetailDialog';
+import Button from '@material-ui/core/Button';
 
 
 const useStyles = makeStyles(theme => ({
@@ -33,6 +34,7 @@ const useStyles = makeStyles(theme => ({
 
 
 function handleAddButton(dishName) {
+    //TODO: onclick does not work
     console.log(dishName);
 }
 
@@ -52,7 +54,8 @@ function handleAddButton(dishName) {
 // }
 
 const Menu = (props) => {
-
+    
+    const classes = useStyles();
 
     // console.log("props in MenuComponent is " + JSON.stringify(props));
     // const RenderMenu = Array.from(props.menu).map((dish) => {
@@ -60,16 +63,27 @@ const Menu = (props) => {
     //         <RenderMenuItem dish={dish} />
     //     );
     // });
- 
 
 
+    const renderAddButton = (dish) => {
+        return (
+            <IconButton
+                // onClick={handleAddButton(dish.name)}
+                tooltip="Add this food to the cart"
+                aria-label={`info about ${dish.name}`}
+                className={classes.icon}
+            >
+                <AddShoppingCartIcon />
+            </IconButton>
+        )
+    }
 
-    const classes = useStyles();
+
     return (
         <div >
             <TopAppBar />
             <div className={classes.root}>
-                <GridList cellHeight={180} className={classes.gridList}>
+                <GridList cellHeight={150} className={classes.gridList}>
                     <GridListTile key="Subheader" cols={2} style={{ height: 'auto' }}>
                         <ListSubheader component="div">TODO: Current Category</ListSubheader>
                     </GridListTile>
@@ -83,14 +97,9 @@ const Menu = (props) => {
                             <GridListTileBar
                                 title={dish.name}
                                 subtitle={<span>${dish.price}</span>}
+
                                 actionIcon={
-                                    <IconButton
-                                        onClick={handleAddButton(dish.name)}
-                                        aria-label={`info about ${dish.name}`}
-                                        className={classes.icon}
-                                    >
-                                        <AddCircleOutlineIcon />
-                                    </IconButton>
+                                  renderAddButton(dish)
                                 }
                             />
                         </GridListTile>
