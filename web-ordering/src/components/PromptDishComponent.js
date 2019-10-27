@@ -13,6 +13,13 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import clsx from 'clsx';
 import IconButton from '@material-ui/core/IconButton';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
+import CardHeader from '@material-ui/core/CardHeader';
+import Paper from '@material-ui/core/Paper';
+import { fontFamily } from '@material-ui/system';
+import { Box } from '@material-ui/core';
+
+
+
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -31,6 +38,12 @@ const useStyles = makeStyles(theme => ({
   expandOpen: {
     transform: 'rotate(180deg)',
   },
+  Typography : {
+    fontFamily: 'Raleway, Arial',
+    fontStyle: 'italic',
+    textAlign: "left",
+  } 
+  
 }));
 
 function handleAddButton(dishName) {
@@ -38,9 +51,9 @@ function handleAddButton(dishName) {
     console.log(dishName);
 }
 
-export default function Promotion(props) {
+export default function Promotion(props)  {
   const classes = useStyles();
-
+  
   const [expanded, setExpanded] = React.useState(false);
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -50,6 +63,10 @@ export default function Promotion(props) {
     <div>
     <TopAppBar position="static">
     </TopAppBar>
+    <Box m = {2} fontFamily = "Monospace" fontStyle = "italic" textAlign = "left">
+    <Typography gutterBottom variant="h5" component = 'h1'>Today's hot deal</Typography></Box> 
+   
+
     <Card className={classes.card} style = {{margin:'auto', marginTop: '2vh'}}>
       <CardActionArea>
         <CardMedia
