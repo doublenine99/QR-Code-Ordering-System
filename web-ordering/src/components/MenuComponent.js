@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 // import {
 //     Card, CardImgOverlay, Breadcrumb, BreadcrumbItem, CardTitle
 // } from 'reactstrap';
@@ -16,7 +16,7 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import IconButton from '@material-ui/core/IconButton';
 
 import DishDetailDialog from './DishDetailDialog';
-import Button from '@material-ui/core/Button';
+import { koiSushiRestaurant } from '../Firebase/firebase'
 
 
 const useStyles = makeStyles(theme => ({
@@ -32,30 +32,26 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-
-function handleAddButton(dishName) {
-    //TODO: onclick does not work
-    console.log(dishName);
+function handleAddButton(dishRef) {
+    koiSushiRestaurant.collection('tables').doc('t0').collection('cart')
+        .add({
+            dishRef
+        }
+        ).then(ref => {
+            console.log('Added document with ID: ', ref.id);
+        });
 }
 
-// function RenderMenuItem({ dish, onClick }) {
-//     //TODO: 
-//     return (
-//         <Card key={dish.id}>
-//             {/* <Link to={`/menu/${dish.id}`}> */}
-//             {/* <CardImg width="100%" src={baseUrl + dish.image} alt={dish.name} /> */}
-//             <CardImgOverlay>
-//                 <CardTitle>{dish.name}</CardTitle>
-//             </CardImgOverlay>
-//             {/* </Link> */}
-//         </Card>
-
-//     );
-// }
-
 const Menu = (props) => {
-    
     const classes = useStyles();
+    const [detailOpen, setDetailOpen] = useState(null);
+
+    const RenderDishDetail = (dishRef) => {
+        setDetailOpen(Math.random());
+        // console.log(detailOpen)
+        // DishDetailOpen = true;
+        // return <DishDetailDialog dish={dishRef} />
+    }
 
     // console.log("props in MenuComponent is " + JSON.stringify(props));
     // const RenderMenu = Array.from(props.menu).map((dish) => {
@@ -63,21 +59,6 @@ const Menu = (props) => {
     //         <RenderMenuItem dish={dish} />
     //     );
     // });
-
-
-    const renderAddButton = (dish) => {
-        return (
-            <IconButton
-                // onClick={handleAddButton(dish.name)}
-                tooltip="Add this food to the cart"
-                aria-label={`info about ${dish.name}`}
-                className={classes.icon}
-            >
-                <AddShoppingCartIcon />
-            </IconButton>
-        )
-    }
-
 
     return (
         <div >
@@ -92,49 +73,26 @@ const Menu = (props) => {
                             <img
                                 src={dish.image}
                                 alt={dish.name}
-                            // onClick={}
+                                onClick={() => RenderDishDetail(dish)}
                             />
                             <GridListTileBar
                                 title={dish.name}
                                 subtitle={<span>${dish.price}</span>}
-
-                                actionIcon={
-                                  renderAddButton(dish)
-                                }
-                            />
-                        </GridListTile>
-                    ))}
-                </GridList>
-            </div>
-            {/* <div className={classes.root}>
-                <GridList cellHeight={180} className={classes.gridList}>
-                    <GridListTile key="Subheader" cols={2} style={{ height: 'auto' }}>
-                        <ListSubheader component="div">TODO: Current Category</ListSubheader>
-                    </GridListTile>
-                    {tileData.map(tile => (
-                        <GridListTile key={tile.img}>
-                            <img
-                                src={tile.img}
-                                alt={tile.title}
-                            // onClick={console.log("aaa")}
-                            />
-                            <GridListTileBar
-                                title={tile.title}
-                                subtitle={<span>by: {tile.author}</span>}
                                 actionIcon={
                                     <IconButton
-                                        aria-label={`info about ${tile.title}`}
+                                        onClick={() => handleAddButton(dish)}
+                                        aria-label={`info about ${dish.name}`}
                                         className={classes.icon}
-                                    // onClick={console.log("aaa")}
                                     >
-                                        <InfoIcon />
+                                        <AddShoppingCartIcon />
                                     </IconButton>
                                 }
                             />
                         </GridListTile>
                     ))}
                 </GridList>
-            </div> */}
+                <DishDetailDialog open={detailOpen} />
+            </div>
         </div>
     );
 

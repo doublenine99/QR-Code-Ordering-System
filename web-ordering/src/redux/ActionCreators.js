@@ -37,3 +37,25 @@ export const fetchCategories = () => async dispatch => {
         console.log(`Encountered error: ${err}`);
       });
 };
+
+export const fetchCart = () => async dispatch => {
+  koiSushiMenu
+  .get()
+    .then(snapshot => {
+      const cart = snapshot.docs.map(doc => doc.data());
+      dispatch({
+        type: ActionTypes.FETCH_CART,
+        payload: cart
+      });
+    })
+    .catch((err) => {
+      console.log('Error fetching cart', err);
+    });
+  // koiSushiMenu.get()
+  //   .then(snapshot => {
+  //     dispatch({
+  //       type: ActionTypes.FETCH_MENU,
+  //       payload: snapshot
+  //     });
+  //   });
+};

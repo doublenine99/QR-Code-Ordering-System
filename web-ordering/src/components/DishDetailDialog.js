@@ -1,5 +1,5 @@
 // rendering the dialog for the detail information of each dish
-import React from "react";
+import React, { useEffect } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -54,8 +54,15 @@ const DialogActions = withStyles(theme => ({
   }
 }))(MuiDialogActions);
 
-export default function DishDetailDialog() {
+export default function DishDetailDialog(props) {
   const [open, setOpen] = React.useState(false);
+  useEffect(() => {
+    console.log('count changed', props.open);
+    if (props.open != null) {
+      setOpen(true);
+    }
+
+  }, [props.open])
 
   const handleClose = () => {
     setOpen(false);
