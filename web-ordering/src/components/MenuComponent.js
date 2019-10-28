@@ -5,8 +5,6 @@ import React, { useState } from 'react';
 // import { Link } from 'react-router-dom';
 // import { baseUrl } from '../shared/baseUrl';
 import TopAppBar from './AppBarComponent';
-import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
-
 
 import { makeStyles } from '@material-ui/core/styles';
 import GridList from '@material-ui/core/GridList';
@@ -14,10 +12,10 @@ import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import IconButton from '@material-ui/core/IconButton';
+import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 
 import DishDetailDialog from './DishDetailDialog';
 import { koiSushiRestaurant } from '../Firebase/firebase'
-
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -45,9 +43,11 @@ function handleAddButton(dishRef) {
 const Menu = (props) => {
     const classes = useStyles();
     const [detailOpen, setDetailOpen] = useState(null);
+    const [detailDish, setDetailDish] = useState(null);
 
     const RenderDishDetail = (dishRef) => {
         setDetailOpen(Math.random());
+        setDetailDish(dishRef);
         // console.log(detailOpen)
         // DishDetailOpen = true;
         // return <DishDetailDialog dish={dishRef} />
@@ -59,19 +59,18 @@ const Menu = (props) => {
     //         <RenderMenuItem dish={dish} />
     //     );
     // });
-
     return (
         <div >
             <TopAppBar />
             <div className={classes.root}>
                 <GridList cellHeight={150} className={classes.gridList}>
                     <GridListTile key="Subheader" cols={2} style={{ height: 'auto' }}>
-                        <ListSubheader component="div">TODO: Current Category</ListSubheader>
+                        <ListSubheader component="div">{props.currentCategory}</ListSubheader>
                     </GridListTile>
                     {Array.from(props.menu).map(dish => (
                         <GridListTile key={dish.id}>
                             <img
-                                src={dish.image}
+                                src={dish.image != null ? dish.image : "https://firebasestorage.googleapis.com/v0/b/qr-code-ordering-system.appspot.com/o/koisushiMenu%2Fdefault-food-image.jpg?alt=media&token=e6958bef-eae1-4144-b670-e717768d518f"}
                                 alt={dish.name}
                                 onClick={() => RenderDishDetail(dish)}
                             />
@@ -91,7 +90,7 @@ const Menu = (props) => {
                         </GridListTile>
                     ))}
                 </GridList>
-                <DishDetailDialog open={detailOpen} />
+                <DishDetailDialog open={detailOpen} dish={detailDish} />
             </div>
         </div>
     );

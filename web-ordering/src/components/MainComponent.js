@@ -13,7 +13,8 @@ const mapStateToProps = (state) => {
     return {
         menu: state.menu,
         categories: state.categories,
-        cart: state.cart
+        cart: state.cart,
+        currentCategory: state.currentCategory
     }
 }
 
@@ -28,7 +29,11 @@ class Main extends Component {
         this.props.fetchMenu();
         this.props.fetchCategories();
         this.props.fetchCart();
+
     }
+    // componentDidUpdate() {
+    //     console.log(this.props.currentCategory)
+    // }
 
     render() {
         return (
@@ -36,7 +41,7 @@ class Main extends Component {
                 <Switch location={this.props.location}>
                     <Route path='/promotions' component={() => <Promotion menu={this.props.menu} />} />
                     <Route path='/cart' component={() => <Cart cart={this.props.cart} />} />
-                    <Route path='/menu' component={() => <Menu menu={this.props.menu} />} />
+                    <Route path='/menu' component={() => <Menu menu={this.props.menu} currentCategory={this.props.currentCategory} />} />
                     {/* <Route path='/menu/' component={DishWithId} /> */}
                     <Redirect to="/menu" />
                 </Switch>

@@ -13,7 +13,7 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 
 import Sidebar from './SideBarComponent';
 import { connect } from 'react-redux';
-import { fetchCategories } from '../redux/ActionCreators';
+import { fetchCategories, updateCategory } from '../redux/ActionCreators';
 
 const mapStateToProps = (state) => {
     return {
@@ -21,7 +21,8 @@ const mapStateToProps = (state) => {
     }
 }
 const mapDispatchToProps = dispatch => ({
-    fetchCategories: () => dispatch(fetchCategories())
+    fetchCategories: () => dispatch(fetchCategories()),
+    updateCategory: (category) => dispatch(updateCategory(category))
 });
 
 const useStyles = makeStyles(theme => ({
@@ -80,7 +81,6 @@ export const TopAppBar = (props) => {
     // React.useEffect(() => {
     //     props.fetchCategories();
     // });
-
     const classes = useStyles();
 
     const [SideBarOpen, setSideBarState] = React.useState(null);
@@ -88,9 +88,15 @@ export const TopAppBar = (props) => {
         // console.log(props.categories);
         setSideBarState(!SideBarOpen);
     }
-    const renderSideBar = (
-        <Sidebar SideBarOpen={true} categories={props.categories} />
-    );
+
+
+
+    const getCurrentCategoryFromSidebar = (selectedCategory) => {
+        var category = 'all'
+        // console.log(sidebarCategory);
+        props.updateCategory(selectedCategory);
+
+    }
 
     return (
         <div className={classes.grow}>
@@ -137,7 +143,10 @@ export const TopAppBar = (props) => {
 
                 </Toolbar>
             </AppBar>
-            {renderSideBar}
+            <Sidebar SideBarOpen={true}
+                categories={props.categories}
+                getCurrentCategoryFromSidebar={getCurrentCategoryFromSidebar}
+            />
         </div>
     );
 }
