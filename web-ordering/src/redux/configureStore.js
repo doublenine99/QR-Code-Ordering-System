@@ -7,15 +7,17 @@ import thunk from 'redux-thunk';
 import logger from 'redux-logger';
 
 import menuReducer from './reducers/menuReducer';
-import categoryReducer from './reducers/categoryReducer';
+import categoriesReducer from './reducers/categoryReducer';
+import currentCategoryReducer from './reducers/currentCategoryReducer';
 import cartReducer from './reducers/cartReducer';
 
 export const ConfigureStore = () => {
     const store = createStore(
         combineReducers({
             menu: menuReducer,
-            categories: categoryReducer,
-            cart: cartReducer
+            categories: categoriesReducer,
+            cart: cartReducer,
+            currentCategory: currentCategoryReducer
         }),
         applyMiddleware(thunk, logger)
     );

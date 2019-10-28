@@ -14,6 +14,7 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import Sidebar from './SideBarComponent';
 import { connect } from 'react-redux';
 import { fetchCategories, updateCategory } from '../redux/ActionCreators';
+import { Link } from 'react-router-dom';
 
 const mapStateToProps = (state) => {
     return {
@@ -130,16 +131,20 @@ export const TopAppBar = (props) => {
                             <EmojiPeopleIcon />
                         </Badge>
                     </IconButton>
+
                     <IconButton aria-label="Order History" color="inherit">
                         <Badge badgeContent={0} color="secondary">
                             <HistoryIcon />
                         </Badge>
                     </IconButton>
-                    <IconButton aria-label="Cart" color="inherit">
-                        <Badge badgeContent={1} color="secondary">
-                            <ShoppingCartIcon />
-                        </Badge>
-                    </IconButton>
+                    <Link to ={`/cart`}>
+
+                        <IconButton aria-label="Cart" color="inherit">
+                            <Badge badgeContent={1} color="secondary">
+                                <ShoppingCartIcon />
+                            </Badge>
+                        </IconButton>
+                    </Link>
 
                 </Toolbar>
             </AppBar>

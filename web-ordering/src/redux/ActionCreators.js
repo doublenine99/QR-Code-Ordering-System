@@ -37,10 +37,15 @@ export const fetchCategories = () => async dispatch => {
         console.log(`Encountered error: ${err}`);
       });
 };
+export const updateCategory = (category) => ({
+  type: ActionTypes.UPDATE_CATEGORY,
+  payload: category
+});
 
+// define cart page actions
 export const fetchCart = () => async dispatch => {
   koiSushiMenu
-  .get()
+    .get()
     .then(snapshot => {
       const cart = snapshot.docs.map(doc => doc.data());
       dispatch({
