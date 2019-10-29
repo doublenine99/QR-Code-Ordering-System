@@ -42,8 +42,7 @@ class Main extends Component {
                     <Route path='/promotions' component={() => <Promotion menu={this.props.menu} />} />
                     <Route path='/cart' component={() => <Cart cart={this.props.cart} />} />
                     <Route path='/menu' component={() => <Menu menu={this.props.menu} currentCategory={this.props.currentCategory} />} />
-                    {/* <Route path='/menu/' component={DishWithId} /> */}
-                    <Redirect to="/menu" />
+                    <Redirect to="/promotions" />
                 </Switch>
             </div>
         );

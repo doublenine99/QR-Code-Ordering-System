@@ -15,6 +15,7 @@ import Sidebar from './SideBarComponent';
 import { connect } from 'react-redux';
 import { fetchCategories, updateCategory } from '../redux/ActionCreators';
 import { Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 const mapStateToProps = (state) => {
     return {
@@ -78,40 +79,33 @@ const useStyles = makeStyles(theme => ({
 
 
 export const TopAppBar = (props) => {
-
-    // React.useEffect(() => {
-    //     props.fetchCategories();
-    // });
     const classes = useStyles();
 
     const [SideBarOpen, setSideBarState] = React.useState(null);
+
+
     const handleSideBarOpen = () => {
-        // console.log(props.categories);
         setSideBarState(!SideBarOpen);
     }
 
-
-
     const getCurrentCategoryFromSidebar = (selectedCategory) => {
-        var category = 'all'
-        // console.log(sidebarCategory);
         props.updateCategory(selectedCategory);
-
+      
     }
 
     return (
         <div className={classes.grow}>
             <AppBar position="static">
                 <Toolbar>
-                    <IconButton
-                        onClick={handleSideBarOpen}
-                        edge="start"
-                        className={classes.menuButton}
-                        color="inherit"
-                        aria-label="open drawer"
-                    >
-                        <MenuIcon />
-                    </IconButton>
+                        <IconButton
+                            onClick={handleSideBarOpen}
+                            edge="start"
+                            className={classes.menuButton}
+                            color="inherit"
+                            aria-label="open drawer"
+                        >
+                            <MenuIcon />
+                        </IconButton>
                     <div className={classes.search}>
                         <div className={classes.searchIcon}>
                             <SearchIcon />
@@ -137,7 +131,7 @@ export const TopAppBar = (props) => {
                             <HistoryIcon />
                         </Badge>
                     </IconButton>
-                    <Link to ={`/cart`}>
+                    <Link to={`/cart`}>
 
                         <IconButton aria-label="Cart" color="inherit">
                             <Badge badgeContent={1} color="secondary">
@@ -148,12 +142,15 @@ export const TopAppBar = (props) => {
 
                 </Toolbar>
             </AppBar>
-            <Sidebar SideBarOpen={true}
+            <Sidebar
+                SideBarOpen={true}
                 categories={props.categories}
                 getCurrentCategoryFromSidebar={getCurrentCategoryFromSidebar}
             />
         </div>
+
     );
+
 }
 // export default TopAppBar;
 export default (connect(mapStateToProps, mapDispatchToProps)(TopAppBar));

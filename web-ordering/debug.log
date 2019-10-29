@@ -1,1 +1,17 @@
 [1027/002747.197:WARNING:minidump_to_upload_parameters.cc(36)] duplicate key guid, discarding value a6a89488-f321-49dc-94fe-36c43ea88ceb
+[1027/004947.686:ERROR:minidumpwritedump_with_crashpad_info.cc(432)] Failed to call MiniDumpWriteDump: The paging file is too small for this operation to complete. (0x800705AF)
+[1027/004947.687:ERROR:minidumpwritedump_with_crashpad_info.cc(575)] Failed to write minidump file
+[1027/004947.687:ERROR:crash_report_exception_handler.cc(122)] TryMiniDumpWriteDumpWithCrashpadInfo failed
+[1027/004947.692:ERROR:process_info.cc(359)] UncheckedAllocate
+[1027/004947.707:ERROR:minidumpwritedump_with_crashpad_info.cc(432)] Failed to call MiniDumpWriteDump: The paging file is too small for this operation to complete. (0x800705AF)
+[1027/004947.707:ERROR:minidumpwritedump_with_crashpad_info.cc(575)] Failed to write minidump file
+[1027/004947.707:ERROR:crash_report_exception_handler.cc(122)] TryMiniDumpWriteDumpWithCrashpadInfo failed
+[1027/004947.714:ERROR:process_info.cc(359)] UncheckedAllocate
+[1027/004950.541:ERROR:minidumpwritedump_with_crashpad_info.cc(432)] Failed to call MiniDumpWriteDump: The paging file is too small for this operation to complete. (0x800705AF)
+[1027/004950.541:ERROR:minidumpwritedump_with_crashpad_info.cc(575)] Failed to write minidump file
+[1027/004950.542:ERROR:crash_report_exception_handler.cc(122)] TryMiniDumpWriteDumpWithCrashpadInfo failed
+[1027/004950.542:ERROR:minidumpwritedump_with_crashpad_info.cc(432)] Failed to call MiniDumpWriteDump: The paging file is too small for this operation to complete. (0x800705AF)
+[1027/004950.542:ERROR:minidumpwritedump_with_crashpad_info.cc(575)] Failed to write minidump file
+[1027/004950.542:ERROR:crash_report_exception_handler.cc(122)] TryMiniDumpWriteDumpWithCrashpadInfo failed
+[1027/004950.546:ERROR:process_info.cc(359)] UncheckedAllocate
+[1027/004950.593:ERROR:filesystem_win.cc(148)] DeleteFile C:\Users\pjj85\AppData\Local\Microsoft\Edge Beta\User Data\Crashpad\reports\33b8af93-3ab2-4d00-af8a-8948dd77cff6.dmp: The process cannot access the file because it is being used by another process. (0x20)
