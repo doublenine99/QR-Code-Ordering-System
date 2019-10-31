@@ -119,7 +119,7 @@ const Cart = (props) => {
   }
   
   return (
-    <div className={classes.foot}>
+    <div>
       <TopAppBar />
 
       {Array.from(props.cart).map(dish => (
