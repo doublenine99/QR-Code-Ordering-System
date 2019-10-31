@@ -15,9 +15,9 @@ import IconButton from '@material-ui/core/IconButton';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import CardHeader from '@material-ui/core/CardHeader';
 import Paper from '@material-ui/core/Paper';
-import { fontFamily } from '@material-ui/system';
-import { Box } from '@material-ui/core';
 
+import { Box } from '@material-ui/core';
+import { koiSushiRestaurant } from '../Firebase/firebase'
 
 
 
@@ -38,98 +38,152 @@ const useStyles = makeStyles(theme => ({
   expandOpen: {
     transform: 'rotate(180deg)',
   },
-  Typography : {
+
+  Typography: {
     fontFamily: 'Raleway, Arial',
+    fontSize: '3rem',
     fontStyle: 'italic',
-    textAlign: "left",
-  } 
-  
+    align: "right",
+    style: "inline-block"
+  }
+
 }));
 
-function handleAddButton(dishName) {
-    //TODO: onclick does not work
-    console.log(dishName);
+function handleAddButton(dishRef) {
+   koiSushiRestaurant.collection('tables').doc('t0').collection('cart')
+  .add({
+      dishRef
+  }
+  ).then(ref => {
+      console.log('Added document with ID: ', ref.id);
+  });
+}
+function filterMenuByCategory(menu) {
+  var MenuAfterfiltered = [];
+  var menu = Array.from(menu);
+
+  for (var dish of menu) {
+    for (var category of Array.from(dish.categories)) {
+      if (String(category).toLowerCase() === "prompt") {
+        MenuAfterfiltered.push(dish);
+        break;
+      }
+    }
+  }
+  // console.log(MenuAfterfiltered);
+  return MenuAfterfiltered;
 }
 
-export default function Promotion(props)  {
+export default function Promotion(props) {
+
+
   const classes = useStyles();
-  
-  const [expanded, setExpanded] = React.useState(false);
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
+
+  const [expanded0, setExpanded0] = React.useState(false);
+  const [expanded1, setExpanded1] = React.useState(false);
+  const handleExpandClick0 = () => {
+    setExpanded0(!expanded0);
+  }
+  const handleExpandClick1 = () => {
+    setExpanded1(!expanded1);
+  }
+  var promptDish = filterMenuByCategory(props.menu);
+
 
   return (
     <div>
-    <TopAppBar position="static">
-    </TopAppBar>
-    <Box m = {2} fontFamily = "Monospace" fontStyle = "italic" textAlign = "left">
-    <Typography gutterBottom variant="h5" component = 'h1'>Today's hot deal</Typography></Box> 
-   
+      <TopAppBar position="static">
+      </TopAppBar>
+      <Box m={2} fontFamily="Monospace" fontStyle="italic" textAlign="left" >
+        <Typography gutterBottom variant="h5" component='h1'>Today's hot deal</Typography></Box>
+      <Card className={classes.card} style={{ margin: 'auto', marginTop: '2vh' }}>
+        <CardActionArea>
+          <CardMedia
+            className={classes.media}
+            image={promptDish[0] != null ? promptDish[0].image : ""}
+            title={promptDish[0] != null ? promptDish[0].id : ""}
+          />
+          <CardContent>
+            <Typography gutterBottom variant="h5" component="h2" align="justify">
+              {promptDish[0] != null ? promptDish[0].name : ""}
+            </Typography>
 
-    <Card className={classes.card} style = {{margin:'auto', marginTop: '2vh'}}>
-      <CardActionArea>
+          </CardContent>
+
+        </CardActionArea>
+        <CardActions>
+          <IconButton
+            onClick={() => handleAddButton(promptDish[0])}
+            className={classes.icon}
+          >
+            <AddShoppingCartIcon />
+          </IconButton>
+          <strike align="right">{promptDish[0] != null ? promptDish[0].price : ""}</strike>
+          <Typography variant="h6">{promptDish[0] != null ? promptDish[0].newPrice : ""}</Typography>
+
+          <IconButton className={clsx(classes.expand, { [classes.expandOpen]: expanded0 })}
+            onClick={handleExpandClick0}
+            aria-expanded={expanded0} size="small" color="primary"
+            aria-label="Learn More">
+            <ExpandMoreIcon />
+          </IconButton>
+        </CardActions>
+        <Collapse in={expanded0} timeout="auto" unmountOnExit>
+          <CardContent>
+            <Typography variant="body2" color="textSecondary" component="p" align="left">
+              {promptDish[0] != null ? promptDish[0].description : ""}
+            </Typography>
+          </CardContent>
+        </Collapse>
+      </Card>
+
+
+
+
+      <Card className={classes.card} style={{ margin: 'auto', marginTop: '2vh' }}>
+        <CardActionArea>
         <CardMedia
-          className={classes.media}
-          image="/static/images/cards/contemplative-reptile.jpg"
-          title="Contemplative Reptile"
-        />
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">
-            Lizard
+            className={classes.media}
+            image={promptDish[1] != null ? promptDish[1].image : ""}
+            title={promptDish[1] != null ? promptDish[1].id : ""}
+          />
+          <CardContent>
+            <Typography gutterBottom variant="h5" component="h2" align="justify">
+              {promptDish[1] != null ? promptDish[1].name : ""}
+            </Typography>
+            <Typography variant="body2" color="textSecondary" component="p" align="left">
           </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging
-            across all continents except Antarctica
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-      <CardActions>
-      <IconButton
-                onClick={handleAddButton("test")}
-                // tooltip="Add this food to the cart"
-                // aria-label={`info about ${dish.name}`}
-                className={classes.icon}
-            >
-                <AddShoppingCartIcon />
-            </IconButton>
-        <IconButton className={clsx(classes.expand, {
-            [classes.expandOpen]: expanded,
+          </CardContent>
+        </CardActionArea>
+        <CardActions>
+          <IconButton
+            onClick={() => handleAddButton(promptDish[1])}
+            // tooltip="Add this food to the cart"
+            // aria-label={`info about ${dish.name}`}
+            className={classes.icon}
+          >
+            <AddShoppingCartIcon />
+          </IconButton>
+          <strike align="right">{promptDish[1] != null ? promptDish[1].price : ""}</strike>
+          <Typography variant="h6">{promptDish[1] != null ? promptDish[1].newPrice : ""}</Typography>
+          <IconButton className={clsx(classes.expand, {
+            [classes.expandOpen]: expanded1,
           })}
-          onClick={handleExpandClick}
-          aria-expanded={expanded} size="small" color="primary"
-          aria-label = "Learn More">
-          <ExpandMoreIcon />
-        </IconButton>
-      </CardActions>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent>
-          <Typography paragraph>Method:</Typography>
-          <Typography paragraph>
-            Heat 1/2 cup of the broth in a pot until simmering, add saffron and set aside for 10
-            minutes.
-          </Typography>
-          <Typography paragraph>
-            Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet over medium-high
-            heat. Add chicken, shrimp and chorizo, and cook, stirring occasionally until lightly
-            browned, 6 to 8 minutes. Transfer shrimp to a large plate and set aside, leaving chicken
-            and chorizo in the pan. Add pimentón, bay leaves, garlic, tomatoes, onion, salt and
-            pepper, and cook, stirring often until thickened and fragrant, about 10 minutes. Add
-            saffron broth and remaining 4 1/2 cups chicken broth; bring to a boil.
-          </Typography>
-          <Typography paragraph>
-            Add rice and stir very gently to distribute. Top with artichokes and peppers, and cook
-            without stirring, until most of the liquid is absorbed, 15 to 18 minutes. Reduce heat to
-            medium-low, add reserved shrimp and mussels, tucking them down into the rice, and cook
-            again without stirring, until mussels have opened and rice is just tender, 5 to 7
-            minutes more. (Discard any mussels that don’t open.)
-          </Typography>
-          <Typography>
-            Set aside off of the heat to let rest for 10 minutes, and then serve.
-          </Typography>
-        </CardContent>
-      </Collapse>
-    </Card>
+            onClick={handleExpandClick1}
+            aria-expanded={expanded1} size="small" color="primary"
+            aria-label="Learn More">
+            <ExpandMoreIcon />
+          </IconButton>
+        </CardActions>
+        <Collapse in={expanded1} timeout="auto" unmountOnExit>
+          <CardContent>
+          <Typography variant="body2" color="textSecondary" component="p" align="left">
+              {promptDish[0] != null ? promptDish[1].description : ""}
+            </Typography>
+          </CardContent>
+        </Collapse>
+      </Card>
+
     </div>
   );
 }
