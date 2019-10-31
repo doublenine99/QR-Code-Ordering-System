@@ -16,7 +16,6 @@ const mapStateToProps = (state) => {
         categories: state.categories,
         cart: state.cart,
         currentCategory: state.currentCategory,
-        // orderhistory: state.orderhistory
     }
 }
 
@@ -24,7 +23,6 @@ const mapDispatchToProps = dispatch => ({
     fetchMenu: () => dispatch(fetchMenu()),
     fetchCategories: () => dispatch(fetchCategories()),
     fetchCart: () => dispatch(fetchCart()),
-    // fetchOrderHistory: () => dispatch(fetchOrderHistory())
 });
 
 class Main extends Component {
