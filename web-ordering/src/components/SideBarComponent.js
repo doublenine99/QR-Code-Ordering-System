@@ -6,14 +6,16 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import StarsIcon from '@material-ui/icons/Stars';
-
+import { Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 export default class SideBar extends Component {
   constructor(props) {
     super(props)
     this.state = {
       categories: props.categories,
-      left: false
+      left: false,
+      selectPromotions: false,
     }
   }
 
@@ -28,11 +30,16 @@ export default class SideBar extends Component {
     this.setState({ left: open });
   };
   handleSelectCategory(category) {
+    // link to promotions
+    if (String(category).toLowerCase() == 'prompt') {
+      this.setState({ selectPromotions: true });
+      return;
+    };
+
     this.props.getCurrentCategoryFromSidebar(category);
   }
 
   sideList = () => (
-
     <div
       role="presentation"
       onClick={this.toggleDrawer(false)}
@@ -54,6 +61,13 @@ export default class SideBar extends Component {
   );
 
   render() {
+    if (this.state.selectPromotions == true) {
+      return <Redirect to="/promotions" />
+    }
+    // back to menu page first if click sidebar on other page
+    if (window.location.pathname !== "/menu" && this.state.left != false) {
+      return <Redirect to="/menu" />
+    }
     return (
       <div>
         <Drawer open={this.state.left} onClose={this.toggleDrawer(false)}>
