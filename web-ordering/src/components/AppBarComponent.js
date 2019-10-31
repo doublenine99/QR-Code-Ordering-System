@@ -90,22 +90,22 @@ export const TopAppBar = (props) => {
 
     const getCurrentCategoryFromSidebar = (selectedCategory) => {
         props.updateCategory(selectedCategory);
-      
+
     }
 
     return (
         <div className={classes.grow}>
             <AppBar position="static">
                 <Toolbar>
-                        <IconButton
-                            onClick={handleSideBarOpen}
-                            edge="start"
-                            className={classes.menuButton}
-                            color="inherit"
-                            aria-label="open drawer"
-                        >
-                            <MenuIcon />
-                        </IconButton>
+                    <IconButton
+                        onClick={handleSideBarOpen}
+                        edge="start"
+                        className={classes.menuButton}
+                        color="inherit"
+                        aria-label="open drawer"
+                    >
+                        <MenuIcon />
+                    </IconButton>
                     <div className={classes.search}>
                         <div className={classes.searchIcon}>
                             <SearchIcon />
@@ -125,24 +125,20 @@ export const TopAppBar = (props) => {
                             <EmojiPeopleIcon />
                         </Badge>
                     </IconButton>
-<<<<<<< HEAD
-                    <Link to ={`/orderhistory`}>
+                    <Link to={`/orderhistory`}>
                         <IconButton aria-label="Order History" color="inherit">
                             <Badge badgeContent={0} color="secondary">
                                 <HistoryIcon />
                             </Badge>
                         </IconButton>
                     </Link>
-                    <Link to ={`/cart`}>
-=======
 
-                    <IconButton aria-label="Order History" color="inherit">
-                        <Badge badgeContent={0} color="secondary">
-                            <HistoryIcon />
-                        </Badge>
-                    </IconButton>
+                    {/* <IconButton aria-label="Order History" color="inherit">
+                            <Badge badgeContent={0} color="secondary">
+                                <HistoryIcon />
+                            </Badge>
+                        </IconButton> */}
                     <Link to={`/cart`}>
->>>>>>> a64c0b52bd1854f583c1b5847294770c09fc840f
 
                         <IconButton aria-label="Cart" color="inherit">
                             <Badge badgeContent={1} color="secondary">
@@ -163,5 +159,5 @@ export const TopAppBar = (props) => {
     );
 
 }
-// export default TopAppBar;
+
 export default (connect(mapStateToProps, mapDispatchToProps)(TopAppBar));
