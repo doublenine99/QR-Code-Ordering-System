@@ -114,7 +114,7 @@ const Cart = (props) => {
     
     console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" );
     const nn = number+1;
-    console.log(num );
+    console.log(num);
     setPrice(nn);
   }
   
@@ -130,29 +130,29 @@ const Cart = (props) => {
               <img
                 width={120}
                 height={120}
-                src={dish.image}
-                alt={dish.name}
+                src={dish.dishRef.image}
+                alt={dish.dishRef.name}
               />
 
             </Grid>
             <Grid item xs zeroMinWidth>
-              <Typography noWrap>{dish.name}</Typography>
+              <Typography noWrap>{dish.dishRef.name}</Typography>
               <Grid container   >
                 <div className={classes.container} >
 
 
                 <ListItem className={classes.hoho}>
-                  <ListItemText primary= {"Number:" +"   "+parseInt(dish.number)} />
+                  <ListItemText primary= {"Number:" +"   "+parseInt(dish.dishRef.number)} />
                 </ListItem>
 
                 <ListItem  className={classes.hoho}>
-                  <ListItemText primary= {"Price:" +"   "+dish.price} />
+                  <ListItemText primary= {"Price:" +"   "+dish.dishRef.price} />
                 </ListItem>
 
                   <div>
                     <ButtonGroup color="primary" size="medium" aria-label="small outlined button group">
                       <IconButton 
-                       onClick={() => handleAdd(parseInt(dish.number))}
+                       onClick={() => handleAdd(parseInt(dish.dishRef.number))}
                       >
                         <AddIcon />
                       </IconButton>
