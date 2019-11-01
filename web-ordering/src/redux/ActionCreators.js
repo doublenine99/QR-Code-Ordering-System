@@ -6,9 +6,7 @@ import * as ActionTypes from './ActionTypes';
 
 // define menu page actions
 export const fetchMenu = () => async dispatch => {
-  koiSushiMenu
-    .get()
-    .then(snapshot => {
+  koiSushiMenu    .get()    .then(snapshot => {
       const menu = snapshot.docs.map(doc => doc.data());
       // console.log("ready to dispatch menu: " + JSON.stringify(menu)); // array of food
       dispatch({
@@ -44,8 +42,8 @@ export const updateCategory = (category) => ({
 
 // define cart page actions
 export const fetchCart = () => async dispatch => {
-  koiSushiRestaurant.doc("koisushi").collection("tables").doc("t0").collection("cart")
-  .onSnapshot(docSnapshot => {
+  koiSushiRestaurant.collection("tables").doc("t0").collection("cart")
+  .onSnapshot(snapshot => {
     const cart = snapshot.docs.map(doc => doc.data());
     // console.log("Received doc snapshot: " + (docSnapshot.data().categories));
     dispatch({

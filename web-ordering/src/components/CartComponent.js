@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import TopAppBar from './AppBarComponent';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { makeStyles } from '@material-ui/core/styles';
@@ -33,6 +33,9 @@ import { Dialog } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import Icon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
+
+import { koiSushiMenu, koiSushiRestaurant, koiSushiCart } from '../Firebase/firebase';
+
 
 
 const useStyles = makeStyles(theme => ({
@@ -93,32 +96,112 @@ const useStyles = makeStyles(theme => ({
 
 
 
-
-
-
+var bccc;
 
 const Cart = (props) => {
 
+  var overallPrice = 0;
+
+  var oldnumber; 
   const classes = useStyles();
   // const [value, setValue] = React.useState(0);
-  const [num, setPrice] = React.useState(parseInt(1));
+  const [totalPrice, setTotalPrice] = React.useState(0);
+  const [totalPricer, setTotalPricer] = React.useState(0);
+
 
 
   useEffect(() => {
 
+   
+
+    const removeduplication = koiSushiRestaurant.collection("tables").doc("t0").collection("cart")
+      .get()
+      .then(function (querySnapshot) {
+
+        var qiangbimingdan = new Set();
+        var dic = new Map();
+
+        querySnapshot.forEach(function (doc) {
+
+        var nn = doc.id;
+        
+        koiSushiRestaurant.collection("tables").doc("t0").collection("cart").doc(doc.id).update({ID: nn});
+        
+        if(dic.has(doc.data().dishRef.id.path)){
+          qiangbimingdan.add(doc.data().ID);
+          var right = dic.get(doc.data().dishRef.id.path);
+          
+          console.log(doc.data().number);
+          var i;
+          for(i = 0; i < doc.data().number; i++){
+              koiSushiRestaurant.collection("tables").doc("t0").collection("cart").doc(right).get().then(function(dddoc){
+              oldnumber = dddoc.data().number;
+              handleAdd(parseInt(oldnumber) , right)
+              })
+          }
+          
+          
+          // console.log("exist!");
+
+        }  else{
+          dic.set(doc.data().dishRef.id.path,doc.data().ID);
+          // console.log("put!");
+        }
+        
+        qiangbimingdan.forEach(function (kkk){
+           koiSushiRestaurant.collection("tables").doc("t0").collection("cart").doc(kkk).delete();
+        })
+         });
+
+      })
+
+
+
+
+      updatepc();
   });
 
+  const updatepc = () =>{
+    const prin = koiSushiRestaurant.collection("tables").doc("t0").collection("cart")
+      .get()
+      .then(function (querySnapshot) {
+
+        querySnapshot.forEach(function (doc) {
+          //  console.log(parseInt(doc.data().dishRef.price) * parseInt(doc.data().number));
+        overallPrice = parseInt(doc.data().dishRef.price) * parseInt(doc.data().number) + overallPrice;
 
 
-  const handleAdd = (number)=> {
-    
-    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" );
-    const nn = number+1;
-    console.log(num);
-    setPrice(nn);
+        });
+        setTotalPrice(overallPrice);
+        setTotalPricer(overallPrice*1.05);
+        bccc = String(overallPrice);
+      })
+      // console.log(overallPrice);
   }
-  
+
+  const handleAdd = (newnum,idid) => {
+    koiSushiRestaurant.collection("tables").doc("t0").collection("cart").doc(idid).update({number: newnum + 1});
+    updatepc();
+  }
+
+  const handleMin = (newnum,idid) => {
+    // console.log(newnum);
+    // console.log("xd1as3d1sa32d1a651ds5ad1a6d5as1d5s61da6s51d6as51da5s61d");
+    // console.log(idid);
+    if(newnum > 0){
+      koiSushiRestaurant.collection("tables").doc("t0").collection("cart").doc(idid).update({number: newnum - 1});
+    }else{
+      koiSushiRestaurant.collection("tables").doc("t0").collection("cart").doc(idid).delete();
+    }
+    updatepc();
+    
+  }
+
+
   return (
+
+
+
     <div>
       <TopAppBar />
 
@@ -141,23 +224,23 @@ const Cart = (props) => {
                 <div className={classes.container} >
 
 
-                <ListItem className={classes.hoho}>
-                  <ListItemText primary= {"Number:" +"   "+parseInt(dish.dishRef.number)} />
-                </ListItem>
+                  <ListItem className={classes.hoho}>
+                    <ListItemText primary={"Number:" + "   " + parseInt(dish.number)} />
+                  </ListItem>
 
-                <ListItem  className={classes.hoho}>
-                  <ListItemText primary= {"Price:" +"   "+dish.dishRef.price} />
-                </ListItem>
+                  <ListItem className={classes.hoho}>
+                    <ListItemText primary={"Price:" + "   " + dish.dishRef.price} />
+                  </ListItem>
 
                   <div>
                     <ButtonGroup color="primary" size="medium" aria-label="small outlined button group">
-                      <IconButton 
-                       onClick={() => handleAdd(parseInt(dish.dishRef.number))}
+                      <IconButton
+                        onClick={() => handleAdd(parseInt(dish.number) , dish.ID)}
                       >
                         <AddIcon />
                       </IconButton>
-                      <IconButton 
-                      // onClick={() => handleAdd(dish.price)}
+                      <IconButton
+                      onClick={() => handleMin(parseInt(dish.number) , dish.ID)}
                       >
                         <RemoveIcon />
                       </IconButton>
@@ -175,55 +258,33 @@ const Cart = (props) => {
 
       ))}
 
-      {/* <div>
-      <Paper className={classes.root}>
-        <Typography component="p">
-          before tax: 4$
-        </Typography>
-      </Paper>
-      <Divider />
-    </div>
-
-    <div>
-      <Paper className={classes.root}>
-        <Typography component="p">
-          after tax: 5$
-        </Typography>
-      </Paper>
-    </div> */}
 
 
       <div>
         <List className={classes.root}>
           <ListItem >
-            <ListItemText primary="Before tax" secondary="100$" />
+
+            <ListItemText primary="Before tax" secondary={totalPrice} />
           </ListItem>
 
 
           <ListItem>
-            <ListItemText primary="After tax" secondary="105$" />
+            <ListItemText primary="After tax" secondary={totalPricer} />
           </ListItem>
-          
+
 
         </List>
 
       </div>
 
       <div>
-        {/* <BottomNavigation
-          value={value}
-          showLabels
-          className={classes.root}
-        >
-          <BottomNavigationAction label="Clear" icon={<RestoreIcon />} />
-          <BottomNavigationAction label="Order" icon={<FavoriteIcon />} />
-        </BottomNavigation> */}
+
         <div>
-                    <ButtonGroup color="primary" size="large" aria-label="small outlined button group">
-                      <Button> Confirm</Button>
-                      <Button>Clear</Button>
-                    </ButtonGroup>
-                  </div>
+          <ButtonGroup color="primary" size="large" aria-label="small outlined button group">
+            <Button> Confirm</Button>
+            <Button>Clear</Button>
+          </ButtonGroup>
+        </div>
       </div>
     </div>
 
