@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import Menu from './MenuComponent';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { fetchMenu, fetchCategories, fetchCart } from '../redux/ActionCreators';
+import { fetchMenu, fetchCategories, fetchCart ,fetchOrders} from '../redux/ActionCreators';
 import Cart from './CartComponent';
 import Promotion from './PromptDishComponent';
 import OrderHistory from './OrderHistoryComponent';
@@ -16,6 +16,7 @@ const mapStateToProps = (state) => {
         categories: state.categories,
         cart: state.cart,
         currentCategory: state.currentCategory,
+        orders: state.orders
     }
 }
 
@@ -23,6 +24,7 @@ const mapDispatchToProps = dispatch => ({
     fetchMenu: () => dispatch(fetchMenu()),
     fetchCategories: () => dispatch(fetchCategories()),
     fetchCart: () => dispatch(fetchCart()),
+    fetchOrders:()=>dispatch(fetchOrders()),
 });
 
 class Main extends Component {
@@ -30,6 +32,8 @@ class Main extends Component {
         this.props.fetchMenu();
         this.props.fetchCategories();
         this.props.fetchCart();
+        this.props.fetchOrders();
+    
 
     }
     // componentDidUpdate() {
@@ -43,7 +47,7 @@ class Main extends Component {
                     <Route path='/promotions' component={() => <Promotion menu={this.props.menu} />} />
                     <Route path='/cart' component={() => <Cart cart={this.props.cart} />} />
                     <Route path='/menu' component={() => <Menu menu={this.props.menu} currentCategory={this.props.currentCategory} />} />
-                    <Route path='/orderhistory' component={() => <OrderHistory OrderHistory={this.props.OrderHistory} />} />
+                    <Route path='/orderhistory' component={() => <OrderHistory orders={this.props.orders} />} />
                     <Redirect to="/menu" />
                 </Switch>
             </div>
