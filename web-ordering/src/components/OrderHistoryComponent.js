@@ -25,7 +25,7 @@ import MuiDialogContent from '@material-ui/core/DialogContent';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
 
-import moment from 'moment';
+// import moment from 'moment';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -202,11 +202,11 @@ export default function OrderHistory(props) {
                   {Array.from(props.orders).map(order => (
                     <li key={`order-${order}`} className={classes.listSection}>
                       <ul className={classes.ul}>
-                        <ListSubheader>{moment(order.ordertime.toDate()).calendar()}</ListSubheader>
+                        {/* <ListSubheader>{moment(order.ordertime.toDate()).calendar()}</ListSubheader> */}
                         {Array.from(order.dishes).map(dish => (
                           <Table className={classes.table} aria-label="spanning table">
                             <TableBody>
-                              <TableRow key={`dish-${dish.dishes.name}`}>
+                              <TableRow key={`dish-${dish.name}`}>
                                 <TableCell>{dish.name}</TableCell>
                                 <TableCell align="right">{dish.quantity}</TableCell>
                                 <TableCell align="right">{`$${dish.price}`}</TableCell>

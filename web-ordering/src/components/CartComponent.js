@@ -233,47 +233,38 @@ const Cart = (props) => {
   }
   var finma;
 
-  const handleOrder = (vv) => {
-    // koiSushiRestaurant.collection("tables").doc("t01").collection("orders").doc("neworder").set({haha:1});
+ 
+
+
+  const handleOrder = (vv) => {
+
+
+
+        const fa = String(Math.random());
+        // const fa = "haha";
+        koiSushiRestaurant.collection("tables").doc("t0").collection("orders").doc(fa).set({});
+        vv.forEach(function (doc) {
+          console.log("dddddddddddddddddddddddddddddddddddddddddddfinma");
+          var dishnum = doc.ID;
+          koiSushiRestaurant.collection("tables").doc("t0").collection("orders").doc(fa).update({
     
-    // koiSushiRestaurant.collection("tables").doc("t01").collection("orders").add({
-    //   name: "s"
-    // }).then(function (docRef) {
-    //     finma = docRef.id;
-    //     console.log("Document written with ID: ", finma);
-    //   })
-    //   .catch(function (error) {
-    //     console.error("Error adding document: ", error);
-    //   });
-    const fa = String(Math.random());
-    vv.forEach(function (doc) {
-      console.log(finma);
-      var dishnum = doc.ID;
-      koiSushiRestaurant.collection("tables").doc("t0").collection("orders").doc(fa).set({
-
-        dishes: {
-          [dishnum]: {
-            name: doc.dishRef.name,
-            price: doc.dishRef.price,
-            quantity: doc.number,
-            dishid: doc.dishRef.id,
-          },
-          subtotal: totalPrice,
-          taxrate: 0.05,
-          ordertime: firebase.firestore.FieldValue.serverTimestamp(),
-        },
-
-
-      }, { merge: true });
-
-    });
-
-
-  };
-
-
-
-
+            dishes: firebase.firestore.FieldValue.arrayUnion({
+              name: doc.dishRef.name,
+              price: doc.dishRef.price,
+              quantity: doc.number,
+              dishid: doc.dishRef.id,
+            }),
+    
+            subtotal: totalPrice,
+            taxrate: 0.05,
+            ordertime: firebase.firestore.FieldValue.serverTimestamp(),
+    
+          });
+    
+        });
+    
+    
+      };
 
 
 
