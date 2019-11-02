@@ -31,7 +31,8 @@ const useStyles = makeStyles(theme => ({
 function handleAddButton(dishRef) {
     koiSushiRestaurant.collection('tables').doc('t0').collection('cart')
         .add({
-            dishRef
+            dishRef,
+            number:1,
         }
         ).then(ref => {
             console.log('Added document with ID: ', ref.id);
