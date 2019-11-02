@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import TopAppBar from './AppBarComponent';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { makeStyles } from '@material-ui/core/styles';
@@ -27,12 +27,15 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
-
+import firebase from "firebase";
 import BeachAccessIcon from '@material-ui/icons/BeachAccess';
 import { Dialog } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import Icon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
+
+import { koiSushiMenu, koiSushiRestaurant, koiSushiCart } from '../Firebase/firebase';
+
 
 
 const useStyles = makeStyles(theme => ({
@@ -93,32 +96,221 @@ const useStyles = makeStyles(theme => ({
 
 
 
-
-
-
+var bccc;
 
 const Cart = (props) => {
 
+  var overallPrice = 0;
+
+  var oldnumber;
   const classes = useStyles();
   // const [value, setValue] = React.useState(0);
-  const [num, setPrice] = React.useState(parseInt(1));
+  const [totalPrice, setTotalPrice] = React.useState(0);
+  const [totalPricer, setTotalPricer] = React.useState(0);
+  const [finishFilter, setFinishFilter] = React.useState(false);
+
+  const updatepc = () => {
+    const prin = koiSushiRestaurant.collection("tables").doc("t0").collection("cart")
+      .get()
+      .then(function (querySnapshot) {
+
+        querySnapshot.forEach(function (doc) {
+          //  console.log(parseInt(doc.data().dishRef.price) * parseInt(doc.data().number));
+          overallPrice = parseInt(doc.data().dishRef.price) * parseInt(doc.data().number) + overallPrice;
 
 
-  useEffect(() => {
-
-  });
-
-
-
-  const handleAdd = (number)=> {
-    
-    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" );
-    const nn = number+1;
-    console.log(num );
-    setPrice(nn);
+        });
+        setTotalPrice(overallPrice);
+        setTotalPricer(overallPrice * 1.05);
+        bccc = String(overallPrice);
+      })
+    // console.log(overallPrice);
   }
-  
+
+
+  koiSushiRestaurant.collection("tables").doc("t0").collection("cart")
+    .get()
+    .then(function (querySnapshot) {
+
+      var qiangbimingdan = new Set();
+      var dic = new Map();
+
+      querySnapshot.forEach(function (doc) {
+
+        var nn = doc.id;
+
+        koiSushiRestaurant.collection("tables").doc("t0").collection("cart").doc(doc.id).update({ ID: nn });
+
+        if (dic.has(doc.data().dishRef.id.path)) {
+          qiangbimingdan.add(doc.data().ID);
+          var right = dic.get(doc.data().dishRef.id.path);
+
+
+          // console.log(right);
+          if (right != null) {
+            koiSushiRestaurant.collection("tables").doc("t0").collection("cart").doc(right).get().then(function (dddoc) {
+              oldnumber = dddoc.data().number;
+              console.log("dddd!" + oldnumber);
+              handleAdd(parseInt(oldnumber), right);
+            })
+          }
+        } else {
+          dic.set(doc.data().dishRef.id.path, doc.data().ID);
+          // console.log("put!");
+        }
+        qiangbimingdan.forEach(function (kkk) {
+          if (kkk != null) {
+            koiSushiRestaurant.collection("tables").doc("t0").collection("cart").doc(kkk).delete();
+          }
+
+        })
+      });
+      setFinishFilter(true);
+    })
+  updatepc();
+
+  // useEffect(() => {
+  //   const removeduplication = koiSushiRestaurant.collection("tables").doc("t0").collection("cart")
+  //     .get()
+  //     .then(function (querySnapshot) {
+
+  //       var qiangbimingdan = new Set();
+  //       var dic = new Map();
+
+  //       querySnapshot.forEach(function (doc) {
+
+  //         var nn = doc.id;
+
+  //         koiSushiRestaurant.collection("tables").doc("t0").collection("cart").doc(doc.id).update({ ID: nn });
+
+  //         if (dic.has(doc.data().dishRef.id.path)) {
+  //           qiangbimingdan.add(doc.data().ID);
+  //           var right = dic.get(doc.data().dishRef.id.path);
+
+
+  //           // console.log(right);
+  //           var i;
+  //           for (i = 0; i < doc.data().number; i++) {
+  //             if (right != null) {
+  //               koiSushiRestaurant.collection("tables").doc("t0").collection("cart").doc(right).get().then(function (dddoc) {
+  //                 oldnumber = dddoc.data().number;
+  //                 handleAdd(parseInt(oldnumber), right)
+  //               })
+  //             }
+  //           }
+  //         } else {
+  //           dic.set(doc.data().dishRef.id.path, doc.data().ID);
+  //           // console.log("put!");
+  //         }
+  //         qiangbimingdan.forEach(function (kkk) {
+  //           if (kkk != null) {
+  //             koiSushiRestaurant.collection("tables").doc("t0").collection("cart").doc(kkk).delete();
+  //           }
+
+  //         })
+  //       });
+  //     })
+  //   updatepc();
+  //   setFinishFilter(true);
+  // });
+
+
+
+
+  const handleAdd = (newnum, idid) => {
+    koiSushiRestaurant.collection("tables").doc("t0").collection("cart").doc(idid).update({ number: newnum + 1 });
+    updatepc();
+  }
+
+  const handleMin = (newnum, idid) => {
+    if (newnum > 1) {
+      koiSushiRestaurant.collection("tables").doc("t0").collection("cart").doc(idid).update({ number: newnum - 1 });
+    } else {
+      koiSushiRestaurant.collection("tables").doc("t0").collection("cart").doc(idid).delete();
+    }
+    updatepc();
+
+  }
+  var finma;
+
+  const handleOrder = (vv) => {
+    // koiSushiRestaurant.collection("tables").doc("t01").collection("orders").doc("neworder").set({haha:1});
+    
+    // koiSushiRestaurant.collection("tables").doc("t01").collection("orders").add({
+    //   name: "s"
+    // }).then(function (docRef) {
+    //     finma = docRef.id;
+    //     console.log("Document written with ID: ", finma);
+    //   })
+    //   .catch(function (error) {
+    //     console.error("Error adding document: ", error);
+    //   });
+    const fa = String(Math.random());
+    vv.forEach(function (doc) {
+      console.log(finma);
+      var dishnum = doc.ID;
+      koiSushiRestaurant.collection("tables").doc("t0").collection("orders").doc(fa).set({
+
+        dishes: {
+          [dishnum]: {
+            name: doc.dishRef.name,
+            price: doc.dishRef.price,
+            quantity: doc.number,
+            dishid: doc.dishRef.id,
+          },
+          subtotal: totalPrice,
+          taxrate: 0.05,
+          ordertime: firebase.firestore.FieldValue.serverTimestamp(),
+        },
+
+
+      }, { merge: true });
+
+    });
+
+
+  };
+
+
+
+
+
+
+
+
+  const handleClear = (vv) => {
+    // koiSushiRestaurant.collection("tables").doc("t01").collection("orders").doc("neworder").set({haha:1});
+    vv.forEach(function (doc) {
+      console.log(doc.ID);
+      koiSushiRestaurant.collection("tables").doc("t0").collection("cart").doc(doc.ID).delete();
+
+    });
+
+
+  };
+
+
+
+
+
+
+
+
+
+
+
+  if (!finishFilter) {
+    return (
+      <div>
+        Loading
+    </div>
+    )
+  }
+
   return (
+
+
+
     <div>
       <TopAppBar />
 
@@ -130,34 +322,34 @@ const Cart = (props) => {
               <img
                 width={120}
                 height={120}
-                src={dish.image}
-                alt={dish.name}
+                src={dish.dishRef.image}
+                alt={dish.dishRef.name}
               />
 
             </Grid>
             <Grid item xs zeroMinWidth>
-              <Typography noWrap>{dish.name}</Typography>
+              <Typography noWrap>{dish.dishRef.name}</Typography>
               <Grid container   >
                 <div className={classes.container} >
 
 
-                <ListItem className={classes.hoho}>
-                  <ListItemText primary= {"Number:" +"   "+parseInt(dish.number)} />
-                </ListItem>
+                  <ListItem className={classes.hoho}>
+                    <ListItemText primary={"Number:" + "   " + parseInt(dish.number)} />
+                  </ListItem>
 
-                <ListItem  className={classes.hoho}>
-                  <ListItemText primary= {"Price:" +"   "+dish.price} />
-                </ListItem>
+                  <ListItem className={classes.hoho}>
+                    <ListItemText primary={"Price:" + "   " + dish.dishRef.price} />
+                  </ListItem>
 
                   <div>
                     <ButtonGroup color="primary" size="medium" aria-label="small outlined button group">
-                      <IconButton 
-                       onClick={() => handleAdd(parseInt(dish.number))}
+                      <IconButton
+                        onClick={() => handleAdd(parseInt(dish.number), dish.ID)}
                       >
                         <AddIcon />
                       </IconButton>
-                      <IconButton 
-                      // onClick={() => handleAdd(dish.price)}
+                      <IconButton
+                        onClick={() => handleMin(parseInt(dish.number), dish.ID)}
                       >
                         <RemoveIcon />
                       </IconButton>
@@ -175,55 +367,37 @@ const Cart = (props) => {
 
       ))}
 
-      {/* <div>
-      <Paper className={classes.root}>
-        <Typography component="p">
-          before tax: 4$
-        </Typography>
-      </Paper>
-      <Divider />
-    </div>
-
-    <div>
-      <Paper className={classes.root}>
-        <Typography component="p">
-          after tax: 5$
-        </Typography>
-      </Paper>
-    </div> */}
 
 
       <div>
         <List className={classes.root}>
           <ListItem >
-            <ListItemText primary="Before tax" secondary="100$" />
+
+            <ListItemText primary="Before tax" secondary={totalPrice} />
           </ListItem>
 
 
           <ListItem>
-            <ListItemText primary="After tax" secondary="105$" />
+            <ListItemText primary="After tax" secondary={totalPricer} />
           </ListItem>
-          
+
 
         </List>
 
       </div>
 
       <div>
-        {/* <BottomNavigation
-          value={value}
-          showLabels
-          className={classes.root}
-        >
-          <BottomNavigationAction label="Clear" icon={<RestoreIcon />} />
-          <BottomNavigationAction label="Order" icon={<FavoriteIcon />} />
-        </BottomNavigation> */}
+
         <div>
-                    <ButtonGroup color="primary" size="large" aria-label="small outlined button group">
-                      <Button> Confirm</Button>
-                      <Button>Clear</Button>
-                    </ButtonGroup>
-                  </div>
+          <ButtonGroup color="primary" size="large" aria-label="small outlined button group">
+            <Button
+              onClick={() => handleOrder(props.cart)}
+            > Confirm</Button>
+            <Button
+              onClick={() => handleClear(props.cart)}
+            >Clear</Button>
+          </ButtonGroup>
+        </div>
       </div>
     </div>
 
