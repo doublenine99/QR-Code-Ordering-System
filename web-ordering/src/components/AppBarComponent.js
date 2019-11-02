@@ -125,7 +125,6 @@ export const TopAppBar = (props) => {
                             <EmojiPeopleIcon />
                         </Badge>
                     </IconButton>
-<<<<<<< HEAD
                     <Link to ={`/orderhistory`}>
                         <IconButton aria-label="Order History" color="inherit">
                             <Badge badgeContent={0} color="secondary">
@@ -134,16 +133,6 @@ export const TopAppBar = (props) => {
                         </IconButton>
                     </Link>
                     <Link to ={`/cart`}>
-=======
-
-                    <IconButton aria-label="Order History" color="inherit">
-                        <Badge badgeContent={0} color="secondary">
-                            <HistoryIcon />
-                        </Badge>
-                    </IconButton>
-                    <Link to={`/cart`}>
->>>>>>> a64c0b52bd1854f583c1b5847294770c09fc840f
-
                         <IconButton aria-label="Cart" color="inherit">
                             <Badge badgeContent={1} color="secondary">
                                 <ShoppingCartIcon />

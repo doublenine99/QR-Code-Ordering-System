@@ -218,7 +218,6 @@ export default function OrderHistory(props) {
                     </li>
                   ))}
                 </List>
-
                 {/* <Divider variant="middle" />
                 <div className={classes.button}>
                   <Button size="small" color="primary" className={classes.button} onClick={handleClickOpen('paper')}>

@@ -16,5 +16,5 @@ export const DELETE_DISH = "DELETE_DISH"
 export const ADDTO_ORDER = "ADDTO_ORDER"
 
 // order page action types
-export const FETCH_ORDER = "FETCH_ORDER"
+export const FETCH_ORDERS = "FETCH_ORDERS"
 

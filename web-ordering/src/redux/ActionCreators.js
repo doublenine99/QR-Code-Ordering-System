@@ -64,3 +64,19 @@ export const fetchCart = () => async dispatch => {
   //     });
   //   });
 };
+
+// define orderhistory page actions
+export const fetchOrders = () => async dispatch => {
+  koiSushiRestaurant.collection('tables').doc('t0').collection('orders')
+    .onSnapshot(snapshot => {
+      const orders = snapshot.docs.map(doc => doc.data());
+        console.log("Received doc snapshot: " , (orders));
+      dispatch({
+        type: ActionTypes.FETCH_ORDERS,
+        payload: orders
+      });
+    },
+      err => {
+        console.log(`Encountered error: ${err}`);
+      });
+};
