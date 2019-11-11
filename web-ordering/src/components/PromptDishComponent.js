@@ -76,9 +76,6 @@ function filterMenuByCategory(menu) {
 }
 
 export default function Promotion(props) {
-  //TODO:
-  // const { location } = prop.location.state;
-
   const classes = useStyles();
 
   const [expanded0, setExpanded0] = React.useState(false);
@@ -94,8 +91,8 @@ export default function Promotion(props) {
 
   return (
     <div>
-      <TopAppBar position="static">
-      </TopAppBar>
+
+      <TopAppBar table={props.table} />
       <Box m={2} fontFamily="Monospace" fontStyle="italic" textAlign="left" >
         <Typography gutterBottom variant="h5" component='h1'>Today's hot deal</Typography></Box>
       <Card className={classes.card} style={{ margin: 'auto', marginTop: '2vh' }}>

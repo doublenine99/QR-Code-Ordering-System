@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-import { Link } from 'react-router-dom';
-// import { baseUrl } from '../shared/baseUrl';
 import TopAppBar from './AppBarComponent';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -29,15 +27,18 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function handleAddButton(dishRef, tableID) {
-    // console.log(tableID)
-    koiSushiRestaurant.collection('tables').doc(tableID).collection('cart')
-        .add({
-            dishRef,
-            number:1,
-        }
-        ).then(ref => {
-            console.log('Added document with ID: ', ref.id);
-        });
+    if (dishRef != null && tableID != null && String(tableID).charAt(0) === 't') {
+        koiSushiRestaurant.collection('tables').doc(tableID).collection('cart')
+            .add({
+                dishRef,
+                number: 1,
+            }
+            ).then(ref => {
+                console.log('Added document with ID: ', ref.id);
+            });
+    } else {
+        console.log("dishRef: ", dishRef, ", tableID: ", tableID)
+    }
 }
 function filterMenuByCategory(menu, currentCategory) {
     var MenuAfterfiltered = [];
@@ -69,7 +70,7 @@ const Menu = (props) => {
     return (
 
         <div >
-            <TopAppBar />
+            <TopAppBar table={props.table} />
             <div className={classes.root}>
                 <GridList cellHeight={150} className={classes.gridList}>
                     <GridListTile key="Subheader" cols={2} style={{ height: 'auto' }}>

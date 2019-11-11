@@ -15,7 +15,7 @@ import Sidebar from './SideBarComponent';
 import { connect } from 'react-redux';
 import { fetchCategories, updateCategory } from '../redux/ActionCreators';
 import { Link } from 'react-router-dom';
-import { Redirect } from 'react-router-dom';
+import { koiSushiRestaurant } from '../Firebase/firebase'
 
 const mapStateToProps = (state) => {
     return {
@@ -86,6 +86,17 @@ export const TopAppBar = (props) => {
 
     const handleSideBarOpen = () => {
         setSideBarState(!SideBarOpen);
+
+    }
+    const handleAssistant = () => {
+
+        if (props.table != null && String(props.table).charAt(0) === 't') {
+            koiSushiRestaurant.collection('tables').doc(props.table)
+                .update({ needAssistance: true })
+                .then(console.log("set the assistance flag of", props.table, "to true"))
+
+        }
+
     }
 
     const getCurrentCategoryFromSidebar = (selectedCategory) => {
@@ -120,13 +131,16 @@ export const TopAppBar = (props) => {
                         />
                     </div>
                     <div className={classes.grow} />
-                    <IconButton aria-label="Call Assistance" color="inherit">
+                    <IconButton
+                        onClick={handleAssistant}
+                        aria-label="Call Assistance"
+                        color="inherit">
                         <Badge badgeContent={0} color="secondary">
                             <EmojiPeopleIcon />
                         </Badge>
                     </IconButton>
 
-                    <Link to ={`/orderhistory`}>
+                    <Link to={`/orderhistory`}>
                         <IconButton aria-label="Order History" color="inherit">
                             <Badge badgeContent={0} color="secondary">
                                 <HistoryIcon />
@@ -134,9 +148,9 @@ export const TopAppBar = (props) => {
                         </IconButton>
                     </Link>
 
-                    <Link to ={`/cart`}>
+                    <Link to={`/cart`}>
                         <IconButton aria-label="Cart" color="inherit">
-                            <Badge badgeContent={1} color="secondary">
+                            <Badge badgeContent={0} color="secondary">
                                 <ShoppingCartIcon />
                             </Badge>
                         </IconButton>
