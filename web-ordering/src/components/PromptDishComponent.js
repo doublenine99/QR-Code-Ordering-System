@@ -115,7 +115,7 @@ export default function Promotion(props) {
         </CardActionArea>
         <CardActions>
           <IconButton
-            onClick={() => handleAddButton(promptDish[0]), props.table}
+            onClick={() => handleAddButton(promptDish[0], props.table)}
             className={classes.icon}
           >
             <AddShoppingCartIcon />
