@@ -1,0 +1,11 @@
+1. add the if check before doing any firebase add/update/delete
+e.g.
+  if (props.table != null && String(props.table).charAt(0) === 't') {
+            koiSushiRestaurant.collection('tables').doc(props.table)
+                .update({ needAssistance: true })
+                .then(console.log("set the assistance flag of", props.table, "to true"))
+  }else {
+      console.log("ERROR! tableID: ", props.table)
+        }
+   
+     
