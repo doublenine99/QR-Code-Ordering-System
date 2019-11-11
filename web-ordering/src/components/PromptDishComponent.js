@@ -159,7 +159,7 @@ export default function Promotion(props) {
         </CardActionArea>
         <CardActions>
           <IconButton
-            onClick={() => handleAddButton(promptDish[1])}
+            onClick={() => handleAddButton(promptDish[1], props.table)}
             // tooltip="Add this food to the cart"
             // aria-label={`info about ${dish.name}`}
             className={classes.icon}
