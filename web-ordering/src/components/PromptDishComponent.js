@@ -49,14 +49,15 @@ const useStyles = makeStyles(theme => ({
 
 }));
 
-function handleAddButton(dishRef) {
-   koiSushiRestaurant.collection('tables').doc('t0').collection('cart')
-  .add({
-      dishRef
-  }
-  ).then(ref => {
+function handleAddButton(dishRef, tableID) {
+  koiSushiRestaurant.collection('tables').doc(tableID).collection('cart')
+    .add({
+      dishRef,
+      number: 1
+    }
+    ).then(ref => {
       console.log('Added document with ID: ', ref.id);
-  });
+    });
 }
 function filterMenuByCategory(menu) {
   var MenuAfterfiltered = [];
@@ -75,7 +76,8 @@ function filterMenuByCategory(menu) {
 }
 
 export default function Promotion(props) {
-
+  //TODO:
+  // const { location } = prop.location.state;
 
   const classes = useStyles();
 
@@ -113,13 +115,13 @@ export default function Promotion(props) {
         </CardActionArea>
         <CardActions>
           <IconButton
-            onClick={() => handleAddButton(promptDish[0])}
+            onClick={() => handleAddButton(promptDish[0]), props.table}
             className={classes.icon}
           >
             <AddShoppingCartIcon />
           </IconButton>
-          <strike align="right">{promptDish[0] != null ? promptDish[0].price : ""}</strike>
-          <Typography variant="h6">{promptDish[0] != null ? promptDish[0].newPrice : ""}</Typography>
+          <strike align="right">${promptDish[0] != null ? promptDish[0].price : ""}</strike>
+          <Typography variant="h6">${promptDish[0] != null ? promptDish[0].newPrice : ""}</Typography>
 
           <IconButton className={clsx(classes.expand, { [classes.expandOpen]: expanded0 })}
             onClick={handleExpandClick0}
@@ -142,7 +144,7 @@ export default function Promotion(props) {
 
       <Card className={classes.card} style={{ margin: 'auto', marginTop: '2vh' }}>
         <CardActionArea>
-        <CardMedia
+          <CardMedia
             className={classes.media}
             image={promptDish[1] != null ? promptDish[1].image : ""}
             title={promptDish[1] != null ? promptDish[1].id : ""}
@@ -152,7 +154,7 @@ export default function Promotion(props) {
               {promptDish[1] != null ? promptDish[1].name : ""}
             </Typography>
             <Typography variant="body2" color="textSecondary" component="p" align="left">
-          </Typography>
+            </Typography>
           </CardContent>
         </CardActionArea>
         <CardActions>
@@ -164,8 +166,8 @@ export default function Promotion(props) {
           >
             <AddShoppingCartIcon />
           </IconButton>
-          <strike align="right">{promptDish[1] != null ? promptDish[1].price : ""}</strike>
-          <Typography variant="h6">{promptDish[1] != null ? promptDish[1].newPrice : ""}</Typography>
+          <strike align="right">${promptDish[1] != null ? promptDish[1].price : ""}</strike>
+          <Typography variant="h6">${promptDish[1] != null ? promptDish[1].newPrice : ""}</Typography>
           <IconButton className={clsx(classes.expand, {
             [classes.expandOpen]: expanded1,
           })}
@@ -177,7 +179,7 @@ export default function Promotion(props) {
         </CardActions>
         <Collapse in={expanded1} timeout="auto" unmountOnExit>
           <CardContent>
-          <Typography variant="body2" color="textSecondary" component="p" align="left">
+            <Typography variant="body2" color="textSecondary" component="p" align="left">
               {promptDish[0] != null ? promptDish[1].description : ""}
             </Typography>
           </CardContent>

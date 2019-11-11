@@ -28,8 +28,9 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-function handleAddButton(dishRef) {
-    koiSushiRestaurant.collection('tables').doc('t0').collection('cart')
+function handleAddButton(dishRef, tableID) {
+    // console.log(tableID)
+    koiSushiRestaurant.collection('tables').doc(tableID).collection('cart')
         .add({
             dishRef,
             number:1,
@@ -64,8 +65,9 @@ const Menu = (props) => {
         setDetailOpen(Math.random());
         setDetailDish(dishRef);
     };
-
+    console.log(props.tableID);
     return (
+
         <div >
             <TopAppBar />
             <div className={classes.root}>
@@ -86,7 +88,7 @@ const Menu = (props) => {
                                     subtitle={<span>${dish.price}</span>}
                                     actionIcon={
                                         <IconButton
-                                            onClick={() => handleAddButton(dish)}
+                                            onClick={() => handleAddButton(dish, props.table)}
                                             aria-label={`info about ${dish.name}`}
                                             className={classes.icon}
                                         >
