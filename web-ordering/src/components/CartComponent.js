@@ -95,13 +95,20 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-
+var testcart;
 var bccc;
-
 const Cart = (props) => {
+  var tablenumber = props.table;
 
   var overallPrice = 0;
-
+  // const cart = snapshot.docs.map(doc => doc.data());
+  // const testcart = koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart").docs.map(doc => doc.data());
+  koiSushiRestaurant.collection("tables").doc(props.table).collection("cart")
+      .onSnapshot(snapshot => {
+        testcart = snapshot.docs.map(doc => doc.data());
+      });
+  console.log(testcart);
+  console.log(props.cart);
   var oldnumber;
   const classes = useStyles();
   // const [value, setValue] = React.useState(0);
@@ -109,11 +116,19 @@ const Cart = (props) => {
   const [totalPricer, setTotalPricer] = React.useState(0);
   const [finishFilter, setFinishFilter] = React.useState(false);
 
+
+
+  const fCart = (num) => async dispatch => {
+    koiSushiRestaurant.collection("tables").doc(num).collection("cart")
+      .onSnapshot(snapshot => {
+        const cart = snapshot.docs.map(doc => doc.data());
+      });
+  }
+
   const updatepc = () => {
-    const prin = koiSushiRestaurant.collection("tables").doc("t0").collection("cart")
+    const prin = koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart")
       .get()
       .then(function (querySnapshot) {
-
         querySnapshot.forEach(function (doc) {
           //  console.log(parseInt(doc.data().dishRef.price) * parseInt(doc.data().number));
           overallPrice = parseInt(doc.data().dishRef.price) * parseInt(doc.data().number) + overallPrice;
@@ -128,7 +143,7 @@ const Cart = (props) => {
   }
 
 
-  koiSushiRestaurant.collection("tables").doc("t0").collection("cart")
+  koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart")
     .get()
     .then(function (querySnapshot) {
 
@@ -139,7 +154,7 @@ const Cart = (props) => {
 
         var nn = doc.id;
 
-        koiSushiRestaurant.collection("tables").doc("t0").collection("cart").doc(doc.id).update({ ID: nn });
+        koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart").doc(doc.id).update({ ID: nn });
 
         if (dic.has(doc.data().dishRef.id.path)) {
           qiangbimingdan.add(doc.data().ID);
@@ -148,7 +163,7 @@ const Cart = (props) => {
 
           // console.log(right);
           if (right != null) {
-            koiSushiRestaurant.collection("tables").doc("t0").collection("cart").doc(right).get().then(function (dddoc) {
+            koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart").doc(right).get().then(function (dddoc) {
               oldnumber = dddoc.data().number;
               console.log("dddd!" + oldnumber);
               handleAdd(parseInt(oldnumber), right);
@@ -160,7 +175,7 @@ const Cart = (props) => {
         }
         qiangbimingdan.forEach(function (kkk) {
           if (kkk != null) {
-            koiSushiRestaurant.collection("tables").doc("t0").collection("cart").doc(kkk).delete();
+            koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart").doc(kkk).delete();
           }
 
         })
@@ -173,15 +188,15 @@ const Cart = (props) => {
 
 
   const handleAdd = (newnum, idid) => {
-    koiSushiRestaurant.collection("tables").doc("t0").collection("cart").doc(idid).update({ number: newnum + 1 });
+    koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart").doc(idid).update({ number: newnum + 1 });
     updatepc();
   }
 
   const handleMin = (newnum, idid) => {
     if (newnum > 1) {
-      koiSushiRestaurant.collection("tables").doc("t0").collection("cart").doc(idid).update({ number: newnum - 1 });
+      koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart").doc(idid).update({ number: newnum - 1 });
     } else {
-      koiSushiRestaurant.collection("tables").doc("t0").collection("cart").doc(idid).delete();
+      koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart").doc(idid).delete();
     }
     updatepc();
 
@@ -197,10 +212,10 @@ const Cart = (props) => {
 
         const fa = String(Math.random());
         // const fa = "haha";
-        koiSushiRestaurant.collection("tables").doc("t0").collection("orders").doc(fa).set({});
+        koiSushiRestaurant.collection("tables").doc(tablenumber).collection("orders").doc(fa).set({});
         vv.forEach(function (doc) {
           var dishnum = doc.ID;
-          koiSushiRestaurant.collection("tables").doc("t0").collection("orders").doc(fa).update({
+          koiSushiRestaurant.collection("tables").doc(tablenumber).collection("orders").doc(fa).update({
     
             dishes: firebase.firestore.FieldValue.arrayUnion({
               name: doc.dishRef.name,
@@ -227,7 +242,7 @@ const Cart = (props) => {
     // koiSushiRestaurant.collection("tables").doc("t01").collection("orders").doc("neworder").set({haha:1});
     vv.forEach(function (doc) {
       console.log(doc.ID);
-      koiSushiRestaurant.collection("tables").doc("t0").collection("cart").doc(doc.ID).delete();
+      koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart").doc(doc.ID).delete();
 
     });
 
@@ -259,7 +274,7 @@ const Cart = (props) => {
     <div>
       <TopAppBar />
 
-      {Array.from(props.cart).map(dish => (
+      {Array.from(testcart).map(dish => (
         <Paper className={classes.paper}>
           <Grid container wrap="nowrap" spacing={2}>
             <Grid item className={classes.woyaoheng}>
@@ -336,10 +351,10 @@ const Cart = (props) => {
         <div>
           <ButtonGroup color="primary" size="large" aria-label="small outlined button group">
             <Button
-              onClick={() => handleOrder(props.cart)}
+              onClick={() => handleOrder(testcart)}
             > Confirm</Button>
             <Button
-              onClick={() => handleClear(props.cart)}
+              onClick={() => handleClear(testcart)}
             >Clear</Button>
           </ButtonGroup>
         </div>

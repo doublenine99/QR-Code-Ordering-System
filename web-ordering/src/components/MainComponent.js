@@ -23,7 +23,7 @@ const mapStateToProps = (state) => {
         orders: state.orders
     }
 }
-
+var tbl;
 const mapDispatchToProps = dispatch => ({
     fetchMenu: () => dispatch(fetchMenu()),
     fetchCategories: () => dispatch(fetchCategories()),
@@ -46,7 +46,9 @@ class Main extends Component {
 
         this.props.fetchMenu();
         this.props.fetchCategories();
-        this.props.fetchCart();
+        tbl = this.state.table;
+        console.log(this.state.tableID);
+        this.props.fetchCart(this.state.tableID);
         this.props.fetchOrders();
 
 
