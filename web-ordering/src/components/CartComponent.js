@@ -169,51 +169,6 @@ const Cart = (props) => {
     })
   updatepc();
 
-  // useEffect(() => {
-  //   const removeduplication = koiSushiRestaurant.collection("tables").doc("t0").collection("cart")
-  //     .get()
-  //     .then(function (querySnapshot) {
-
-  //       var qiangbimingdan = new Set();
-  //       var dic = new Map();
-
-  //       querySnapshot.forEach(function (doc) {
-
-  //         var nn = doc.id;
-
-  //         koiSushiRestaurant.collection("tables").doc("t0").collection("cart").doc(doc.id).update({ ID: nn });
-
-  //         if (dic.has(doc.data().dishRef.id.path)) {
-  //           qiangbimingdan.add(doc.data().ID);
-  //           var right = dic.get(doc.data().dishRef.id.path);
-
-
-  //           // console.log(right);
-  //           var i;
-  //           for (i = 0; i < doc.data().number; i++) {
-  //             if (right != null) {
-  //               koiSushiRestaurant.collection("tables").doc("t0").collection("cart").doc(right).get().then(function (dddoc) {
-  //                 oldnumber = dddoc.data().number;
-  //                 handleAdd(parseInt(oldnumber), right)
-  //               })
-  //             }
-  //           }
-  //         } else {
-  //           dic.set(doc.data().dishRef.id.path, doc.data().ID);
-  //           // console.log("put!");
-  //         }
-  //         qiangbimingdan.forEach(function (kkk) {
-  //           if (kkk != null) {
-  //             koiSushiRestaurant.collection("tables").doc("t0").collection("cart").doc(kkk).delete();
-  //           }
-
-  //         })
-  //       });
-  //     })
-  //   updatepc();
-  //   setFinishFilter(true);
-  // });
-
 
 
 
@@ -244,7 +199,6 @@ const Cart = (props) => {
         // const fa = "haha";
         koiSushiRestaurant.collection("tables").doc("t0").collection("orders").doc(fa).set({});
         vv.forEach(function (doc) {
-          console.log("dddddddddddddddddddddddddddddddddddddddddddfinma");
           var dishnum = doc.ID;
           koiSushiRestaurant.collection("tables").doc("t0").collection("orders").doc(fa).update({
     
@@ -252,7 +206,7 @@ const Cart = (props) => {
               name: doc.dishRef.name,
               price: doc.dishRef.price,
               quantity: doc.number,
-              dishid: doc.dishRef.id,
+    //           dishid: doc.dishRef.id,
             }),
     
             subtotal: totalPrice,
