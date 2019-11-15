@@ -149,13 +149,13 @@ export default function OrderHistory(props) {
                   </Typography>
                 <Divider variant="middle" /> */}
                 <Typography variant="body2" className={classes.body}>
-                  Subtotal {invoiceSubtotal}
+                  Subtotal: ${invoiceSubtotal}
                   </Typography>
                 <Typography variant="body2" className={classes.body}>
-                  Tax {invoiceTaxes}
+                  Tax: ${invoiceTaxes}
                   </Typography>
                 <Typography variant="subtitle2" className={classes.body}>
-                  Total {invoiceTotal}
+                  Total: ${invoiceTotal}
                   </Typography>
                 <Divider variant="middle" />
                 <div className={classes.button}>
@@ -207,8 +207,8 @@ export default function OrderHistory(props) {
                           <Table className={classes.table} aria-label="spanning table">
                             <TableBody>
                               <TableRow key={`dish-${dish.name}`}>
-                                <TableCell>{dish.name}</TableCell>
-                                <TableCell align="right">{dish.quantity}</TableCell>
+                                <TableCell width={100}>{dish.name}</TableCell>
+                                <TableCell width={50} align="right">{`${dish.quantity} ×`}</TableCell>
                                 <TableCell align="right">{`$${dish.price}`}</TableCell>
                               </TableRow>
                             </TableBody>
