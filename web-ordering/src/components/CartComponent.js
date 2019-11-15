@@ -106,6 +106,7 @@ const Cart = (props) => {
   const [totalPricer, setTotalPricer] = React.useState(0);
   const [finishFilter, setFinishFilter] = React.useState(false);
   const [open, setOpen] = React.useState(false);
+  const [open1, setOpen1] = React.useState(false);
   // const [testcart, setCart] = React.useState();
   
 
@@ -128,6 +129,16 @@ const Cart = (props) => {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+
+  const handleClickOpen1 = () => {
+    console.log("tablenumber");
+    setOpen1(true);
+  };
+
+  const handleClose1 = () => {
+    setOpen1(false);
   };
 
 
@@ -220,6 +231,7 @@ const Cart = (props) => {
 
 
   const handleClear = (vv) => {
+    handleClose1();
     vv.forEach(function (doc) {
       console.log(tablenumber);
       console.log(doc.ID);
@@ -318,7 +330,7 @@ const Cart = (props) => {
               onClick={handleClickOpen}
             > Confirm</Button>
             <Button
-              onClick={() => handleClear(testcart)}
+              onClick={handleClickOpen1}
             >Clear</Button>
           </ButtonGroup>
         </div>
@@ -326,6 +338,7 @@ const Cart = (props) => {
 
 
 
+      <div>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -346,8 +359,30 @@ const Cart = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
+      </div>
 
-
+      <div>
+      <Dialog
+        open={open1}
+        onClose1={handleClose1}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Confirm clear?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={()=> handleClear(testcart)} color="primary" autoFocus>
+            Confirm
+          </Button>
+          <Button onClick={handleClose1} color="primary" autoFocus>
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
+      </div>
 
 
     </div>
