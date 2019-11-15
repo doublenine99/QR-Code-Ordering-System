@@ -221,12 +221,14 @@ const Cart = (props) => {
               name: doc.dishRef.name,
               price: doc.dishRef.price,
               quantity: doc.number,
+              
     //           dishid: doc.dishRef.id,
             }),
     
             subtotal: totalPrice,
             taxrate: 0.05,
             ordertime: firebase.firestore.FieldValue.serverTimestamp(),
+            finished: false,
     
           });
     
@@ -272,7 +274,7 @@ const Cart = (props) => {
 
 
     <div>
-      <TopAppBar />
+      <TopAppBar table={props.table} />
 
       {Array.from(testcart).map(dish => (
         <Paper className={classes.paper}>
