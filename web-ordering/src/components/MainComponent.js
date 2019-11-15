@@ -7,13 +7,11 @@ import Cart from './CartComponent';
 import Promotion from './PromptDishComponent';
 import OrderHistory from './OrderHistoryComponent';
 import { createBrowserHistory } from 'history'
+import { koiSushiRestaurant } from '../Firebase/firebase'
 
 const history = createBrowserHistory();  // use to track the user url to identify the table
 
-
-// import { actions } from 'react-redux-form';
-// import { TransitionGroup, CSSTransition } from 'react-transition-group';
-
+var orders = [];
 const mapStateToProps = (state) => {
     return {
         menu: state.menu,
@@ -23,13 +21,21 @@ const mapStateToProps = (state) => {
         orders: state.orders
     }
 }
-var tbl;
+
 const mapDispatchToProps = dispatch => ({
     fetchMenu: () => dispatch(fetchMenu()),
     fetchCategories: () => dispatch(fetchCategories()),
-    fetchCart: () => dispatch(fetchCart()),
-    fetchOrders: () => dispatch(fetchOrders()),
 });
+const getOrders = (tablename) => {
+    koiSushiRestaurant.collection('tables').doc(tablename).collection('orders')
+        .onSnapshot(snapshot => {
+            orders = snapshot.docs.map(doc => doc.data());
+            // console.log("Received doc snapshot: ", (orders));
+        },
+            err => {
+                console.log(`Encountered error: ${err}`);
+            });
+};
 
 class Main extends Component {
     constructor(props) {
@@ -43,20 +49,20 @@ class Main extends Component {
 
         // console.log("qr: ", history.location.pathname)
         this.setState({ tableID: String(history.location.pathname).substring(1) });
-
+        // console.log(this.state.tableID);
         this.props.fetchMenu();
         this.props.fetchCategories();
-        tbl = this.state.table;
-        console.log(this.state.tableID);
-        this.props.fetchCart(this.state.tableID);
-        this.props.fetchOrders();
 
 
 
     }
-    // componentDidUpdate() {
-    //     console.log("state: ", this.state.tableID)
-    // }
+    componentDidUpdate() {
+        // console.log("state: ", this.state.tableID)
+        if (this.state.tableID != "") {
+            getOrders(this.state.tableID);
+        }
+
+    }
 
     render() {
         return (
@@ -65,7 +71,7 @@ class Main extends Component {
                     <Route path='/promotions' component={() => <Promotion table={this.state.tableID} menu={this.props.menu} />} />
                     <Route path='/cart' component={() => <Cart table={this.state.tableID} cart={this.props.cart} />} />
                     <Route path='/menu' component={() => <Menu table={this.state.tableID} menu={this.props.menu} currentCategory={this.props.currentCategory} />} />
-                    <Route path='/orderhistory' component={() => <OrderHistory table={this.state.tableID} orders={this.props.orders} />} />
+                    <Route path='/orderhistory' component={() => <OrderHistory table={this.state.tableID} orders={orders} />} />
                     <Redirect
                         to={{
                             pathname: '/promotions',

@@ -138,7 +138,7 @@ export default function OrderHistory(props) {
   return (
     
     <div>
-      <TopAppBar />
+      <TopAppBar table={props.table} />
       <div className={classes.root}>
         <div>
           <Grid container className={classes.gridcontainer}>
@@ -261,4 +261,3 @@ export default function OrderHistory(props) {
     </div>
   );
 }
-
