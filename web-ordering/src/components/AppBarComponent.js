@@ -17,6 +17,9 @@ import { fetchCategories, updateCategory } from '../redux/ActionCreators';
 import { Link } from 'react-router-dom';
 import { koiSushiRestaurant } from '../Firebase/firebase'
 
+import { createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/core/styles';
+
 const mapStateToProps = (state) => {
     return {
         categories: state.categories,
@@ -77,6 +80,22 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
+const theme = createMuiTheme({
+    palette: {
+      primary: {
+        light: '#ffbb93',
+        main: '#ff8a65',
+        dark: '#c75b39',
+        contrastText: '#fff',
+      },
+      secondary: {
+        light: '#d3b8ae',
+        main: '#a1887f',
+        dark: '#725b53',
+        contrastText: '#fff',
+      },
+    },
+  });
 
 export const TopAppBar = (props) => {
     const classes = useStyles();
@@ -105,6 +124,7 @@ export const TopAppBar = (props) => {
     }
 
     return (
+        <ThemeProvider theme={theme}>
         <div className={classes.grow}>
             <AppBar position="static">
                 <Toolbar>
@@ -140,7 +160,7 @@ export const TopAppBar = (props) => {
                         </Badge>
                     </IconButton>
 
-                    <Link to={`/orderhistory`}>
+                    <Link style={{ textDecoration: 'none', color: 'white' }} to={`/orderhistory`}>
                         <IconButton aria-label="Order History" color="inherit">
                             <Badge badgeContent={0} color="secondary">
                                 <HistoryIcon />
@@ -148,7 +168,7 @@ export const TopAppBar = (props) => {
                         </IconButton>
                     </Link>
 
-                    <Link to={`/cart`}>
+                    <Link style={{ textDecoration: 'none', color: 'white' }} to={`/cart`}>
                         <IconButton aria-label="Cart" color="inherit">
                             <Badge badgeContent={0} color="secondary">
                                 <ShoppingCartIcon />
@@ -164,6 +184,7 @@ export const TopAppBar = (props) => {
                 getCurrentCategoryFromSidebar={getCurrentCategoryFromSidebar}
             />
         </div>
+        </ThemeProvider>
 
     );
 

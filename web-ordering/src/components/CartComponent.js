@@ -25,6 +25,9 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 import { koiSushiMenu, koiSushiRestaurant, koiSushiCart } from '../Firebase/firebase';
 
+import { createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/core/styles';
+
 
 
 const useStyles = makeStyles(theme => ({
@@ -83,18 +86,22 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-
-
-
-
-
-
-
-
-
-
-
-
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      light: '#ffbb93',
+      main: '#ff8a65',
+      dark: '#c75b39',
+      contrastText: '#fff',
+    },
+    secondary: {
+      light: '#d3b8ae',
+      main: '#a1887f',
+      dark: '#725b53',
+      contrastText: '#fff',
+    },
+  },
+});
 
 
  var testcart;
@@ -248,6 +255,7 @@ const Cart = (props) => {
   }
 
   return (
+    <ThemeProvider theme={theme}>
     <div>
       <TopAppBar table={props.table} />
       {Array.from(testcart).map(dish => (
@@ -386,8 +394,7 @@ const Cart = (props) => {
 
 
     </div>
-
-
+    </ThemeProvider>
 
   );
 }

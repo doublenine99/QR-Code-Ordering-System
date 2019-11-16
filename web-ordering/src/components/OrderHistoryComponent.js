@@ -7,6 +7,7 @@ import Paper from "@material-ui/core/Paper";
 import Divider from "@material-ui/core/Divider";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
+import Box from '@material-ui/core/Box';
 import { Link } from 'react-router-dom';
 import List from "@material-ui/core/List";
 import ListSubheader from '@material-ui/core/ListSubheader';
@@ -16,6 +17,9 @@ import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 
 import moment from 'moment';
+
+import { createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -58,6 +62,23 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      light: '#ffbb93',
+      main: '#ff8a65',
+      dark: '#c75b39',
+      contrastText: '#fff',
+    },
+    secondary: {
+      light: '#d3b8ae',
+      main: '#a1887f',
+      dark: '#725b53',
+      contrastText: '#fff',
+    },
+  },
+});
+
 export default function OrderHistory(props) {
   const classes = useStyles();
   const orders = Array.from(props.orders);
@@ -82,6 +103,7 @@ export default function OrderHistory(props) {
   const invoiceTotal = invoiceTaxes + invoiceSubtotal;
 
   return (
+    <ThemeProvider theme={theme}>
     <div>
       <TopAppBar table={props.table} />
       <div className={classes.root}>
@@ -100,7 +122,7 @@ export default function OrderHistory(props) {
                   </Typography>
                 <Divider variant="middle" />
                 <div className={classes.button}>
-                  <Link to={`/menu`}>
+                  <Link style={{ textDecoration: 'none', color: 'white' }} to={`/menu`}>
                     <Button variant="contained" size="small" color="primary" className={classes.button}>
                       ADD MORE ITEMS
                     </Button>
@@ -118,12 +140,13 @@ export default function OrderHistory(props) {
           <Grid container className={classes.gridcontainer}>
             <Grid item xs={12}>
               <Paper className={classes.paper}>
-                {/* {unfinishedOrders.length == 0 ?
+                {unfinishedOrders.length == 0 &&
                 <Typography color="textSecondary" variant="body2" className={classes.title}>
-                  No History
+                  <Box fontStyle="italic" m={1}>
+                    No History
+                  </Box>
                 </Typography>
-                : null
-                } */}
+                }
                 <List className={classes.list} subheader={<li />}>
                   {Array.from(unfinishedOrders).map(order => (
                     <li key={`order-${order}`} className={classes.listSection}>
@@ -151,5 +174,6 @@ export default function OrderHistory(props) {
           
       </div>
     </div>
+    </ThemeProvider>
   );
 }
