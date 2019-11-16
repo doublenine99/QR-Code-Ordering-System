@@ -43,19 +43,46 @@ function handleAddButton(dishRef, tableID) {
 function filterMenuByCategory(menu, currentCategory) {
     var MenuAfterfiltered = [];
     var menu = Array.from(menu);
-
-    for (var dish of menu) {
-        for (var category of Array.from(dish.categories)) {
-            if (String(category).toLowerCase() == String(currentCategory).toLowerCase()) {
-                MenuAfterfiltered.push(dish)
-                break;
+    var k = currentCategory.charAt(0);
+    console.log(k);
+    if(currentCategory.charAt(0) != "#"){
+        for (var dish of menu) {
+            for (var category of Array.from(dish.categories)) {
+                if (String(category).toLowerCase() == String(currentCategory).toLowerCase()) {
+                    MenuAfterfiltered.push(dish)
+                    break;
+                }
             }
         }
+    }else{
+        var w = currentCategory.substring(1, currentCategory.length);
+        for (var dish of menu) {
+            var pos = String(dish.name).toLowerCase().search(String(w).toLowerCase());
+                if (pos !== -1) {
+                    MenuAfterfiltered.push(dish)
+                    break;
+                }     
+        };
     }
+    
     // console.log(MenuAfterfiltered);
     return MenuAfterfiltered;
-
 }
+
+
+// function filterMenuByName(menu, searchName) {
+//     var MenuAfterfiltered = [];
+//     var menu = Array.from(menu);
+//     for (var dish of menu) {
+//         var pos = String(dish.name).toLowerCase().search(String(searchName).toLowerCase());
+//             if (pos != -1) {
+//                 MenuAfterfiltered.push(dish)
+//                 break;
+//             }     
+//     };
+//     console.log(MenuAfterfiltered);
+//     return MenuAfterfiltered;
+// }
 
 const Menu = (props) => {
     const classes = useStyles();
@@ -76,7 +103,7 @@ const Menu = (props) => {
                     <GridListTile key="Subheader" cols={2} style={{ height: 'auto' }}>
                         <ListSubheader component="div">{props.currentCategory}</ListSubheader>
                     </GridListTile>
-                    {filterMenuByCategory(props.menu, props.currentCategory)
+                    {filterMenuByCategory(props.menu, props.currentCategory, true)
                         .map(dish => (
                             <GridListTile key={dish.id}>
                                 <img

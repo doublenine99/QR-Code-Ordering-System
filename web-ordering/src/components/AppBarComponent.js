@@ -105,7 +105,6 @@ export const TopAppBar = (props) => {
 
     const handleSideBarOpen = () => {
         setSideBarState(!SideBarOpen);
-
     }
     const handleAssistant = () => {
 
@@ -121,6 +120,11 @@ export const TopAppBar = (props) => {
     const getCurrentCategoryFromSidebar = (selectedCategory) => {
         props.updateCategory(selectedCategory);
 
+    }
+
+    const getCurrentSearchResultFromSidebar = (searchWord) => {
+        console.log(searchWord);
+        props.updateCategory("#"+searchWord);
     }
 
     return (
@@ -148,6 +152,7 @@ export const TopAppBar = (props) => {
                                 input: classes.inputInput,
                             }}
                             inputProps={{ 'aria-label': 'search' }}
+                            // onChange={()=>getCurrentSearchResultFromSidebar(value)}
                         />
                     </div>
                     <div className={classes.grow} />
