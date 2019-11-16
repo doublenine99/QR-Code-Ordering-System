@@ -82,24 +82,25 @@ const useStyles = makeStyles(theme => ({
 
 const theme = createMuiTheme({
     palette: {
-      primary: {
-        light: '#ffbb93',
-        main: '#ff8a65',
-        dark: '#c75b39',
-        contrastText: '#fff',
-      },
-      secondary: {
-        light: '#d3b8ae',
-        main: '#a1887f',
-        dark: '#725b53',
-        contrastText: '#fff',
-      },
+        primary: {
+            light: '#ffbb93',
+            main: '#ff8a65',
+            dark: '#c75b39',
+            contrastText: '#fff',
+        },
+        secondary: {
+            light: '#d3b8ae',
+            main: '#a1887f',
+            dark: '#725b53',
+            contrastText: '#fff',
+        },
     },
-  });
+});
 
 export const TopAppBar = (props) => {
     const classes = useStyles();
 
+    const [searchWord, setSearchWord] = React.useState("");
     const [SideBarOpen, setSideBarState] = React.useState(null);
 
 
@@ -122,73 +123,78 @@ export const TopAppBar = (props) => {
 
     }
 
-    const getCurrentSearchResultFromSidebar = (searchWord) => {
+    const getCurrentSearchResultFromSidebar = (input) => {
+        var word = input.target.value;
         console.log(searchWord);
-        props.updateCategory("#"+searchWord);
+        // var newinput = String(searchWord) + String(input.target.value);
+        setSearchWord(input.target.value);
+        console.log(searchWord);
+        props.updateCategory("#" + word);
     }
 
     return (
         <ThemeProvider theme={theme}>
-        <div className={classes.grow}>
-            <AppBar position="static">
-                <Toolbar>
-                    <IconButton
-                        onClick={handleSideBarOpen}
-                        edge="start"
-                        className={classes.menuButton}
-                        color="inherit"
-                        aria-label="open drawer"
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <div className={classes.search}>
-                        <div className={classes.searchIcon}>
-                            <SearchIcon />
+            <div className={classes.grow}>
+                <AppBar position="static">
+                    <Toolbar>
+                        <IconButton
+                            onClick={handleSideBarOpen}
+                            edge="start"
+                            className={classes.menuButton}
+                            color="inherit"
+                            aria-label="open drawer"
+                        >
+                            <MenuIcon />
+                        </IconButton>
+                        <div className={classes.search}>
+                            <div className={classes.searchIcon}>
+                                <SearchIcon />
+                            </div>
+                            <InputBase
+                                placeholder="Search…"
+                                classes={{
+                                    root: classes.inputRoot,
+                                    input: classes.inputInput,
+                                }}
+                                value={searchWord}
+                                inputProps={{ 'aria-label': 'search' }}
+                                onChange={input => getCurrentSearchResultFromSidebar(input)}
+                            />
                         </div>
-                        <InputBase
-                            placeholder="Search…"
-                            classes={{
-                                root: classes.inputRoot,
-                                input: classes.inputInput,
-                            }}
-                            inputProps={{ 'aria-label': 'search' }}
-                            // onChange={()=>getCurrentSearchResultFromSidebar(value)}
-                        />
-                    </div>
-                    <div className={classes.grow} />
-                    <IconButton
-                        onClick={handleAssistant}
-                        aria-label="Call Assistance"
-                        color="inherit">
-                        <Badge badgeContent={0} color="secondary">
-                            <EmojiPeopleIcon />
-                        </Badge>
-                    </IconButton>
-
-                    <Link style={{ textDecoration: 'none', color: 'white' }} to={`/orderhistory`}>
-                        <IconButton aria-label="Order History" color="inherit">
+                        <div className={classes.grow} />
+                        <IconButton
+                            onClick={handleAssistant}
+                            aria-label="Call Assistance"
+                            color="inherit">
                             <Badge badgeContent={0} color="secondary">
-                                <HistoryIcon />
+                                <EmojiPeopleIcon />
                             </Badge>
                         </IconButton>
-                    </Link>
 
-                    <Link style={{ textDecoration: 'none', color: 'white' }} to={`/cart`}>
-                        <IconButton aria-label="Cart" color="inherit">
-                            <Badge badgeContent={0} color="secondary">
-                                <ShoppingCartIcon />
-                            </Badge>
-                        </IconButton>
-                    </Link>
+                        <Link style={{ textDecoration: 'none', color: 'white' }} to={`/orderhistory`}>
+                            <IconButton aria-label="Order History" color="inherit">
+                                <Badge badgeContent={0} color="secondary">
+                                    <HistoryIcon />
+                                </Badge>
+                            </IconButton>
+                        </Link>
 
-                </Toolbar>
-            </AppBar>
-            <Sidebar
-                SideBarOpen={true}
-                categories={props.categories}
-                getCurrentCategoryFromSidebar={getCurrentCategoryFromSidebar}
-            />
-        </div>
+                        <Link style={{ textDecoration: 'none', color: 'white' }} to={`/cart`}>
+                            <IconButton aria-label="Cart" color="inherit">
+                                <Badge badgeContent={0} color="secondary">
+                                    <ShoppingCartIcon />
+                                </Badge>
+                            </IconButton>
+                        </Link>
+
+                    </Toolbar>
+                </AppBar>
+                <Sidebar
+                    SideBarOpen={true}
+                    categories={props.categories}
+                    getCurrentCategoryFromSidebar={getCurrentCategoryFromSidebar}
+                />
+            </div>
         </ThemeProvider>
 
     );

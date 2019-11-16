@@ -41,11 +41,12 @@ function handleAddButton(dishRef, tableID) {
     }
 }
 function filterMenuByCategory(menu, currentCategory) {
+    currentCategory = String(currentCategory);
     var MenuAfterfiltered = [];
     var menu = Array.from(menu);
-    var k = currentCategory.charAt(0);
+    var k = String(currentCategory).charAt(0);
     console.log(k);
-    if(currentCategory.charAt(0) != "#"){
+    if (currentCategory.charAt(0) != "#") {
         for (var dish of menu) {
             for (var category of Array.from(dish.categories)) {
                 if (String(category).toLowerCase() == String(currentCategory).toLowerCase()) {
@@ -54,35 +55,22 @@ function filterMenuByCategory(menu, currentCategory) {
                 }
             }
         }
-    }else{
-        var w = currentCategory.substring(1, currentCategory.length);
+    } else {
+        var w = String(currentCategory).substring(1);
+        console.log(JSON.stringify(w));
         for (var dish of menu) {
             var pos = String(dish.name).toLowerCase().search(String(w).toLowerCase());
-                if (pos !== -1) {
-                    MenuAfterfiltered.push(dish)
-                    break;
-                }     
+            if (pos !== -1) {
+                MenuAfterfiltered.push(dish)
+            }
         };
     }
-    
+
     // console.log(MenuAfterfiltered);
     return MenuAfterfiltered;
 }
 
 
-// function filterMenuByName(menu, searchName) {
-//     var MenuAfterfiltered = [];
-//     var menu = Array.from(menu);
-//     for (var dish of menu) {
-//         var pos = String(dish.name).toLowerCase().search(String(searchName).toLowerCase());
-//             if (pos != -1) {
-//                 MenuAfterfiltered.push(dish)
-//                 break;
-//             }     
-//     };
-//     console.log(MenuAfterfiltered);
-//     return MenuAfterfiltered;
-// }
 
 const Menu = (props) => {
     const classes = useStyles();
