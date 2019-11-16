@@ -111,7 +111,7 @@ export const TopAppBar = (props) => {
 
         if (props.table != null && String(props.table).charAt(0) === 't') {
             koiSushiRestaurant.collection('tables').doc(props.table)
-                .update({ needAssistance: true })
+                .update({ status: "NEEDTO_ASSIST" })
                 .then(console.log("set the assistance flag of", props.table, "to true"))
 
         }
