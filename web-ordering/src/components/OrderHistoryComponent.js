@@ -15,6 +15,15 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
+import { withStyles } from '@material-ui/core/styles';
+import Dialog from '@material-ui/core/Dialog';
+import MuiDialogTitle from '@material-ui/core/DialogTitle';
+import MuiDialogContent from '@material-ui/core/DialogContent';
+
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
 
 import moment from 'moment';
 
@@ -62,6 +71,28 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const styles = theme => ({
+  root: {
+    margin: 0,
+    padding: theme.spacing(2),
+  },
+});
+
+const DialogTitle = withStyles(styles)(props => {
+  const { children, classes, ...other } = props;
+  return (
+    <MuiDialogTitle>
+      <Typography variant="h6" align='center'>{children}</Typography>
+    </MuiDialogTitle>
+  );
+});
+
+const DialogContent = withStyles(theme => ({
+  root: {
+    padding: theme.spacing(2),
+  },
+}))(MuiDialogContent);
+
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -71,9 +102,9 @@ const theme = createMuiTheme({
       contrastText: '#fff',
     },
     secondary: {
-      light: '#d3b8ae',
-      main: '#a1887f',
-      dark: '#725b53',
+      light: '#cfcfcf',
+      main: '#9e9e9e',
+      dark: '#707070',
       contrastText: '#fff',
     },
   },
@@ -83,6 +114,24 @@ export default function OrderHistory(props) {
   const classes = useStyles();
   const orders = Array.from(props.orders);
   const unfinishedOrders = orders.filter(order => order.finished == false);
+
+  const [open, setOpen] = React.useState(false);
+  const [fullWidth] = React.useState(true);
+  const [scroll, setScroll] = React.useState('paper');
+
+  const handleClickOpen = scrollType => () => {
+    setOpen(true);
+    setScroll(scrollType);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const [value, setValue] = React.useState('female');
+
+  const handleChange = event => {
+    setValue(event.target.value);
+  };
 
   function subtotal(orders) {
     var subtotal = 0;
@@ -104,54 +153,72 @@ export default function OrderHistory(props) {
 
   return (
     <ThemeProvider theme={theme}>
-    <div>
-      <TopAppBar table={props.table} />
-      <div className={classes.root}>
-        <div>
-          <Grid container className={classes.gridcontainer}>
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                <Typography variant="body2" className={classes.body}>
-                  Subtotal: ${invoiceSubtotal}
+      <div>
+        <TopAppBar table={props.table} />
+        <div className={classes.root}>
+          <div>
+            <Grid container className={classes.gridcontainer}>
+              <Grid item xs={12}>
+                <Paper className={classes.paper}>
+                  <Typography variant="body2" className={classes.body}>
+                    Subtotal: ${invoiceSubtotal}
                   </Typography>
-                <Typography variant="body2" className={classes.body}>
-                  Tax: ${invoiceTaxes}
+                  <Typography variant="body2" className={classes.body}>
+                    Tax: ${invoiceTaxes}
                   </Typography>
-                <Typography variant="body2" className={classes.body}>
-                  Total: ${invoiceTotal}
+                  <Typography variant="body2" className={classes.body}>
+                    Total: ${invoiceTotal}
                   </Typography>
-                <Divider variant="middle" />
-                <div className={classes.button}>
-                  <Link style={{ textDecoration: 'none', color: 'white' }} to={`/menu`}>
-                    <Button variant="contained" size="small" color="primary" className={classes.button}>
-                      ADD MORE ITEMS
+                  <Divider variant="middle" />
+                  <div className={classes.button}>
+                    <Link style={{ textDecoration: 'none', color: 'white' }} to={`/menu`}>
+                      <Button variant="contained" size="small" color="primary" className={classes.button}>
+                        ADD MORE ITEMS
                     </Button>
-                  </Link>
-                  <Button variant="contained" size="small" color="primary" className={classes.button}>
-                    MAKE A PAYMENT
+                    </Link>
+                    <Button variant="contained" size="small" color="primary" className={classes.button} onClick={handleClickOpen('paper')}>
+                      MAKE A PAYMENT
                     </Button>
-                </div>
-              </Paper>
+                    <Dialog fullWidth={fullWidth} scroll={scroll} aria-labelledby="dialog-title" open={open}>
+                      <DialogTitle disableTypography="true" id="dialog-title">
+                        <Typography variant="subtitle1">
+                          CHOOSE PAYMENT METHOD
+                        </Typography>
+                      </DialogTitle>
+                      <DialogContent dividers>
+                        <FormControl component="fieldset" className={classes.formControl}>
+                          <RadioGroup aria-label="payment" name="payment" value={value} onChange={handleChange}>
+                            <FormControlLabel value="Venmo" control={<Radio />} label="Venmo" />
+                            <FormControlLabel value="Paypal" control={<Radio />} label="Paypal" />
+                          </RadioGroup>
+                        </FormControl>
+                      </DialogContent>
+                      <Button autoFocus size="large" color="primary" onClick={handleClose}>
+                        PAY
+                      </Button>
+                    </Dialog>
+                  </div>
+                </Paper>
+              </Grid>
             </Grid>
-          </Grid>
-        </div>
-        <Divider variant="middle" />
-        <div>
-          <Grid container className={classes.gridcontainer}>
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                {unfinishedOrders.length == 0 &&
-                <Typography color="textSecondary" variant="body2" className={classes.title}>
-                  <Box fontStyle="italic" m={1}>
-                    No History
+          </div>
+          <Divider variant="middle" />
+          <div>
+            <Grid container className={classes.gridcontainer}>
+              <Grid item xs={12}>
+                <Paper className={classes.paper}>
+                  {unfinishedOrders.length == 0 &&
+                    <Typography color="textSecondary" variant="body2" className={classes.title}>
+                      <Box fontStyle="italic" m={1}>
+                        No History
                   </Box>
-                </Typography>
-                }
-                <List className={classes.list} subheader={<li />}>
-                  {Array.from(unfinishedOrders).map(order => (
-                    <li key={`order-${order}`} className={classes.listSection}>
-                      <ul className={classes.ul}>
-                        <ListSubheader>{moment(order.ordertime.toDate()).calendar()}</ListSubheader>
+                    </Typography>
+                  }
+                  <List className={classes.list} subheader={<li />}>
+                    {Array.from(unfinishedOrders).map(order => (
+                      <li key={`order-${order}`} className={classes.listSection}>
+                        <ul className={classes.ul}>
+                          <ListSubheader>{moment(order.ordertime.toDate()).calendar()}</ListSubheader>
                           {Array.from(order.dishes).map(dish => (
                             <Table className={classes.table} aria-label="spanning table">
                               <TableBody>
@@ -163,17 +230,17 @@ export default function OrderHistory(props) {
                               </TableBody>
                             </Table>
                           ))}
-                      </ul>
-                    </li>
-                  ))}
-                </List>
-              </Paper>
+                        </ul>
+                      </li>
+                    ))}
+                  </List>
+                </Paper>
+              </Grid>
             </Grid>
-          </Grid>
+          </div>
+
         </div>
-          
       </div>
-    </div>
     </ThemeProvider>
   );
 }
