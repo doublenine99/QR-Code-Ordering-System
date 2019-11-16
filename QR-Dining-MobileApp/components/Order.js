@@ -14,7 +14,7 @@ class Order extends React.Component {
     }
   }
   componentDidMount() {
-    this.loadOrders();
+    //this.loadOrders();
   }
   componentDidUpdate(prevProps) {
     // Typical usage (don't forget to compare props):
@@ -103,7 +103,7 @@ class Order extends React.Component {
 
   render() {
     // console.log("aaa", this.state.orders)
-    // return <Text />
+    this.loadOrders();
     if (this.state.orders != null && this.state.orders.length != 0) {
       data = this.state.orders.filter(order => order.finished === this.props.filter);
       if(data.length === 0) return <View></View>
