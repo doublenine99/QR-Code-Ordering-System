@@ -1,6 +1,6 @@
-import React, {Component, useState } from 'react';
+import React, { Component, useState } from 'react';
 //import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity, KeyboardAvoidingView} from 'react-native';
-import {YellowBox} from 'react-native';
+import { YellowBox } from 'react-native';
 import Login from './screens/Login';
 import Signup from './screens/Signup';
 import Profile from './screens/Profile';
@@ -13,7 +13,9 @@ import { createAppContainer } from 'react-navigation';
 import * as firebase from 'firebase';
 import SearchPage from './screens/SearchPage';
 
-// firebase.initializeApp(firebaseConfig);
+import { AppRegistry } from 'react-native';
+import { Provider as PaperProvider } from 'react-native-paper';
+
 YellowBox.ignoreWarnings(['Setting a timer']);
 
 const AppNavigator = createStackNavigator({
@@ -22,7 +24,7 @@ const AppNavigator = createStackNavigator({
   Main: MainTab,
   Profile: Profile,
   Menu: Menu,
-},{
+}, {
   initialRouteName: 'Login',
   defaultNavigationOptions: {
     headerStyle: {
@@ -37,6 +39,13 @@ const AppContainer = createAppContainer(AppNavigator);
 
 export default class App extends React.Component {
   render() {
-    return <AppContainer/>;
+    //return <AppContainer/>;
+    return (
+        <PaperProvider>
+        <AppContainer />
+      </PaperProvider>
+      // <AppContainer />
+    );
   }
 }
+AppRegistry.registerComponent('App', () => App);

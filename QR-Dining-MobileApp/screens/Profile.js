@@ -1,15 +1,22 @@
 import React, {Component} from 'react';
-import {ScrollView,Button, Dimensions, StyleSheet, View, Text, Image, TouchableOpacity,Modal} from 'react-native';
+import {ScrollView,Button, Dimensions, StyleSheet, Alert,View, Text, Image, TouchableOpacity,Modal} from 'react-native';
 import { FontAwesome, MaterialIcons, Ionicons } from '@expo/vector-icons';
 import ProfileElement from '../components/ProfileElement';
 import {koiSushiRestaurant} from '../config';
 import * as firebase from 'firebase';
+import { withNavigation } from 'react-navigation';
 
 
-export default class Profile extends Component{
+class Profile extends Component{
 
   componentDidMount() {
     this.getPhone();
+  }
+
+  handleLogOut() {
+    let {navigate} = this.props.navigation;
+    firebase.auth().signOut().then(() => navigate('Login'));
+    
   }
 
   state = {
@@ -22,7 +29,6 @@ export default class Profile extends Component{
       //console.log(doc.data().phoneNumber)
     })
   }
-
   
   render(){
       let user = firebase.auth().currentUser;
@@ -34,18 +40,14 @@ export default class Profile extends Component{
                 </View>
                 <Text style={styles.displayName}>{"Welcome "+user.displayName+"!"}</Text>
                 <View style={styles.menuICons}>
-                    <TouchableOpacity style={styles.menuIcon}>
+                    <TouchableOpacity style={styles.menuIcon} onPress={() => {this.props.navigation.navigate('Menu')}}>
                         <FontAwesome name="search" size={50} color="rgb(236, 19, 19)" />
-                        <Text style={{fontWeight: "bold", color: "white"}} onPress={() => {this.props.navigation.navigate('Menu')}}>MENU</Text>
+                        <Text style={{fontWeight: "bold", color: "white"}}>MENU</Text>
                     </TouchableOpacity>
-                    {/* <TouchableOpacity style={styles.menuIcon}>
-                        <MaterialIcons name="favorite" size={50} color="rgb(236, 19, 19)"/>
-                        <Text style={{fontWeight: "bold", color: "white"}}>FAVORITES</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.menuIcon}>
+                    <TouchableOpacity style={styles.menuIcon} onPress={() => {Alert.alert('Tel: 608-555-555')}}>
                         <FontAwesome name="plus" size={50} color="rgb(236, 19, 19)"/>
-                        <Text style={{fontWeight: "bold", color: "white"}}>ADD NEW</Text>
-                    </TouchableOpacity> */}
+                        <Text style={{fontWeight: "bold", color: "white"}}>ASSISTANCE</Text>
+                    </TouchableOpacity>
                 </View>
               </View>
               <ProfileElement label="Name" value={user.displayName}/>
@@ -53,7 +55,8 @@ export default class Profile extends Component{
               {this.state.phoneNumber != null ? 
               <ProfileElement label="phoneNumber" value={this.state.phoneNumber}/>
               : console.log("nonono")}
-              <ProfileElement label="Password" value={user.password}/>
+              <ProfileElement label="Password" value={user.password} />
+                <Button title="Logout" style={{flex: 1, width: 20}} onPress={() => this.handleLogOut()}/>
             </ScrollView>
               
       );
@@ -120,3 +123,5 @@ const styles = StyleSheet.create({
 Profile.navigationOptions = {
   header: null,
 };
+
+export default Profile;

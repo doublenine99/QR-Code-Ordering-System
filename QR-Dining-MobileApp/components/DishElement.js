@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
-import {ScrollView,Button,TextInput,CheckBox, TouchableHighlight, Switch, Dimensions, StyleSheet, View, Text, Image, TouchableOpacity,Modal} from 'react-native';
+import {ScrollView,Button,TextInput,CheckBox,Alert, TouchableHighlight, Switch, Dimensions, StyleSheet, View, Text, Image, TouchableOpacity,Modal} from 'react-native';
 import { FontAwesome, MaterialIcons, Ionicons } from '@expo/vector-icons';
 // import DishElement from '../components/Dish';
 import * as firebase from 'firebase';
 import {koiSushiMenu, koiSushiRestaurant} from '../config';
-
 
 export default class DishElement extends Component{
 
@@ -12,15 +11,16 @@ export default class DishElement extends Component{
         super(props);
         this.fetchTable();
         this.fetchCategory();
+
     }
 
     state = {
         name: "", price:0,categories: [], description:"", 
         id:this.props.id,
         restauCatogories:[],
-        checkeds :[],
+        checkeds :{},
         //image:""
-        //, promptPrice:0,
+        promptPrice:0,
     };
         
     fetchTable=()=>{
@@ -33,15 +33,16 @@ export default class DishElement extends Component{
             this.setState({price:doc.data().price});
             this.setState({categories:doc.data().categories});
             this.setState({description:doc.data().description});
-            //this.setState({promptPrice:doc.data().promptPrice});
+            if (focus.data().newPrice.exists){
+                
+                this.setState({promptPrice:doc.data().newPrice});
+            }
             // this.setState({image:doc.data().image});
             }
             else {
                 console.log("No such doc");
             }
         });
-
-        
     }
 
     fetchCategory(){
@@ -50,16 +51,39 @@ export default class DishElement extends Component{
         .then(
             (doc) => {
               this.setState({restauCatogories:doc.data().categories});
+        }).then(()=>{
+            
+            temp = {};
+            this.state.restauCatogories.forEach((e) => {
+                temp[e] = false;
+            });
+            this.state.categories.forEach((e) => {
+                if ( e in temp ) {
+                    temp[e] = true;
+                }
+            });
+
+            this.setState({checkeds: temp});
         });
     }
 
     updateAll =() => {
         koiSushiMenu.doc(this.state.id).update({name: this.state.name});
         koiSushiMenu.doc(this.state.id).update({price: this.state.price});
-        koiSushiMenu.doc(this.state.id).update({categories: this.state.categories});
+        koiSushiMenu.doc(this.state.id).update({newPrice: this.state.promptPrice});
         koiSushiMenu.doc(this.state.id).update({description: this.state.description});
-        // koiSushiMenu.doc(this.state.id).update({promptPrice: this.state.promptPrice});
-        // koiSushiMenu.doc(this.state.id).update({image: this.state.image});
+        
+        this.updateCategories();// koiSushiMenu.doc(this.state.id).update({promptPrice: this.state.promptPrice});
+    }
+
+    updateCategories =()=>{
+        list = [];
+        Object.entries(this.state.checkeds).forEach(([key,value]) => {
+            if (value===true) {
+                list.push(key);
+            }
+        });
+        koiSushiMenu.doc(this.state.id).update({categories: list});
     }
 
     change2Num = (n) => {
@@ -68,29 +92,27 @@ export default class DishElement extends Component{
 
     createCheckBox(){
         checkboxlist=[];
-        temp = [];
-        this.state.restauCatogories.forEach((e) => {
-            temp.push({[e]:false})
-        });
-        this.state.categories.forEach((e) => {
-            temp.push({[e]:true})
-        });
-        //this.setState({checkeds: temp});
 
-        this.state.restauCatogories.map((cb, key) => {
+        this.state.restauCatogories.forEach((e) => {
+            temp = this.state.checkeds;
             checkboxlist.push(
-                 <View style={{flexDirection:'row'}, key={cb}}>
-                    <CheckBox
-                        key={cb}
-                       value={temp[cb]}
-                        //onValueChange={() => {temp.push({[e]:!temp[e]});
-                         //                     this.setState({checkeds: temp})}}
-                    />
-                    <Text key={key}>{cb}</Text>
-                </View>
-        )});
+                <View style={{flexDirection:'row'}}>
+                    <Text>{e}</Text>
+                   <Switch
+
+                       value={temp[e]}
+                       onValueChange={() => {temp[e] = !temp[e];
+                                            if (e === "prompt" && temp[e] === true){
+                                                Alert.alert("Don't forget to set Prompt Price!");
+                                            }
+                                            this.setState({checkeds: temp})}}
+                   />
+               </View>
+            );
+        });
         return checkboxlist;
     }
+
     render(){
         return(
             //<View style={{justifyContent: 'center', alignItems:'center',backgroundColor:'yellow', padding:10}}>
@@ -100,20 +122,21 @@ export default class DishElement extends Component{
                 <TextInput placeholder = {this.state.name} style={styles.label} onChangeText={name => this.setState({name})}/>
                 <Text>Price</Text>
                 <TextInput placeholder = {this.state.price.toString()} stle={styles.label} onChangeText={price => this.change2Num(price)}/>
-                {/* <Text>Prompt Price</Text>
-                <TextInput placeholder = {this.state.promptPrice} style={styles.label} onChangeText={promptPrice => this.setState({promptPrice})}/> */}
+                <Text>Prompt Price</Text>
+                <TextInput placeholder = {this.state.promptPrice.toString()} style={styles.label} onChangeText={promptPrice => this.setState({promptPrice: Number(promptPrice)})}/>
                 <Text>Category: </Text>
                 {this.state.restauCatogories != null ? this.createCheckBox() : "aa"}
                 <Text>Description</Text>
                 <TextInput placeholder = {this.state.description} style={styles.label} onChangeText={description => this.setState({description})}/>
-                <Text>image</Text>
 
                 <View style={{flexDirection:'row'}}>
-                    <TouchableHighlight onPress={() => {this.updateAll();this.props.setModalVisible()}}>
-                    <Text style={{fontSize:20, paddingBottom: 10}}>SAVE</Text>
+                    <TouchableHighlight 
+                    // style={styles.container}
+                    onPress={() => {this.updateAll();this.props.setModalVisible()}}>
+                    <Text style={{fontSize:20, padding: 20}}>Save</Text>
                     </TouchableHighlight>
                     <TouchableHighlight onPress={() => {this.props.setModalVisible()}}>
-                    <Text style={{fontSize:20}}>CANCEL</Text>
+                    <Text style={{fontSize:20, padding:20}}>Cancel</Text>
                     </TouchableHighlight>
                 </View>
             </View>

@@ -12,7 +12,14 @@ import Orders from './../screens/Orders';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
-  default: {},
+  //default: {},
+  defaultNavigationOptions: {
+    headerStyle: {
+      backgroundColor: '#fff',
+      width: 0,
+      height: 0
+    }
+  }
 });
 
 const HomeStack = createStackNavigator(
@@ -24,6 +31,12 @@ const HomeStack = createStackNavigator(
 
 HomeStack.navigationOptions = {
   tabBarLabel: 'Tables',
+  headerStyle: {
+      backgroundColor: '#fff',
+      width: 0,
+      height: 0
+    }
+  ,
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -50,6 +63,7 @@ OrderStack.navigationOptions = {
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-person' : 'md-options'} />
   ),
+  headerMode: 'none'
 };
 
 OrderStack.path = '';
@@ -58,8 +72,9 @@ const ProfileStack = createStackNavigator(
   {
     Profile: Profile,
   },
-  config
+  config,
 );
+
 
 ProfileStack.navigationOptions = {
   tabBarLabel: 'Profile',
@@ -67,6 +82,7 @@ ProfileStack.navigationOptions = {
     <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-person' : 'md-options'} />
   ),
 };
+
 
 ProfileStack.path = '';
 

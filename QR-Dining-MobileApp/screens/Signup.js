@@ -41,7 +41,16 @@ export default class Signup extends Component{
             this.props.navigation.navigate('Login')
           });
         })
-        .catch(error => this.setState({ errorMessage: error.message }));
+        .catch(error => {
+          Alert.alert(
+            error.code,
+            error.message,
+            [
+              {text: 'OK', onPress: () => console.log('OK Pressed')},
+            ],
+            {cancelable: false},
+          );
+        });
     }
 
   }

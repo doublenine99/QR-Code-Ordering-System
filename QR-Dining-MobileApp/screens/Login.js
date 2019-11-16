@@ -7,7 +7,14 @@ export default class Login extends Component{
     email: '',
     password: ''
   };
-
+  componentDidMount() {
+    const { navigate } = this.props.navigation;
+    firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+            navigate('Main');
+        } 
+    })
+}
   handleSignIn(){
     firebase.auth()
     .signInWithEmailAndPassword(this.state.email, this.state.password)
@@ -26,13 +33,35 @@ export default class Login extends Component{
     });
     
   }
+
+  handleForgetPassword(){
+    firebase.auth().sendPasswordResetEmail(this.state.email).then(() => {
+      Alert.alert(
+        'Email Sent!',
+        'A password re-sent email has been sent to your email address'
+      )
+    }).catch(
+      (error) => {
+        Alert.alert(
+          error.code,
+          error.message === 'The email address is badly formatted' ? 'Please enter a valid email address' : error.message,
+          [
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+          ],
+          {cancelable: false},
+        );
+      }
+    )
+  }
+
   render(){
     return (
         <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-          <Image source={require('./../utilities/logo.png')} style={styles.logo}/>
+          <Image source={require('./../utilities/logo_2.png')} style={styles.logo}/>
           <View style={styles.inputBoxStyle}><TextInput placeholder="Username" style={styles.inputTextStyle} placeholderTextColor="rgba(255, 255, 255, 0.3)" onChangeText={email => this.setState({ email })}/></View>
           <View style={styles.inputBoxStyle}><TextInput placeholder="Password" style={styles.inputTextStyle} placeholderTextColor="rgba(255, 255, 255, 0.3)" secureTextEntry onChangeText={password => this.setState({ password })}/></View>
           <TouchableOpacity style={styles.loginButton} onPress={this.handleSignIn.bind(this)}><Text style={styles.loginText}>Log In</Text></TouchableOpacity>
+          <TouchableOpacity style={styles.loginButton} onPress={this.handleForgetPassword.bind(this)}><Text style={styles.loginText}>Forgot Password</Text></TouchableOpacity>
           <View><Text style={styles.signupMessage}>Don't have an account? <Text style={styles.signUpLink} onPress={() => this.props.navigation.navigate('Signup')}>Sign Up Here!</Text></Text></View>
         </KeyboardAvoidingView>
       );
@@ -66,7 +95,6 @@ export default class Login extends Component{
         width: "50%",
         color: "white",
         paddingVertical: 5,
-        marginBottom: 40,
         marginTop: 15,
         borderRadius: 20
       },
@@ -77,10 +105,11 @@ export default class Login extends Component{
         fontWeight: "bold"
       },
       signupMessage: {
+        marginTop: 20,
         color: "white",
       },
       logo:{
-        height: "40%",
+        marginBottom: 20
       },
     });
   

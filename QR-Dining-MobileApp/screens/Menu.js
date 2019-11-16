@@ -1,40 +1,72 @@
 import React, { Component } from 'react';
-import { ScrollView, Button, CheckBox, Dimensions, StyleSheet, SafeAreaView, FlatList, View, Text, Image, TouchableOpacity, Modal } from 'react-native';
+import {
+  ScrollView,
+  // Button, 
+  CheckBox, Dimensions, StyleSheet, SafeAreaView, FlatList, View, Text, Image, TouchableOpacity, Modal
+} from 'react-native';
 import { FontAwesome, MaterialIcons, Ionicons } from '@expo/vector-icons';
 import * as firebase from 'firebase';
-import { koiSushiMenu,koiSushiRestaurant } from '../config';
+import { koiSushiMenu, koiSushiRestaurant } from '../config';
 import Dish from '../components/Dish';
+import { Button, Paragraph, Dialog, Portal } from 'react-native-paper';
+import { Checkbox } from 'react-native-paper';
+import { TextInput } from 'react-native-paper';
 
-// TODO: upload currentIndex to firebase, and read from there
 export default class Menu extends Component {
-
-  componentDidMount() {
-    this.getAllID();
+  fetchCategories = () => {
+    koiSushiRestaurant
+      .get()
+      .then(
+        (doc) => {
+          this.setState({ restauCatogories: doc.data().categories });
+          // console.log("aaa", this.state.restauCatogories)
+        });
   }
-  state = {
-    currentIndex: 10, DATA: []
-  };
 
-
-  fetchCategory(){
+  getCurIndex =()=>{
     koiSushiRestaurant
     .get()
     .then(
-        (doc) => {
-          this.setState({restauCatogories:doc.data().categories});
-    });
-} 
+      (doc) => {
+        this.setState({ currentIndex: doc.data().index });
+      });
+  }
+
+  componentDidMount() {
+    this.getCurIndex();
+    this.getAllID();
+    this.fetchCategories()
+  }
+
+  state = {
+    currentIndex: 0, DATA: [],
+    newCategory: null,
+    categoryDialogOpen: false,
+    DATA: [],
+    restauCatogories: []
+  };
+
+  hideCategoryDialog = () => {
+    this.setState({ categoryDialogOpen: false })
+  }
 
   createNew = () => {
     koiSushiMenu.doc(this.state.currentIndex.toString())
       .set({
-        image: "", name: this.state.currentIndex.toString(), price: 0, categories: ["All"], description: "",
-        id: this.state.currentIndex.toString(), availability: true,
+        image: "", name: this.state.currentIndex.toString(), price: 0, categories: ["all"], description: "",
+        id: this.state.currentIndex.toString(), availability: true,newPrice:0
       })
       .then(
+        koiSushiRestaurant.update({index: this.state.currentIndex+1})
+      ).then(
         this.setState({ currentIndex: (this.state.currentIndex + 1) })
-
       );
+      
+     this.getAllID();
+  }
+
+  deleteDish = (DishId) => {
+    koiSushiMenu.doc(DishId).delete();
     this.getAllID();
   }
 
@@ -50,39 +82,110 @@ export default class Menu extends Component {
       })
   }
 
-  editCategory = () => {
+  addCategory = () => {
+    if (this.state.newCategory != null) {
+      koiSushiRestaurant
+        .update({
+          categories: firebase.firestore.FieldValue.arrayUnion(this.state.newCategory)
+        })
+        .then(
+          this.fetchCategories()
+        )
+        .then(
+          this.setState({ newCategory: null })
+        )
+    }
 
   }
+
+  delteCategory = (category) => {
+    if (category != null) {
+      koiSushiRestaurant
+        .update({
+          categories: firebase.firestore.FieldValue.arrayRemove(category)
+        })
+        .then(
+          this.fetchCategories()
+        )
+    }
+  }
+  renderCategory = (category) => {
+    // this.fetchCategories();
+    return (
+      <View>
+        <View style={{ flexDirection: 'row' }}>
+          <Button>
+            <Text>
+              {category}
+            </Text>
+          </Button>
+          <Button
+            icon="delete"
+            onPress={() => this.delteCategory(category)}
+          />
+        </View>
+      </View>
+
+    )
+  }
+
 
   render() {
     return (
       <View >
         <Text style={{ alignSelf: 'center', fontWeight: 'bold', fontSize: 20 }}> MENU </Text>
-        <ScrollView horizontal={true}>
-          {/* <TouchableOpacity onPress={() => this.fetchCategory()}>
-            <Text>Add Category</Text>
-          </TouchableOpacity> */}
-          <Button title='All' />
-          <Button title='Dissert' />
-          <Button title='Drink' />
-          <Button title='EDIT CATEGORY' onPress={() => { this.editCategory() }}/>
-        </ScrollView>
+        <Button icon="playlist-edit"
+          onPress={() => { this.setState({ categoryDialogOpen: true }) }}
+        >Edit Category</Button>
+        <Portal>
+          <Dialog
+            visible={this.state.categoryDialogOpen}
+            onDismiss={this.hideCategoryDialog}>
+            <Dialog.Title>All Categories</Dialog.Title>
+            <Dialog.Content>
+              <FlatList
+                data={this.state.restauCatogories}
+                renderItem={({ item, index }) => this.renderCategory(item, index)}
+                keyExtractor={(item, index) => index.toString()}
+              />
+              <TextInput
+                label='Enter New Category'
+                value={this.state.newCategory}
+                onChangeText={inputCategory => this.setState({ newCategory: inputCategory })}
+              />
+
+
+              <Button
+                icon="plus"
+                onPress={this.addCategory}
+              >Add</Button>
+
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={this.hideCategoryDialog}>Done</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
 
         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingBottom: 40 }}>
-          <Button title='Back' onPress={() => { this.props.navigation.navigate('Profile') }} />
-          <Button title='Add New Dish' onPress={() => { this.createNew() }} />
+          <Button icon='step-backward'
+            onPress={() => { this.props.navigation.navigate('Profile') }}
+          >Back</Button>
+          <Button icon='plus'
+            onPress={() => { this.createNew() }}
+          >Add New Dish</Button>
         </View>
 
-        <View  style={{ height:700}}>
+        <View style={{ height: 700 }}>
           <FlatList
             data={this.state.DATA}
-            renderItem={({ item }) => <Dish id={item.toString()} modalVisible={false} />}
+            renderItem={({ item }) => <Dish id={item.toString()} modalVisible={false} deleteDish={this.deleteDish} />}
             keyExtractor={item => item}
             numColumns={2}
           />
         </View>
 
-      </View>
+      </View >
 
     );
   }

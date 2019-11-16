@@ -13,7 +13,8 @@ export default class ProfileElement extends Component{
 // }
     state = {
         editMode: false,
-        value: this.props.value
+        value: this.props.value,
+        new_val: this.props.value
     };
     handlePencil = () => {
         this.setState({editMode: true});
@@ -21,29 +22,47 @@ export default class ProfileElement extends Component{
 
     handleTick = () => {
         let user = firebase.auth().currentUser;
-        if(this.label == "Email"){
-            user.updateEmail(this.state.value)
+        if(this.props.label == "Email"){
+            user.updateEmail(this.state.new_val).then(() => {
+                this.setState({value: this.state.new_val});
+                this.setState({editMode: false});
+                alert(this.props.label+" updated!");
+              });
         }
-        else if(this.label == "Name"){
-            user.updateDisplayName(this.state.value)
+        else if(this.props.label == "Name"){
+            user.updateProfile({displayName: this.state.new_val}).then(() => {
+                this.setState({value: this.state.new_val});
+                this.setState({editMode: false});
+                alert(this.props.label+" updated!");
+            }).catch(() => {alert("Invalid "+this.props.label);});
         }
-        else if(this.label == "Password"){
-            user.updatePassword(this.state.value)
+        else if(this.props.label == "Password"){
+            user.updatePassword(this.state.new_val).then(() => {
+                this.setState({value: this.state.new_val});
+                this.setState({editMode: false});
+                alert(this.props.label+" updated!");
+            });
         }
-        else if(this.label == "phoneNumber"){
-            koiSushiRestaurant.update({phoneNumber: this.state.value});
-            //user.updatePhoneNumber(this.state.value)
+        else if(this.props.label == "phoneNumber"){
+            koiSushiRestaurant.update({phoneNumber: this.state.new_val});
+            user.updatePhoneNumber(this.state.value)
+            .catch((error) => {alert("Invalid "+this.props.label);})
+            .then(() => {
+                this.setState({value: this.state.new_val});
+                this.setState({editMode: false});
+                alert(this.props.label+" updated!");
+            });
         }
-        this.setState({editMode: false});
+        
     };
 
     render(){
-        let element = this.props.value ? <Text style={styles.value}>{this.props.value}</Text> : 
+        let element = this.props.label != "Password" ? <Text style={styles.value}>{this.state.value}</Text> : 
                         <Entypo name="lock" color="red" size={25} />;
         element = this.state.editMode ? <TextInput placeholder={this.props.value ? this.state.value : "Enter New Password"} 
                                              placeholderTextColor="rgba(0, 0, 0, 0.3)" style={{fontSize: 22,color: "black"}} 
                                              secureTextEntry={this.props.label == "Password"? true : false} 
-                                             onChangeText={value => this.setState({value})}/> : element;
+                                             onChangeText={val => this.setState({new_val: val})}/> : element;
         let icon = this.state.editMode ? "check-circle" : "pencil";
         return(
             <View style={styles.container} behavior="padding" enabled>
