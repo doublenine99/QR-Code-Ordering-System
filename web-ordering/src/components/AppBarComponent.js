@@ -15,6 +15,7 @@ import Sidebar from './SideBarComponent';
 import { connect } from 'react-redux';
 import { fetchCategories, updateCategory } from '../redux/ActionCreators';
 import { Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { koiSushiRestaurant } from '../Firebase/firebase'
 
 import { createMuiTheme } from '@material-ui/core/styles';
@@ -79,7 +80,6 @@ const useStyles = makeStyles(theme => ({
         },
     }
 }));
-
 const theme = createMuiTheme({
     palette: {
         primary: {
@@ -97,39 +97,40 @@ const theme = createMuiTheme({
     },
 });
 
+var redFlag = false;  // flag to indicate redirecting after enter search bar
 export const TopAppBar = (props) => {
     const classes = useStyles();
 
     const [searchWord, setSearchWord] = React.useState("");
     const [SideBarOpen, setSideBarState] = React.useState(null);
 
-
     const handleSideBarOpen = () => {
-        setSideBarState(!SideBarOpen);
+        setSideBarState(Math.random());
     }
     const handleAssistant = () => {
-
         if (props.table != null && String(props.table).charAt(0) === 't') {
             koiSushiRestaurant.collection('tables').doc(props.table)
                 .update({ status: "NEEDTO_ASSIST" })
                 .then(console.log("set the assistance flag of", props.table, "to true"))
-
         }
-
     }
 
     const getCurrentCategoryFromSidebar = (selectedCategory) => {
         props.updateCategory(selectedCategory);
-
     }
 
-    const getCurrentSearchResultFromSidebar = (input) => {
-        var word = input.target.value;
-        console.log(searchWord);
-        // var newinput = String(searchWord) + String(input.target.value);
-        setSearchWord(input.target.value);
-        console.log(searchWord);
-        props.updateCategory("#" + word);
+    const getCurrentSearchResultFromSidebar = (searchWord) => {
+        redFlag = true;
+        setSearchWord(null);
+        props.updateCategory("#" + searchWord);
+    }
+    const handleUserInput = (input) => {
+        setSideBarState(null);
+        setSearchWord(input);
+    }
+    if (redFlag) {
+        redFlag = false;
+        return <Redirect to="/menu" />;
     }
 
     return (
@@ -146,10 +147,12 @@ export const TopAppBar = (props) => {
                         >
                             <MenuIcon />
                         </IconButton>
+
                         <div className={classes.search}>
                             <div className={classes.searchIcon}>
                                 <SearchIcon />
                             </div>
+
                             <InputBase
                                 placeholder="Search…"
                                 classes={{
@@ -158,7 +161,12 @@ export const TopAppBar = (props) => {
                                 }}
                                 value={searchWord}
                                 inputProps={{ 'aria-label': 'search' }}
-                                onChange={input => getCurrentSearchResultFromSidebar(input)}
+                                onKeyPress={event => {
+                                    if (event.key === 'Enter') {
+                                        getCurrentSearchResultFromSidebar(event.target.value)
+                                    }
+                                }}
+                                onChange={event => handleUserInput(event.target.value)}
                             />
                         </div>
                         <div className={classes.grow} />
@@ -190,15 +198,13 @@ export const TopAppBar = (props) => {
                     </Toolbar>
                 </AppBar>
                 <Sidebar
-                    SideBarOpen={true}
+                    SideBarOpen={SideBarOpen}
                     categories={props.categories}
                     getCurrentCategoryFromSidebar={getCurrentCategoryFromSidebar}
                 />
             </div>
         </ThemeProvider>
-
     );
-
 }
 
 export default (connect(mapStateToProps, mapDispatchToProps)(TopAppBar));

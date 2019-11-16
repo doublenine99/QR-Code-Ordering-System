@@ -12,8 +12,6 @@ import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import { koiSushiRestaurant } from '../Firebase/firebase'
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
-import { height } from "@material-ui/system";
-import { Divider } from "@material-ui/core";
 import { Box } from '@material-ui/core';
 
 const styles = theme => ({

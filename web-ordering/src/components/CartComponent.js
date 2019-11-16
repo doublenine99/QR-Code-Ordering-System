@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import TopAppBar from './AppBarComponent';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
@@ -23,7 +22,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import { koiSushiMenu, koiSushiRestaurant, koiSushiCart } from '../Firebase/firebase';
+import { koiSushiRestaurant } from '../Firebase/firebase';
 
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/core/styles';
@@ -104,7 +103,7 @@ const theme = createMuiTheme({
 });
 
 
- var testcart;
+var testcart;
 var bccc;
 const Cart = (props) => {
   var tablenumber = props.table;
@@ -115,11 +114,11 @@ const Cart = (props) => {
   const [open, setOpen] = React.useState(false);
   const [open1, setOpen1] = React.useState(false);
   // const [testcart, setCart] = React.useState();
-  
+
 
   var overallPrice = 0;
   // const cart = snapshot.docs.map(doc => doc.data());
-  // const testcart = koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart").docs.map(doc => doc.data());
+
   koiSushiRestaurant.collection("tables").doc(props.table).collection("cart")
     .onSnapshot(snapshot => {
       testcart = snapshot.docs.map(doc => doc.data());
@@ -217,7 +216,7 @@ const Cart = (props) => {
   const handleOrder = (vv) => {
     const fa = String(Math.random());
     handleClose();
-   console.log(tablenumber);
+    console.log(tablenumber);
     koiSushiRestaurant.collection("tables").doc(tablenumber).collection("orders").doc(fa).set({});
     vv.forEach(function (doc) {
       var dishnum = doc.ID;
@@ -256,144 +255,133 @@ const Cart = (props) => {
 
   return (
     <ThemeProvider theme={theme}>
-    <div>
-      <TopAppBar table={props.table} />
-      {Array.from(testcart).map(dish => (
-        <Paper className={classes.paper}>
-          <Grid container wrap="nowrap" spacing={2}>
-            <Grid item className={classes.woyaoheng}>
-              <img
-                width={120}
-                height={120}
-                src={dish.dishRef.image}
-                alt={dish.dishRef.name}
-              />
-            </Grid>
-            <Grid item xs zeroMinWidth>
-              <Typography noWrap>{dish.dishRef.name}</Typography>
-              <Grid container   >
-                <div className={classes.container} >
-                  <ListItem className={classes.hoho}>
-                    <ListItemText primary={"Number:" + "   " + parseInt(dish.number)} />
-                  </ListItem>
-                  <ListItem className={classes.hoho}>
-                    <ListItemText primary={"Price:" + "   " + dish.dishRef.price} />
-                  </ListItem>
-
-                  <div>
-                    <ButtonGroup color="primary" size="medium" aria-label="small outlined button group">
-                      <IconButton
-                        onClick={() => handleAdd(parseInt(dish.number), dish.ID)}
-                        >
-                        <AddIcon />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => handleMin(parseInt(dish.number), dish.ID)}
-                      >
-                        <RemoveIcon />
-                      </IconButton>
-                    </ButtonGroup>
-                  </div>
-                </div>
-
+      <div>
+        <TopAppBar table={props.table} />
+        {Array.from(testcart).map(dish => (
+          <Paper className={classes.paper}>
+            <Grid container wrap="nowrap" spacing={2}>
+              <Grid item className={classes.woyaoheng}>
+                <img
+                  width={120}
+                  height={120}
+                  src={dish.dishRef.image}
+                  alt={dish.dishRef.name}
+                />
               </Grid>
+              <Grid item xs zeroMinWidth>
+                <Typography noWrap>{dish.dishRef.name}</Typography>
+                <Grid container   >
+                  <div className={classes.container} >
+                    <ListItem className={classes.hoho}>
+                      <ListItemText primary={"Number:" + "   " + parseInt(dish.number)} />
+                    </ListItem>
+                    <ListItem className={classes.hoho}>
+                      <ListItemText primary={"Price:" + "   $" + dish.dishRef.price} />
+                    </ListItem>
+
+                    <div>
+                      <ButtonGroup color="primary" size="medium" aria-label="small outlined button group">
+                        <IconButton
+                          onClick={() => handleAdd(parseInt(dish.number), dish.ID)}
+                        >
+                          <AddIcon />
+                        </IconButton>
+                        <IconButton
+                          onClick={() => handleMin(parseInt(dish.number), dish.ID)}
+                        >
+                          <RemoveIcon />
+                        </IconButton>
+                      </ButtonGroup>
+                    </div>
+                  </div>
+
+                </Grid>
+              </Grid>
+
             </Grid>
-
-          </Grid>
-        </Paper>
+          </Paper>
 
 
 
-      ))}
+        ))}
 
 
-
-      <div>
-        <List className={classes.root}>
-          <ListItem >
-
-            <ListItemText primary="Before tax" secondary={totalPrice} />
-          </ListItem>
-
-
-          <ListItem>
-            <ListItemText primary="After tax" secondary={totalPricer} />
-          </ListItem>
-
-
-        </List>
-
-      </div>
-
-
-
-
-
-      <div>
 
         <div>
-          <ButtonGroup color="primary" size="large" aria-label="small outlined button group">
-            <Button
-              // onClick={() => handleOrder(testcart)}
-              onClick={handleClickOpen}
-            > Confirm</Button>
-            <Button
-              onClick={handleClickOpen1}
-            >Clear</Button>
-          </ButtonGroup>
+          <List className={classes.root}>
+            <ListItem >
+              <ListItemText primary="Before tax" secondary={"$" + totalPrice} />
+            </ListItem>
+            <ListItem>
+              <ListItemText primary="After tax" secondary={"$" + totalPricer} />
+            </ListItem>
+          </List>
         </div>
+        <div>
+
+          <div>
+            <ButtonGroup color="primary" size="large" aria-label="small outlined button group">
+              <Button
+                // onClick={() => handleOrder(testcart)}
+                onClick={handleClickOpen}
+              > Confirm</Button>
+              <Button
+                onClick={handleClickOpen1}
+              >Clear</Button>
+            </ButtonGroup>
+          </div>
+        </div>
+
+
+
+        <div>
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">{"Confirm this order?"}</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => handleOrder(testcart)} color="primary" autoFocus>
+                Confirm
+          </Button>
+              <Button onClick={handleClose} color="primary" autoFocus>
+                No
+          </Button>
+            </DialogActions>
+          </Dialog>
+        </div>
+
+        <div>
+          <Dialog
+            open={open1}
+            onClose1={handleClose1}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">{"Confirm clear?"}</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => handleClear(testcart)} color="primary" autoFocus>
+                Confirm
+          </Button>
+              <Button onClick={handleClose1} color="primary" autoFocus>
+                No
+          </Button>
+            </DialogActions>
+          </Dialog>
+        </div>
+
+
       </div>
-
-
-
-      <div>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{"Confirm this order?"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={()=> handleOrder(testcart)} color="primary" autoFocus>
-            Confirm
-          </Button>
-          <Button onClick={handleClose} color="primary" autoFocus>
-            No
-          </Button>
-        </DialogActions>
-      </Dialog>
-      </div>
-
-      <div>
-      <Dialog
-        open={open1}
-        onClose1={handleClose1}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{"Confirm clear?"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={()=> handleClear(testcart)} color="primary" autoFocus>
-            Confirm
-          </Button>
-          <Button onClick={handleClose1} color="primary" autoFocus>
-            No
-          </Button>
-        </DialogActions>
-      </Dialog>
-      </div>
-
-
-    </div>
     </ThemeProvider>
 
   );

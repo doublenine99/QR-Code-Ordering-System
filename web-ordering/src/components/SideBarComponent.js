@@ -6,7 +6,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import StarsIcon from '@material-ui/icons/Stars';
-import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router-dom';
 
 export default class SideBar extends Component {
@@ -19,9 +18,11 @@ export default class SideBar extends Component {
     }
   }
 
-  componentWillReceiveProps() {  // activate drawer from app bar
-    this.setState({ left: true });
-    // console.log("sidebar: receive click from appbar", this.state);
+  componentWillReceiveProps(nextProps) {  // activate drawer from app bar
+    if (nextProps.SideBarOpen) {
+      this.setState({ left: true });
+    }
+    // console.log("sidebar: receive click from appbar", this.props.SideBarOpen);
   }
   toggleDrawer = (open) => event => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -77,8 +78,5 @@ export default class SideBar extends Component {
     );
   }
 }
-
-
-
 
 

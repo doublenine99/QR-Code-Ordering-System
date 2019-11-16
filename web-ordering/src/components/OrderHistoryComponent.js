@@ -79,7 +79,7 @@ const styles = theme => ({
 });
 
 const DialogTitle = withStyles(styles)(props => {
-  const { children, classes, ...other } = props;
+  const { children } = props;
   return (
     <MuiDialogTitle>
       <Typography variant="h6" align='center'>{children}</Typography>
@@ -113,7 +113,7 @@ const theme = createMuiTheme({
 export default function OrderHistory(props) {
   const classes = useStyles();
   const orders = Array.from(props.orders);
-  const unfinishedOrders = orders.filter(order => order.finished == false);
+  const unfinishedOrders = orders.filter(order => order.finished === false);
 
   const [open, setOpen] = React.useState(false);
   const [fullWidth] = React.useState(true);
@@ -207,7 +207,7 @@ export default function OrderHistory(props) {
             <Grid container className={classes.gridcontainer}>
               <Grid item xs={12}>
                 <Paper className={classes.paper}>
-                  {unfinishedOrders.length == 0 &&
+                  {unfinishedOrders.length === 0 &&
                     <Typography color="textSecondary" variant="body2" className={classes.title}>
                       <Box fontStyle="italic" m={1}>
                         No History

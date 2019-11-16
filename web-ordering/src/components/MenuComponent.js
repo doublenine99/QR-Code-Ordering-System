@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react';
-
+import React, { useState, } from 'react';
 import TopAppBar from './AppBarComponent';
-
 import { makeStyles } from '@material-ui/core/styles';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
@@ -43,7 +41,7 @@ function handleAddButton(dishRef, tableID) {
 function filterMenuByCategory(menu, currentCategory) {
     currentCategory = String(currentCategory);
     var MenuAfterfiltered = [];
-    var menu = Array.from(menu);
+    var menu = Array.from(menu).filter(dish => dish.availability === true);
     var k = String(currentCategory).charAt(0);
     console.log(k);
     if (currentCategory.charAt(0) != "#") {
@@ -57,7 +55,7 @@ function filterMenuByCategory(menu, currentCategory) {
         }
     } else {
         var w = String(currentCategory).substring(1);
-        console.log(JSON.stringify(w));
+        // console.log(JSON.stringify(w));
         for (var dish of menu) {
             var pos = String(dish.name).toLowerCase().search(String(w).toLowerCase());
             if (pos !== -1) {
@@ -65,7 +63,6 @@ function filterMenuByCategory(menu, currentCategory) {
             }
         };
     }
-
     // console.log(MenuAfterfiltered);
     return MenuAfterfiltered;
 }
@@ -81,7 +78,7 @@ const Menu = (props) => {
         setDetailOpen(Math.random());
         setDetailDish(dishRef);
     };
-    console.log(props.tableID);
+    // console.log(props.tableID);
     return (
 
         <div >
@@ -95,7 +92,7 @@ const Menu = (props) => {
                         .map(dish => (
                             <GridListTile key={dish.id}>
                                 <img
-                                    src={dish.image != null ? dish.image : "https://firebasestorage.googleapis.com/v0/b/qr-code-ordering-system.appspot.com/o/koisushiMenu%2Fdefault-food-image.jpg?alt=media&token=e6958bef-eae1-4144-b670-e717768d518f"}
+                                    src={dish.image !== "" ? dish.image : "https://firebasestorage.googleapis.com/v0/b/qr-code-ordering-system.appspot.com/o/koisushiMenu%2Fdefault-food-image.jpg?alt=media&token=e6958bef-eae1-4144-b670-e717768d518f"}
                                     alt={dish.name}
                                     onClick={() => RenderDishDetail(dish)}
                                 />

@@ -5,7 +5,7 @@ import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
-import Button from '@material-ui/core/Button';
+// import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import TopAppBar from './AppBarComponent';
 import Collapse from '@material-ui/core/Collapse';
@@ -13,8 +13,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import clsx from 'clsx';
 import IconButton from '@material-ui/core/IconButton';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
-import CardHeader from '@material-ui/core/CardHeader';
-import Paper from '@material-ui/core/Paper';
+// import CardHeader from '@material-ui/core/CardHeader';
+// import Paper from '@material-ui/core/Paper';
 
 import { Box } from '@material-ui/core';
 import { koiSushiRestaurant } from '../Firebase/firebase'
@@ -61,7 +61,7 @@ function handleAddButton(dishRef, tableID) {
 }
 function filterMenuByCategory(menu) {
   var MenuAfterfiltered = [];
-  var menu = Array.from(menu);
+  menu = Array.from(menu);
 
   for (var dish of menu) {
     for (var category of Array.from(dish.categories)) {

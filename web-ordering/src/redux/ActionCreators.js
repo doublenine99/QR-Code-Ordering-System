@@ -1,7 +1,7 @@
 /**
  * all the actions should be create from here
  */
-import { koiSushiMenu, koiSushiRestaurant, koiSushiCart } from '../Firebase/firebase';
+import { koiSushiMenu, koiSushiRestaurant } from '../Firebase/firebase';
 import * as ActionTypes from './ActionTypes';
 
 // define menu page actions
@@ -40,33 +40,33 @@ export const updateCategory = (category) => ({
   payload: category
 });
 
-// define cart page actions
-export const fetchCart = () => async dispatch => {
-  koiSushiRestaurant.collection("tables").doc("t0").collection("cart")
-    .onSnapshot(snapshot => {
-      const cart = snapshot.docs.map(doc => doc.data());
-      // console.log("Received doc snapshot: " + (docSnapshot.data().categories));
-      dispatch({
-        type: ActionTypes.FETCH_CART,
-        payload: cart
-      });
-    },
-      err => {
-        console.log(`Encountered error: ${err}`);
-      });
-}
-// define orderhistory page actions
-export const fetchOrders = () => async dispatch => {
-  koiSushiRestaurant.collection('tables').doc('t0').collection('orders')
-    .onSnapshot(snapshot => {
-      const orders = snapshot.docs.map(doc => doc.data());
-      console.log("Received doc snapshot: ", (orders));
-      dispatch({
-        type: ActionTypes.FETCH_ORDERS,
-        payload: orders
-      });
-    },
-      err => {
-        console.log(`Encountered error: ${err}`);
-      });
-};
+// // define cart page actions
+// export const fetchCart = () => async dispatch => {
+//   koiSushiRestaurant.collection("tables").doc("t0").collection("cart")
+//     .onSnapshot(snapshot => {
+//       const cart = snapshot.docs.map(doc => doc.data());
+//       // console.log("Received doc snapshot: " + (docSnapshot.data().categories));
+//       dispatch({
+//         type: ActionTypes.FETCH_CART,
+//         payload: cart
+//       });
+//     },
+//       err => {
+//         console.log(`Encountered error: ${err}`);
+//       });
+// }
+// // define orderhistory page actions
+// export const fetchOrders = () => async dispatch => {
+//   koiSushiRestaurant.collection('tables').doc('t0').collection('orders')
+//     .onSnapshot(snapshot => {
+//       const orders = snapshot.docs.map(doc => doc.data());
+//       console.log("Received doc snapshot: ", (orders));
+//       dispatch({
+//         type: ActionTypes.FETCH_ORDERS,
+//         payload: orders
+//       });
+//     },
+//       err => {
+//         console.log(`Encountered error: ${err}`);
+//       });
+// };
