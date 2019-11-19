@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
-import { Switch, Route, Redirect, Router, withRouter } from 'react-router-dom';
+import { BrowserRouter, Route, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { fetchMenu, fetchCategories, fetchCart, fetchOrders } from '../redux/ActionCreators';
+import { fetchMenu, fetchCategories } from '../redux/ActionCreators';
 import Menu from './MenuComponent';
 import Cart from './CartComponent';
 import Promotion from './PromptDishComponent';
 import OrderHistory from './OrderHistoryComponent';
-import { createBrowserHistory } from 'history'
-import { koiSushiRestaurant } from '../Firebase/firebase'
 
-const history = createBrowserHistory();  // use to track the user url to identify the table
+import { koiSushiRestaurant } from '../Firebase/firebase'
 
 var orders = [];
 const mapStateToProps = (state) => {
@@ -39,48 +37,37 @@ const getOrders = (tablename) => {
 
 class Main extends Component {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
-            tableID: ""
+            restaurant: this.props.pathArray[0],
+            table: this.props.pathArray[1]
         }
+        console.log("(Main)props tableID: ", this.state.table)
     }
 
     componentDidMount() {
-
-        // console.log("qr: ", history.location.pathname)
-        this.setState({ tableID: String(history.location.pathname).substring(1) });
-        // console.log(this.state.tableID);
         this.props.fetchMenu();
         this.props.fetchCategories();
-
-
-
     }
     componentDidUpdate() {
-        // console.log("state: ", this.state.tableID)
-        if (this.state.tableID != "") {
-            getOrders(this.state.tableID);
+        if (this.state.table != "") {
+            getOrders(this.state.table);
         }
-
     }
-
     render() {
         return (
             <div>
-                <Router history={this.props.history}>
-                    <Route path='/promotions' component={() => <Promotion table={this.state.tableID} menu={this.props.menu} />} />
-                    <Route path='/cart' component={() => <Cart table={this.state.tableID} cart={this.props.cart} />} />
-                    <Route path='/menu' component={() => <Menu table={this.state.tableID} menu={this.props.menu} currentCategory={this.props.currentCategory} />} />
-                    <Route path='/orderhistory' component={() => <OrderHistory table={this.state.tableID} orders={orders} />} />
+                <BrowserRouter >
+                    <Route path={'/' + this.state.restaurant + '/' + this.state.table + '/promotions'} component={() => <Promotion restaurant={this.state.restaurant} table={this.state.table} menu={this.props.menu} />} />
+                    <Route path={'/' + this.state.restaurant + '/' + this.state.table + '/cart'} component={() => <Cart restaurant={this.state.restaurant} table={this.state.table} cart={this.props.cart} />} />
+                    <Route path={'/' + this.state.restaurant + '/' + this.state.table + '/menu'} component={() => <Menu restaurant={this.state.restaurant} table={this.state.table} menu={this.props.menu} currentCategory={this.props.currentCategory} />} />
+                    <Route path={'/' + this.state.restaurant + '/' + this.state.table + '/orderHistory'} component={() => <OrderHistory restaurant={this.state.restaurant} table={this.state.table} orders={orders} />} />
                     <Redirect
-                        to={{
-                            pathname: '/promotions',
-                        }}
+                        to={'/' + this.state.restaurant + '/' + this.state.table + '/promotions'}
                     />
-                </Router>
+                </BrowserRouter>
             </div>
         );
     }
 }
-
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Main));

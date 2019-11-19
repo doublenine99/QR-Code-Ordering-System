@@ -63,11 +63,11 @@ export default class SideBar extends Component {
 
   render() {
     if (this.state.selectPromotions == true) {
-      return <Redirect to="/promotions" />
+      return <Redirect to={'/' + this.props.restaurant + '/' + this.props.table + '/promotions'} />
     }
     // back to menu page first if click sidebar on other page
-    if (window.location.pathname !== "/menu" && this.state.left != false) {
-      return <Redirect to="/menu" />
+    if (window.location.pathname !== ('/' + this.props.restaurant + '/' + this.props.table + '/menu') && this.state.left != false) {
+      return <Redirect to={'/' + this.props.restaurant + '/' + this.props.table + '/menu'} />
     }
     return (
       <div>

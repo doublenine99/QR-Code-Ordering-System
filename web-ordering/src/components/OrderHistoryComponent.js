@@ -154,7 +154,7 @@ export default function OrderHistory(props) {
   return (
     <ThemeProvider theme={theme}>
       <div>
-        <TopAppBar table={props.table} />
+        <TopAppBar restaurant={props.restaurant} table={props.table} />
         <div className={classes.root}>
           <div>
             <Grid container className={classes.gridcontainer}>

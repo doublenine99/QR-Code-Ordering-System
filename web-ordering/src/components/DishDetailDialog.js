@@ -61,8 +61,8 @@ const DialogActions = withStyles(theme => ({
 }))(MuiDialogActions);
 
 
-function handleAddButton(dishRef) {
-  koiSushiRestaurant.collection('tables').doc('t0').collection('cart')
+function handleAddButton(dishRef, table) {
+  koiSushiRestaurant.collection('tables').doc(table).collection('cart')
     .add({
       dishRef
     }
@@ -115,7 +115,7 @@ export default function DishDetailDialog(props) {
             <Box m={2} fontFamily="Monospace" fontStyle="italic" textAlign="left">
               <Typography gutterBottom >${props.dish.price}</Typography></Box>
             <IconButton
-              onClick={() => handleAddButton(props.dish)}
+              onClick={() => handleAddButton(props.dish, props.table)}
             >
               <AddShoppingCartIcon />
             </IconButton>

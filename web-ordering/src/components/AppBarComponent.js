@@ -130,7 +130,7 @@ export const TopAppBar = (props) => {
     }
     if (redFlag) {
         redFlag = false;
-        return <Redirect to="/menu" />;
+        return <Redirect to={'/' + props.restaurant + '/' + props.table + '/menu'} />;
     }
 
     return (
@@ -179,7 +179,7 @@ export const TopAppBar = (props) => {
                             </Badge>
                         </IconButton>
 
-                        <Link style={{ textDecoration: 'none', color: 'white' }} to={`/orderhistory`}>
+                        <Link style={{ textDecoration: 'none', color: 'white' }} to={'/' + props.restaurant + '/' + props.table + '/orderHistory'}>
                             <IconButton aria-label="Order History" color="inherit">
                                 <Badge badgeContent={0} color="secondary">
                                     <HistoryIcon />
@@ -187,7 +187,7 @@ export const TopAppBar = (props) => {
                             </IconButton>
                         </Link>
 
-                        <Link style={{ textDecoration: 'none', color: 'white' }} to={`/cart`}>
+                        <Link style={{ textDecoration: 'none', color: 'white' }} to={'/' + props.restaurant + '/' + props.table + '/cart'}>
                             <IconButton aria-label="Cart" color="inherit">
                                 <Badge badgeContent={0} color="secondary">
                                     <ShoppingCartIcon />
@@ -198,6 +198,8 @@ export const TopAppBar = (props) => {
                     </Toolbar>
                 </AppBar>
                 <Sidebar
+                    restaurant={props.restaurant}
+                    table={props.table}
                     SideBarOpen={SideBarOpen}
                     categories={props.categories}
                     getCurrentCategoryFromSidebar={getCurrentCategoryFromSidebar}

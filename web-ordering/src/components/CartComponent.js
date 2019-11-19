@@ -256,7 +256,7 @@ const Cart = (props) => {
   return (
     <ThemeProvider theme={theme}>
       <div>
-        <TopAppBar table={props.table} />
+        <TopAppBar restaurant={props.restaurant} table={props.table} />
         {Array.from(testcart).map(dish => (
           <Paper className={classes.paper}>
             <Grid container wrap="nowrap" spacing={2}>

@@ -82,7 +82,7 @@ const Menu = (props) => {
     return (
 
         <div >
-            <TopAppBar table={props.table} />
+            <TopAppBar restaurant={props.restaurant} table={props.table} />
             <div className={classes.root}>
                 <GridList cellHeight={150} className={classes.gridList}>
                     <GridListTile key="Subheader" cols={2} style={{ height: 'auto' }}>
@@ -112,7 +112,7 @@ const Menu = (props) => {
                             </GridListTile>
                         ))}
                 </GridList>
-                <DishDetailDialog open={detailOpen} dish={detailDish} />
+                <DishDetailDialog open={detailOpen} dish={detailDish} restaurant={props.restaurant} table={props.table} />
             </div>
         </div>
     );

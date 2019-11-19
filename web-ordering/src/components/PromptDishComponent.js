@@ -92,7 +92,7 @@ export default function Promotion(props) {
   return (
     <div>
 
-      <TopAppBar table={props.table} />
+      <TopAppBar restaurant={props.restaurant} table={props.table} />
       <Box m={2} fontFamily="Monospace" fontStyle="italic" textAlign="left" >
         <Typography gutterBottom variant="h5" component='h1'>Today's hot deal</Typography></Box>
       <Card className={classes.card} style={{ margin: 'auto', marginTop: '2vh' }}>
