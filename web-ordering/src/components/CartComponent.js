@@ -171,26 +171,25 @@ const Cart = (props) => {
       querySnapshot.forEach(function (doc) {
         var nn = doc.id;
         koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart").doc(doc.id).update({ ID: nn });
-        console.log(doc.data().dishRef);
-        if (dic.has(doc.data().dishRef.ID)) {
+        if (dic.has(doc.data().dishRef.id.path)) {
           qiangbimingdan.add(doc.data().ID);
-          // var right = dic.get(doc.data().dishRef.ID);
-          // if (right != null) {
-          //   koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart").doc(right).get().then(function (dddoc) {
-          //     oldnumber = dddoc.data().number;
-          //     console.log("dddd!" + oldnumber);
-          //     handleAdd(parseInt(oldnumber), right);
-          //   })
-          // }
+          var right = dic.get(doc.data().dishRef.id.path);
+          if (right != null) {
+            koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart").doc(right).get().then(function (dddoc) {
+              oldnumber = dddoc.data().number;
+              console.log("dddd!" + oldnumber);
+              handleAdd(parseInt(oldnumber), right);
+            })
+          }
         } else {
-          dic.set(doc.data().dishRef.ID, doc.data().ID);
+          dic.set(doc.data().dishRef.id.path, doc.data().ID);
           // console.log("put!");
         }
-        // qiangbimingdan.forEach(function (kkk) {
-        //   if (kkk != null) {
-        //     koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart").doc(kkk).delete();
-        //   }
-        // })
+        qiangbimingdan.forEach(function (kkk) {
+          if (kkk != null) {
+            koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart").doc(kkk).delete();
+          }
+        })
       });
       setFinishFilter(true);
     })
@@ -205,22 +204,7 @@ const Cart = (props) => {
     if (newnum > 1) {
       koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart").doc(idid).update({ number: newnum - 1 });
     } else {
-      idid = String(idid);
-      var sk;
-      koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart").get().then(snap => {
-        // sk = snap.size // will return the collection size
-        console.log(parseInt(snap.size));
-        if(snap.size === 1){
-          handleClear(testcart);
-        }else{
-          koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart").doc(idid).delete();
-        }
-      });
-      // console.log(parseInt(sk));
-
-
-      updatepc();
-
+      koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart").doc(idid).delete();
     }
     updatepc();
 
