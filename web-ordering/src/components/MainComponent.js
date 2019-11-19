@@ -39,8 +39,8 @@ class Main extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            restaurant: this.props.pathArray[0],
-            table: this.props.pathArray[1]
+            restaurant: this.props.pathArray[0] ? this.props.pathArray[0] : "UNDEFINED",
+            table: this.props.pathArray[1] ? this.props.pathArray[1] : "UNDEFINED"
         }
         console.log("(Main)props tableID: ", this.state.table)
     }

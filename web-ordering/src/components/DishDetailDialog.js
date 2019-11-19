@@ -64,7 +64,8 @@ const DialogActions = withStyles(theme => ({
 function handleAddButton(dishRef, table) {
   koiSushiRestaurant.collection('tables').doc(table).collection('cart')
     .add({
-      dishRef
+      dishRef,
+      number: 1
     }
     ).then(ref => {
       console.log('Added document with ID: ', ref.id);
