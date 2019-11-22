@@ -1,7 +1,9 @@
 // rendering the dialog for the detail information of each dish
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import Dialog from "@material-ui/core/Dialog";
+// import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
@@ -61,16 +63,6 @@ const DialogActions = withStyles(theme => ({
 }))(MuiDialogActions);
 
 
-function handleAddButton(dishRef, table) {
-  koiSushiRestaurant.collection('tables').doc(table).collection('cart')
-    .add({
-      dishRef,
-      number: 1
-    }
-    ).then(ref => {
-      console.log('Added document with ID: ', ref.id);
-    });
-}
 
 export default function DishDetailDialog(props) {
 
@@ -78,6 +70,20 @@ export default function DishDetailDialog(props) {
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [open, setOpen] = React.useState(false);
+  const [addAlert, setAddAlert] = useState(false);
+  
+  function handleAddButton(dishRef, table) {
+    koiSushiRestaurant.collection('tables').doc(table).collection('cart')
+      .add({
+        dishRef,
+        number: 1
+      }
+      ).then(ref => {
+        console.log('Added document with ID: ', ref.id);
+        setAddAlert(true);
+      });
+  }
+
   useEffect(() => {
     // console.log('get dish', props.dish);
     if (props.open != null) {
@@ -122,6 +128,21 @@ export default function DishDetailDialog(props) {
             </IconButton>
           </DialogActions>
         </Dialog>
+        <div>
+          <Dialog
+            open={addAlert}
+            onClose={() => { setAddAlert(false) }}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Succesfully add to cart!
+                                </DialogContentText>
+            </DialogContent>
+
+          </Dialog>
+        </div>
       </div>
     );
   } else {

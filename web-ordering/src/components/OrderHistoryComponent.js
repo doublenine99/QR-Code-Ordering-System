@@ -171,7 +171,7 @@ export default function OrderHistory(props) {
                   </Typography>
                   <Divider variant="middle" />
                   <div className={classes.button}>
-                    <Link style={{ textDecoration: 'none', color: 'white' }} to={`/menu`}>
+                    <Link style={{ textDecoration: 'none', color: 'white' }} to={'/' + props.restaurant + '/' + props.table + '/menu'}>
                       <Button variant="contained" size="small" color="primary" className={classes.button}>
                         ADD MORE ITEMS
                     </Button>

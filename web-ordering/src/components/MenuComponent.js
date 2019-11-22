@@ -7,7 +7,9 @@ import GridListTileBar from '@material-ui/core/GridListTileBar';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import IconButton from '@material-ui/core/IconButton';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
-
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
 import DishDetailDialog from './DishDetailDialog';
 import { koiSushiRestaurant } from '../Firebase/firebase'
 
@@ -24,48 +26,8 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-function handleAddButton(dishRef, tableID) {
-    if (dishRef != null && tableID != null && String(tableID).charAt(0) === 't') {
-        koiSushiRestaurant.collection('tables').doc(tableID).collection('cart')
-            .add({
-                dishRef,
-                number: 1,
-            }
-            ).then(ref => {
-                console.log('Added document with ID: ', ref.id);
-            });
-    } else {
-        console.log("dishRef: ", dishRef, ", tableID: ", tableID)
-    }
-}
-function filterMenuByCategory(menu, currentCategory) {
-    currentCategory = String(currentCategory);
-    var MenuAfterfiltered = [];
-    var menu = Array.from(menu).filter(dish => dish.availability === true);
-    var k = String(currentCategory).charAt(0);
-    console.log(k);
-    if (currentCategory.charAt(0) != "#") {
-        for (var dish of menu) {
-            for (var category of Array.from(dish.categories)) {
-                if (String(category).toLowerCase() == String(currentCategory).toLowerCase()) {
-                    MenuAfterfiltered.push(dish)
-                    break;
-                }
-            }
-        }
-    } else {
-        var w = String(currentCategory).substring(1);
-        // console.log(JSON.stringify(w));
-        for (var dish of menu) {
-            var pos = String(dish.name).toLowerCase().search(String(w).toLowerCase());
-            if (pos !== -1) {
-                MenuAfterfiltered.push(dish)
-            }
-        };
-    }
-    // console.log(MenuAfterfiltered);
-    return MenuAfterfiltered;
-}
+
+
 
 
 
@@ -73,12 +35,58 @@ const Menu = (props) => {
     const classes = useStyles();
     const [detailOpen, setDetailOpen] = useState(null);
     const [detailDish, setDetailDish] = useState(null);
+    const [addAlert, setAddAlert] = useState(false);
 
+    function handleAddButton(dishRef, tableID) {
+        if (dishRef != null && tableID != null && String(tableID).charAt(0) === 't') {
+            koiSushiRestaurant.collection('tables').doc(tableID).collection('cart')
+                .add({
+                    dishRef,
+                    number: 1,
+                }
+                ).then(ref => {
+                    console.log('Added document with ID: ', ref.id);
+                    setAddAlert(true);
+                });
+        } else {
+            console.log("dishRef: ", dishRef, ", tableID: ", tableID)
+        }
+    }
+    function filterMenuByCategory(menu, currentCategory) {
+        currentCategory = String(currentCategory);
+        var MenuAfterfiltered = [];
+        var menu = Array.from(menu).filter(dish => dish.availability === true);
+        var k = String(currentCategory).charAt(0);
+        console.log(k);
+
+        if (currentCategory.charAt(0) != "#") {
+            for (var dish of menu) {
+                for (var category of Array.from(dish.categories)) {
+                    if (String(category).toLowerCase() == String(currentCategory).toLowerCase()) {
+                        MenuAfterfiltered.push(dish)
+                        break;
+                    }
+                }
+            }
+        } else {
+            var w = String(currentCategory).substring(1);
+            // console.log(JSON.stringify(w));
+            for (var dish of menu) {
+                var pos = String(dish.name).toLowerCase().search(String(w).toLowerCase());
+                if (pos !== -1) {
+                    MenuAfterfiltered.push(dish)
+                }
+            };
+            // setAddAlert(false);
+        }
+        // console.log(MenuAfterfiltered);
+        return MenuAfterfiltered;
+    }
     const RenderDishDetail = (dishRef) => {
         setDetailOpen(Math.random());
         setDetailDish(dishRef);
     };
-    // console.log(props.tableID);
+    console.log("aaa", props);
     return (
 
         <div >
@@ -86,7 +94,7 @@ const Menu = (props) => {
             <div className={classes.root}>
                 <GridList cellHeight={150} className={classes.gridList}>
                     <GridListTile key="Subheader" cols={2} style={{ height: 'auto' }}>
-                        <ListSubheader component="div">{props.currentCategory}</ListSubheader>
+                        <ListSubheader component="div">Category/Search words: {props.currentCategory}</ListSubheader>
                     </GridListTile>
                     {filterMenuByCategory(props.menu, props.currentCategory, true)
                         .map(dish => (
@@ -113,6 +121,22 @@ const Menu = (props) => {
                         ))}
                 </GridList>
                 <DishDetailDialog open={detailOpen} dish={detailDish} restaurant={props.restaurant} table={props.table} />
+            </div>
+
+            <div>
+                <Dialog
+                    open={addAlert}
+                    onClose={() => { setAddAlert(false) }}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            Succesfully add to cart!
+                                </DialogContentText>
+                    </DialogContent>
+
+                </Dialog>
             </div>
         </div>
     );

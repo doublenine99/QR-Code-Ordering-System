@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -15,6 +15,10 @@ import IconButton from '@material-ui/core/IconButton';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 // import CardHeader from '@material-ui/core/CardHeader';
 // import Paper from '@material-ui/core/Paper';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
 
 import { Box } from '@material-ui/core';
 import { koiSushiRestaurant } from '../Firebase/firebase'
@@ -49,16 +53,7 @@ const useStyles = makeStyles(theme => ({
 
 }));
 
-function handleAddButton(dishRef, tableID) {
-  koiSushiRestaurant.collection('tables').doc(tableID).collection('cart')
-    .add({
-      dishRef,
-      number: 1
-    }
-    ).then(ref => {
-      console.log('Added document with ID: ', ref.id);
-    });
-}
+
 function filterMenuByCategory(menu) {
   var MenuAfterfiltered = [];
   menu = Array.from(menu);
@@ -80,6 +75,7 @@ export default function Promotion(props) {
 
   const [expanded0, setExpanded0] = React.useState(false);
   const [expanded1, setExpanded1] = React.useState(false);
+  const [addAlert, setAddAlert] = useState(false);
   const handleExpandClick0 = () => {
     setExpanded0(!expanded0);
   }
@@ -88,10 +84,19 @@ export default function Promotion(props) {
   }
   var promptDish = filterMenuByCategory(props.menu);
 
-
+  function handleAddButton(dishRef, tableID) {
+    koiSushiRestaurant.collection('tables').doc(tableID).collection('cart')
+      .add({
+        dishRef,
+        number: 1
+      }
+      ).then(ref => {
+        console.log('Added document with ID: ', ref.id);
+        setAddAlert(true);
+      });
+  }
   return (
     <div>
-
       <TopAppBar restaurant={props.restaurant} table={props.table} />
       <Box m={2} fontFamily="Monospace" fontStyle="italic" textAlign="left" >
         <Typography gutterBottom variant="h5" component='h1'>Today's hot deal</Typography></Box>
@@ -182,7 +187,22 @@ export default function Promotion(props) {
           </CardContent>
         </Collapse>
       </Card>
+      <div>
+        <Dialog
+          open={addAlert}
+          onClose={() => { setAddAlert(false) }}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Succesfully add to cart!
+                                </DialogContentText>
+          </DialogContent>
 
+        </Dialog>
+      </div>
     </div>
+
   );
 }
