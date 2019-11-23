@@ -28,14 +28,16 @@ function _addTable() {
     .then((querySnapshot => {
       const tableList = querySnapshot.docs.map(doc => doc.data());
       // console.log(tableList.length);
-      var tableName = 'table' + (tableList.length + 1);
-      tableRef.doc(tableName).set(
-        {
-          name: tableName,
-          needAssistance: true,
-          status: 'NEEDTO_ORDER',
-        },
-      );
+      var tableName = 'table' + (tableList.length);
+      if (tablename != null) {
+        tableRef.doc(tableName).set(
+          {
+            name: tableName,
+            needAssistance: true,
+            status: 'NEEDTO_ORDER',
+          },
+        );
+      }
     }))
   }
 
@@ -191,8 +193,10 @@ export default class Table extends React.Component {
   // helper to delte the table and close the dialog
   deleteTable(tablename) {
     console.log("delete: ", tablename);
-    tableRef.doc(tablename).delete();
-    this.setState({ editTableDialogOpen: false })
+    if (tablename != null){
+      tableRef.doc(tablename).delete();
+      this.setState({ editTableDialogOpen: false })
+    }
   }
 
   // helper to fetch all tables from firebase
@@ -242,7 +246,8 @@ export default class Table extends React.Component {
   ShowOrders = (tablename) => {
     this.setState({ orderDialogOpen: true });
     this.setState({ selectedTable: tablename });
-    tableRef.doc(tablename).collection("orders")
+    if (tablename != null) {
+      tableRef.doc(tablename).collection("orders")
       .get()
       .then(snapshot => {
 
@@ -255,6 +260,7 @@ export default class Table extends React.Component {
         this.setState({ unfinishOrder: unfinish })
       }
       )
+    }
   };
 
   // Set orders as finished for the table.
