@@ -218,6 +218,7 @@ const Cart = (props) => {
     handleClose();
     console.log(tablenumber);
     koiSushiRestaurant.collection("tables").doc(tablenumber).collection("orders").doc(fa).set({});
+    koiSushiRestaurant.collection("tables").doc(tablenumber).update({ "status": "NEEDTO_SERVE" });
     vv.forEach(function (doc) {
       var dishnum = doc.ID;
       koiSushiRestaurant.collection("tables").doc(tablenumber).collection("orders").doc(fa).update({
