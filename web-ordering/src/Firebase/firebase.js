@@ -14,7 +14,10 @@ initializeApp(FirebaseConfig)
 
 const db = firestore();
 
-export const koiSushiMenu = db.collection("koisushiMenu");
-export const koiSushiRestaurant = db.collection("restaurants").doc("koisushi")
+// export const koiSushiMenu = db.collection("koisushiMenu");
+// export const koiSushiRestaurant = db.collection("restaurants").doc("koisushi");
+export const restaurants = db.collection("restaurants");
+export const database = db;
+
 
 

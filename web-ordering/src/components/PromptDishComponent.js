@@ -21,7 +21,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 
 import { Box } from '@material-ui/core';
-import { koiSushiRestaurant } from '../Firebase/firebase'
+import { restaurants } from '../Firebase/firebase'
 
 
 
@@ -84,8 +84,8 @@ export default function Promotion(props) {
   }
   var promptDish = filterMenuByCategory(props.menu);
 
-  function handleAddButton(dishRef, tableID) {
-    koiSushiRestaurant.collection('tables').doc(tableID).collection('cart')
+  function handleAddButton(dishRef, restaurant, tableID) {
+    restaurants.doc(restaurant).collection('tables').doc(tableID).collection('cart')
       .add({
         dishRef,
         number: 1
@@ -117,7 +117,7 @@ export default function Promotion(props) {
         </CardActionArea>
         <CardActions>
           <IconButton
-            onClick={() => handleAddButton(promptDish[0], props.table)}
+            onClick={() => handleAddButton(promptDish[0], props.restaurant, props.table)}
             className={classes.icon}
           >
             <AddShoppingCartIcon />
@@ -161,7 +161,7 @@ export default function Promotion(props) {
         </CardActionArea>
         <CardActions>
           <IconButton
-            onClick={() => handleAddButton(promptDish[1], props.table)}
+            onClick={() => handleAddButton(promptDish[1], props.restaurant, props.table)}
             // tooltip="Add this food to the cart"
             // aria-label={`info about ${dish.name}`}
             className={classes.icon}
@@ -182,7 +182,7 @@ export default function Promotion(props) {
         <Collapse in={expanded1} timeout="auto" unmountOnExit>
           <CardContent>
             <Typography variant="body2" color="textSecondary" component="p" align="left">
-              {promptDish[0] != null ? promptDish[1].description : ""}
+              {promptDish[1] != null ? promptDish[1].description : ""}
             </Typography>
           </CardContent>
         </Collapse>
@@ -202,7 +202,7 @@ export default function Promotion(props) {
 
         </Dialog>
       </div>
-    </div>
+    </div >
 
   );
 }

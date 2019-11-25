@@ -11,7 +11,7 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
-import { koiSushiRestaurant } from '../Firebase/firebase'
+import { restaurants } from '../Firebase/firebase'
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
 import { Box } from '@material-ui/core';
@@ -71,9 +71,9 @@ export default function DishDetailDialog(props) {
 
   const [open, setOpen] = React.useState(false);
   const [addAlert, setAddAlert] = useState(false);
-  
+
   function handleAddButton(dishRef, table) {
-    koiSushiRestaurant.collection('tables').doc(table).collection('cart')
+    restaurants.doc(props.restaurant).collection('tables').doc(table).collection('cart')
       .add({
         dishRef,
         number: 1

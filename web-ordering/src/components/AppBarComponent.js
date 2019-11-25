@@ -20,37 +20,41 @@ import { connect } from 'react-redux';
 import { fetchCategories, updateCategory } from '../redux/ActionCreators';
 import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router-dom';
-import { koiSushiRestaurant } from '../Firebase/firebase'
-
+// import { koiSushiRestaurant } from '../Firebase/firebase'
+import { restaurants } from '../Firebase/firebase'
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/core/styles';
 
+
+
 const mapStateToProps = (state) => {
     return {
-        categories: state.categories,
+        // categories: state.categories,
     }
 }
 const mapDispatchToProps = dispatch => ({
-    fetchCategories: () => dispatch(fetchCategories()),
+    // fetchCategories: () => dispatch(fetchCategories()),
     updateCategory: (category) => dispatch(updateCategory(category))
 });
 
 
 
 var redirectFlag = false;  // flag to indicate redirecting after enter search bar
+
+
 export const TopAppBar = (props) => {
     const classes = useStyles();
     const [searchWord, setSearchWord] = React.useState("");
     const [SideBarOpen, setSideBarState] = React.useState(null);
     const [assistAlert, setAssistAlert] = React.useState(false);
 
-    console.log("appbar render");
+    // console.log("appbar render");
     const handleSideBarOpen = () => {
         setSideBarState(Math.random());
     }
     const handleAssistant = () => {
         if (props.table != null && String(props.table).charAt(0) === 't') {
-            koiSushiRestaurant.collection('tables').doc(props.table)
+            restaurants.doc(props.restaurant).collection('tables').doc(props.table)
                 .update({ status: "NEEDTO_ASSIST" })
                 .then(console.log("set the assistance flag of", props.table, "to true"))
                 .then(setAssistAlert(true))
@@ -62,7 +66,7 @@ export const TopAppBar = (props) => {
     }
 
     const getCurrentSearchResultFromSidebar = (searchWord) => {
-        console.log("type enter")
+        // console.log("type enter")
         if (!redirectFlag) {
             redirectFlag = true;
         }
@@ -159,7 +163,7 @@ export const TopAppBar = (props) => {
                     restaurant={props.restaurant}
                     table={props.table}
                     SideBarOpen={SideBarOpen}
-                    categories={props.categories}
+                    // categories={props.categories}
                     getCurrentCategoryFromSidebar={getCurrentCategoryFromSidebar}
                 />
 

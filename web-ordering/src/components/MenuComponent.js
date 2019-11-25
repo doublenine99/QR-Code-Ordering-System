@@ -11,7 +11,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DishDetailDialog from './DishDetailDialog';
-import { koiSushiRestaurant } from '../Firebase/firebase'
+import { restaurants } from '../Firebase/firebase'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -27,10 +27,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-
-
-
-
 const Menu = (props) => {
     const classes = useStyles();
     const [detailOpen, setDetailOpen] = useState(null);
@@ -38,8 +34,8 @@ const Menu = (props) => {
     const [addAlert, setAddAlert] = useState(false);
 
     function handleAddButton(dishRef, tableID) {
-        if (dishRef != null && tableID != null && String(tableID).charAt(0) === 't') {
-            koiSushiRestaurant.collection('tables').doc(tableID).collection('cart')
+        if (props.restaurant !== "[restaurant_name]" && dishRef != null && tableID != null && String(tableID).charAt(0) === 't') {
+            restaurants.doc(props.restaurant).collection('tables').doc(tableID).collection('cart')
                 .add({
                     dishRef,
                     number: 1,
@@ -86,7 +82,7 @@ const Menu = (props) => {
         setDetailOpen(Math.random());
         setDetailDish(dishRef);
     };
-    console.log("aaa", props);
+    // console.log("aaa", props);
     return (
 
         <div >
