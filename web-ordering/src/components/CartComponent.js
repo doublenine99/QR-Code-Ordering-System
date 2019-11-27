@@ -114,6 +114,13 @@ const Cart = (props) => {
   const [open, setOpen] = React.useState(false);
   const [open1, setOpen1] = React.useState(false);
   // const [testcart, setCart] = React.useState();
+  const [cart, setCart] = React.useState([]);
+
+  function addItemToCart(e) {
+    const item = e;
+    console.log(item);
+    setCart(cart => [...cart, item]);
+  }
 
 
   var overallPrice = 0;
@@ -159,8 +166,26 @@ const Cart = (props) => {
         setTotalPricer(overallPrice * 1.05);
         bccc = String(overallPrice);
       })
+
+      restaurants.doc(props.restaurant).collection("tables").doc(props.table).collection("cart")
+    .onSnapshot(snapshot => {
+      testcart = snapshot.docs.map(doc => doc.data());
+      console.log("update date!")
+    });
   }
 
+  // const setid = () => {
+  //   const prin = restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart")
+  //     .get()
+  //     .then(function (querySnapshot) {
+  //       querySnapshot.forEach(function (doc) {
+  //         overallPrice = parseInt(doc.data().dishRef.price) * parseInt(doc.data().number) + overallPrice;
+  //       });
+  //       setTotalPrice(overallPrice);
+  //       setTotalPricer(overallPrice * 1.05);
+  //       bccc = String(overallPrice);
+  //     })
+  // }
 
   restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart")
     .get()
@@ -192,20 +217,41 @@ const Cart = (props) => {
       });
       setFinishFilter(true);
     })
+
+
   updatepc();
 
   const handleAdd = (newnum, idid) => {
-    restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart").doc(idid).update({ number: newnum + 1 });
+    // idid = Object.prototype.toString.call(idid) ;
     updatepc();
+    addItemToCart();
+    console.log(typeof(idid));
+    console.log(String(idid));
+    const increment = firebase.firestore.FieldValue.increment(1);
+    const st = restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart").doc(idid);
+    st.update({number : increment});
+
+    var millisecondsToWait = 500;
+setTimeout(function() {
+  addItemToCart();
+}, millisecondsToWait);
+    addItemToCart();
+
   }
 
   const handleMin = (newnum, idid) => {
-    if (newnum > 1) {
-      restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart").doc(idid).update({ number: newnum - 1 });
-    } else {
-      restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart").doc(idid).delete();
-    }
     updatepc();
+    console.log(idid);
+    addItemToCart();
+
+    const dec = firebase.firestore.FieldValue.increment(-1);
+    const st = restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart").doc(idid);
+    st.update({number : dec});
+    if (newnum === 1) {
+      restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart").doc(idid).delete();
+    } 
+    updatepc();
+    addItemToCart();
 
   }
 
@@ -219,7 +265,6 @@ const Cart = (props) => {
     restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("orders").doc(fa).set({});
     restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).update({ "status": "NEEDTO_SERVE" });
     vv.forEach(function (doc) {
-      var dishnum = doc.ID;
       restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("orders").doc(fa).update({
         dishes: firebase.firestore.FieldValue.arrayUnion({
           name: doc.dishRef.name,
@@ -282,7 +327,9 @@ const Cart = (props) => {
                     <div>
                       <ButtonGroup color="primary" size="medium" aria-label="small outlined button group">
                         <IconButton
+                          //  onClick={() => addItemToCart()}
                           onClick={() => handleAdd(parseInt(dish.number), dish.ID)}
+
                         >
                           <AddIcon />
                         </IconButton>
