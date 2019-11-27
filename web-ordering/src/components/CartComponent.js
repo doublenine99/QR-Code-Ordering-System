@@ -190,30 +190,30 @@ const Cart = (props) => {
   restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart")
     .get()
     .then(function (querySnapshot) {
-      var qiangbimingdan = new Set();
-      var dic = new Map();
+      // var qiangbimingdan = new Set();
+      // var dic = new Map();
       querySnapshot.forEach(function (doc) {
         var nn = doc.id;
         restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart").doc(doc.id).update({ ID: nn });
-        if (dic.has(doc.data().dishRef.id.path)) {
-          qiangbimingdan.add(doc.data().ID);
-          var right = dic.get(doc.data().dishRef.id.path);
-          if (right != null) {
-            restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart").doc(right).get().then(function (dddoc) {
-              oldnumber = dddoc.data().number;
-              console.log("dddd!" + oldnumber);
-              handleAdd(parseInt(oldnumber), right);
-            })
-          }
-        } else {
-          dic.set(doc.data().dishRef.id.path, doc.data().ID);
-          // console.log("put!");
-        }
-        qiangbimingdan.forEach(function (kkk) {
-          if (kkk != null) {
-            restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart").doc(kkk).delete();
-          }
-        })
+        // if (dic.has(doc.data().dishRef.id.path)) {
+        //   qiangbimingdan.add(doc.data().ID);
+        //   var right = dic.get(doc.data().dishRef.id.path);
+        //   if (right != null) {
+        //     restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart").doc(right).get().then(function (dddoc) {
+        //       oldnumber = dddoc.data().number;
+        //       console.log("dddd!" + oldnumber);
+        //       handleAdd(parseInt(oldnumber), right);
+        //     })
+        //   }
+        // } else {
+        //   dic.set(doc.data().dishRef.id.path, doc.data().ID);
+        //   // console.log("put!");
+        // }
+        // qiangbimingdan.forEach(function (kkk) {
+        //   if (kkk != null) {
+        //     restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart").doc(kkk).delete();
+        //   }
+        // })
       });
       setFinishFilter(true);
     })

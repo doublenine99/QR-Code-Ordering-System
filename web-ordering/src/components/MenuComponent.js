@@ -12,6 +12,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DishDetailDialog from './DishDetailDialog';
 import { restaurants } from '../Firebase/firebase'
+import firebase from "firebase";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -27,6 +28,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
+var dic = new Map();
+
 const Menu = (props) => {
     const classes = useStyles();
     const [detailOpen, setDetailOpen] = useState(null);
@@ -34,20 +37,58 @@ const Menu = (props) => {
     const [addAlert, setAddAlert] = useState(false);
 
     function handleAddButton(dishRef, tableID) {
-        if (props.restaurant !== "[restaurant_name]" && dishRef != null && tableID != null && String(tableID).charAt(0) === 't') {
-            restaurants.doc(props.restaurant).collection('tables').doc(tableID).collection('cart')
-                .add({
+        const increment = firebase.firestore.FieldValue.increment(1);
+
+        if (dic.has(dishRef)) {
+            console.log("hoho");
+            var gt = dic.get(dishRef);
+            const st = restaurants.doc(props.restaurant).collection("tables").doc(tableID).collection("cart").doc(gt);
+            restaurants.doc(props.restaurant).collection("tables").doc(tableID).collection("cart").doc(gt).get().then(function (doc) {
+                if (doc.exists) {
+                    // console.log("Document data:", doc.data());
+                    st.update({ number: increment });
+                } else {
+                    // doc.data() will be undefined in this case
+                    const fa = String(Math.random());
+                    restaurants.doc(props.restaurant).collection('tables').doc(tableID).collection('cart').doc(fa)
+                        .set({
+                            dishRef,
+                            number: 1,
+                        })
+                    dic.set(dishRef, fa);
+                }
+            }).catch(function (error) {
+                console.log("Error getting document:", error);
+            });
+        } else {
+            console.log("haha");
+            const fa = String(Math.random());
+            restaurants.doc(props.restaurant).collection('tables').doc(tableID).collection('cart').doc(fa)
+                .set({
                     dishRef,
                     number: 1,
-                }
-                ).then(ref => {
-                    console.log('Added document with ID: ', ref.id);
-                    setAddAlert(true);
-                });
-        } else {
-            console.log("dishRef: ", dishRef, ", tableID: ", tableID)
+                })
+            dic.set(dishRef, fa);
         }
     }
+
+    // function handleAddButton(dishRef, tableID) {
+    //     if (props.restaurant !== "[restaurant_name]" && dishRef != null && tableID != null && String(tableID).charAt(0) === 't') {
+    //         restaurants.doc(props.restaurant).collection('tables').doc(tableID).collection('cart')
+    //             .add({
+    //                 dishRef,
+    //                 number: 1,
+    //             }
+    //             ).then(ref => {
+    //                 console.log('Added document with ID: ', ref.id);
+    //                 setAddAlert(true);
+    //             });
+    //     } else {
+    //         console.log("dishRef: ", dishRef, ", tableID: ", tableID)
+    //     }
+    // }
+
+
     function filterMenuByCategory(menu, currentCategory) {
         currentCategory = String(currentCategory);
         var MenuAfterfiltered = [];
