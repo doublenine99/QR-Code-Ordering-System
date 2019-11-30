@@ -21,9 +21,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 
 import { Box } from '@material-ui/core';
-import { koiSushiRestaurant } from '../Firebase/firebase'
-
-
+import { restaurants } from '../Firebase/firebase'
+import firebase from "firebase";
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -85,15 +84,33 @@ export default function Promotion(props) {
   var promptDish = filterMenuByCategory(props.menu);
 
   function handleAddButton(dishRef, tableID) {
-    koiSushiRestaurant.collection('tables').doc(tableID).collection('cart')
-      .add({
-        dishRef,
-        number: 1
-      }
-      ).then(ref => {
-        console.log('Added document with ID: ', ref.id);
-        setAddAlert(true);
+
+    const increment = firebase.firestore.FieldValue.increment(1);
+    console.log(dishRef.name);
+    var gt = dishRef.name;
+    const st = restaurants.doc(props.restaurant).collection("tables").doc(tableID).collection("cart").doc(gt);
+    restaurants.doc(props.restaurant).collection("tables").doc(tableID).collection("cart").doc(gt)
+      .get()
+      .then(function (doc) {
+        if (doc.exists) {
+          console.log("Document data:", doc.data());
+          st.update({ number: increment })
+            .then(setAddAlert(true))
+        } else {
+          // doc.data() will be undefined in this case
+          const fa = dishRef.name;
+          restaurants.doc(props.restaurant).collection('tables').doc(tableID).collection('cart').doc(fa)
+            .set({
+              dishRef,
+              number: 1,
+            })
+            .then(setAddAlert(true))
+        }
+      })
+      .catch(function (error) {
+        console.log("Error getting document:", error);
       });
+
   }
   return (
     <div>
@@ -182,7 +199,7 @@ export default function Promotion(props) {
         <Collapse in={expanded1} timeout="auto" unmountOnExit>
           <CardContent>
             <Typography variant="body2" color="textSecondary" component="p" align="left">
-              {promptDish[0] != null ? promptDish[1].description : ""}
+              {promptDish[1] != null ? promptDish[1].description : ""}
             </Typography>
           </CardContent>
         </Collapse>
@@ -202,7 +219,7 @@ export default function Promotion(props) {
 
         </Dialog>
       </div>
-    </div>
+    </div >
 
   );
 }

@@ -11,10 +11,11 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
-import { koiSushiRestaurant } from '../Firebase/firebase'
+import { restaurants } from '../Firebase/firebase'
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
 import { Box } from '@material-ui/core';
+import firebase from "firebase";
 
 const styles = theme => ({
   root: {
@@ -62,8 +63,7 @@ const DialogActions = withStyles(theme => ({
   }
 }))(MuiDialogActions);
 
-
-
+// var dic = new Map();
 export default function DishDetailDialog(props) {
 
   const theme = useTheme();
@@ -71,17 +71,34 @@ export default function DishDetailDialog(props) {
 
   const [open, setOpen] = React.useState(false);
   const [addAlert, setAddAlert] = useState(false);
-  
-  function handleAddButton(dishRef, table) {
-    koiSushiRestaurant.collection('tables').doc(table).collection('cart')
-      .add({
-        dishRef,
-        number: 1
-      }
-      ).then(ref => {
-        console.log('Added document with ID: ', ref.id);
+
+  function handleAddButton(dishRef, tableID) {
+    const increment = firebase.firestore.FieldValue.increment(1);
+    console.log(dishRef.name);
+    var gt = dishRef.name;
+    const st = restaurants.doc(props.restaurant).collection("tables").doc(tableID).collection("cart").doc(gt);
+    restaurants.doc(props.restaurant).collection("tables").doc(tableID).collection("cart").doc(gt)
+      .get()
+      .then(function (doc) {
+        if (doc.exists) {
+          // console.log("Document data:", doc.data());
+          st.update({ number: increment });
+        } else {
+          // doc.data() will be undefined in this case
+          const fa = dishRef.name;
+          restaurants.doc(props.restaurant).collection('tables').doc(tableID).collection('cart').doc(fa)
+            .set({
+              dishRef,
+              number: 1,
+            })
+
+        }
+        console.log("aaa");
         setAddAlert(true);
+      }).catch(function (error) {
+        console.log("Error getting document:", error);
       });
+
   }
 
   useEffect(() => {
@@ -96,6 +113,9 @@ export default function DishDetailDialog(props) {
   if (props.dish != null) {
     return (
       <div>
+
+
+
         <Dialog
           fullScreen={fullScreen}
           onClose={handleClose}
@@ -128,21 +148,22 @@ export default function DishDetailDialog(props) {
             </IconButton>
           </DialogActions>
         </Dialog>
-        <div>
-          <Dialog
-            open={addAlert}
-            onClose={() => { setAddAlert(false) }}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                Succesfully add to cart!
-                                </DialogContentText>
-            </DialogContent>
 
-          </Dialog>
-        </div>
+
+        <Dialog
+          open={addAlert}
+          onClose={() => { setAddAlert(false) }}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Succesfully add to cart!
+                                 </DialogContentText>
+          </DialogContent>
+
+        </Dialog>
+
       </div>
     );
   } else {

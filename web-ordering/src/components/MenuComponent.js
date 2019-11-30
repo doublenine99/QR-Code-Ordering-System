@@ -11,7 +11,8 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DishDetailDialog from './DishDetailDialog';
-import { koiSushiRestaurant } from '../Firebase/firebase'
+import { restaurants } from '../Firebase/firebase'
+import firebase from "firebase";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -27,9 +28,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-
-
-
+var dic = new Map();
 
 const Menu = (props) => {
     const classes = useStyles();
@@ -37,21 +36,34 @@ const Menu = (props) => {
     const [detailDish, setDetailDish] = useState(null);
     const [addAlert, setAddAlert] = useState(false);
 
+ 
+
     function handleAddButton(dishRef, tableID) {
-        if (dishRef != null && tableID != null && String(tableID).charAt(0) === 't') {
-            koiSushiRestaurant.collection('tables').doc(tableID).collection('cart')
-                .add({
-                    dishRef,
-                    number: 1,
+        const increment = firebase.firestore.FieldValue.increment(1);
+            console.log(dishRef.name);
+            var gt = dishRef.name;
+            const st = restaurants.doc(props.restaurant).collection("tables").doc(tableID).collection("cart").doc(gt);
+            restaurants.doc(props.restaurant).collection("tables").doc(tableID).collection("cart").doc(gt).get().then(function (doc) {
+                if (doc.exists) {
+                    // console.log("Document data:", doc.data());
+                    st.update({ number: increment });
+                } else {
+                    // doc.data() will be undefined in this case
+                    const fa = dishRef.name;
+                    restaurants.doc(props.restaurant).collection('tables').doc(tableID).collection('cart').doc(fa)
+                        .set({
+                            dishRef,
+                            number: 1,
+                        })
+                    dic.set(dishRef, fa);
                 }
-                ).then(ref => {
-                    console.log('Added document with ID: ', ref.id);
-                    setAddAlert(true);
-                });
-        } else {
-            console.log("dishRef: ", dishRef, ", tableID: ", tableID)
-        }
+            }).catch(function (error) {
+                console.log("Error getting document:", error);
+            });
+        
     }
+
+
     function filterMenuByCategory(menu, currentCategory) {
         currentCategory = String(currentCategory);
         var MenuAfterfiltered = [];
@@ -86,7 +98,7 @@ const Menu = (props) => {
         setDetailOpen(Math.random());
         setDetailDish(dishRef);
     };
-    console.log("aaa", props);
+    // console.log("aaa", props);
     return (
 
         <div >

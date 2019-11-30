@@ -22,7 +22,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import { koiSushiRestaurant } from '../Firebase/firebase';
+import { restaurants } from '../Firebase/firebase';
 
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/core/styles';
@@ -103,10 +103,10 @@ const theme = createMuiTheme({
 });
 
 
-var testcart;
-var bccc;
 const Cart = (props) => {
   var tablenumber = props.table;
+  var testcart = props.cart;
+  var bccc;
 
   const [totalPrice, setTotalPrice] = React.useState(0);
   const [totalPricer, setTotalPricer] = React.useState(0);
@@ -114,20 +114,15 @@ const Cart = (props) => {
   const [open, setOpen] = React.useState(false);
   const [open1, setOpen1] = React.useState(false);
   // const [testcart, setCart] = React.useState();
+  const [cart, setCart] = React.useState([]);
 
-
+  // function addItemToCart(e) {
+  //   const item = e;
+  //   console.log(item);
+  //   setCart(cart => [...cart, item]);
+  // }
   var overallPrice = 0;
-  // const cart = snapshot.docs.map(doc => doc.data());
-
-  koiSushiRestaurant.collection("tables").doc(props.table).collection("cart")
-    .onSnapshot(snapshot => {
-      testcart = snapshot.docs.map(doc => doc.data());
-      // setCart(snapshot.docs.map(doc => doc.data()));
-    });
-  var oldnumber;
   const classes = useStyles();
-  // const [value, setValue] = React.useState(0);
-
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -148,9 +143,8 @@ const Cart = (props) => {
   };
 
 
-
   const updatepc = () => {
-    const prin = koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart")
+    restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart")
       .get()
       .then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {
@@ -160,67 +154,76 @@ const Cart = (props) => {
         setTotalPricer(overallPrice * 1.05);
         bccc = String(overallPrice);
       })
+
+    restaurants.doc(props.restaurant).collection("tables").doc(props.table).collection("cart")
+      .onSnapshot(snapshot => {
+        testcart = snapshot.docs.map(doc => doc.data());
+        console.log("update date!")
+      });
   }
 
 
-  koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart")
+  restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart")
     .get()
     .then(function (querySnapshot) {
-      var qiangbimingdan = new Set();
-      var dic = new Map();
       querySnapshot.forEach(function (doc) {
         var nn = doc.id;
-        koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart").doc(doc.id).update({ ID: nn });
-        if (dic.has(doc.data().dishRef.id.path)) {
-          qiangbimingdan.add(doc.data().ID);
-          var right = dic.get(doc.data().dishRef.id.path);
-          if (right != null) {
-            koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart").doc(right).get().then(function (dddoc) {
-              oldnumber = dddoc.data().number;
-              console.log("dddd!" + oldnumber);
-              handleAdd(parseInt(oldnumber), right);
-            })
-          }
-        } else {
-          dic.set(doc.data().dishRef.id.path, doc.data().ID);
-          // console.log("put!");
-        }
-        qiangbimingdan.forEach(function (kkk) {
-          if (kkk != null) {
-            koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart").doc(kkk).delete();
-          }
-        })
+        restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart").doc(doc.id).update({ ID: nn });
       });
       setFinishFilter(true);
     })
+
+
   updatepc();
 
   const handleAdd = (newnum, idid) => {
-    koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart").doc(idid).update({ number: newnum + 1 });
+    // idid = Object.prototype.toString.call(idid) ;
     updatepc();
+    // addItemToCart();
+    console.log(typeof (idid));
+    console.log(String(idid));
+    if (idid == null) {
+      return;
+    }
+    const increment = firebase.firestore.FieldValue.increment(1);
+    const st = restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart").doc(idid);
+    st.update({ number: increment });
+
+    var millisecondsToWait = 500;
+    // setTimeout(function () {
+    //   addItemToCart();
+    // }, millisecondsToWait);
+    // addItemToCart();
+
   }
 
   const handleMin = (newnum, idid) => {
-    if (newnum > 1) {
-      koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart").doc(idid).update({ number: newnum - 1 });
-    } else {
-      koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart").doc(idid).delete();
+    updatepc();
+    console.log(idid);
+    if (idid == null) {
+      return;
+    }
+    // addItemToCart();
+
+    const dec = firebase.firestore.FieldValue.increment(-1);
+    const st = restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart").doc(idid);
+    st.update({ number: dec });
+    if (newnum === 1) {
+      restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart").doc(idid).delete();
     }
     updatepc();
+    // addItemToCart();
 
   }
-
-
-
 
   const handleOrder = (vv) => {
     const fa = String(Math.random());
     handleClose();
     console.log(tablenumber);
-    koiSushiRestaurant.collection("tables").doc(tablenumber).collection("orders").doc(fa).set({});
+    restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("orders").doc(fa).set({});
+    restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).update({ "status": "NEEDTO_SERVE" });
     vv.forEach(function (doc) {
-      var dishnum = doc.ID;
-      koiSushiRestaurant.collection("tables").doc(tablenumber).collection("orders").doc(fa).update({
+      restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("orders").doc(fa).update({
         dishes: firebase.firestore.FieldValue.arrayUnion({
           name: doc.dishRef.name,
           price: doc.dishRef.price,
@@ -241,17 +244,17 @@ const Cart = (props) => {
     vv.forEach(function (doc) {
       console.log(tablenumber);
       console.log(doc.ID);
-      koiSushiRestaurant.collection("tables").doc(tablenumber).collection("cart").doc(doc.ID).delete();
+      restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart").doc(doc.ID).delete();
     });
   };
 
-  if (!finishFilter) {
-    return (
-      <div>
-        Loading
-    </div>
-    )
-  }
+  // if (!finishFilter) {
+  //   return (
+  //     <div>
+  //       Loading
+  //   </div>
+  //   )
+  // }
 
   return (
     <ThemeProvider theme={theme}>
@@ -282,7 +285,9 @@ const Cart = (props) => {
                     <div>
                       <ButtonGroup color="primary" size="medium" aria-label="small outlined button group">
                         <IconButton
+                          //  onClick={() => addItemToCart()}
                           onClick={() => handleAdd(parseInt(dish.number), dish.ID)}
+
                         >
                           <AddIcon />
                         </IconButton>
@@ -364,7 +369,7 @@ const Cart = (props) => {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
-            <DialogTitle id="alert-dialog-title">{"Confirm clear?"}</DialogTitle>
+            <DialogTitle id="alert-dialog-title">{"Are you sure to delete all the dishes?"}</DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
               </DialogContentText>

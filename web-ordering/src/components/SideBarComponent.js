@@ -7,15 +7,34 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import StarsIcon from '@material-ui/icons/Stars';
 import { Redirect } from 'react-router-dom';
+import { restaurants } from '../Firebase/firebase'
+
+var categories = [];
+
+const getCategories = (restaurantName) => {
+  if (restaurantName != null) {
+      restaurants.doc(restaurantName)
+          .onSnapshot(docSnapshot => {
+              categories = docSnapshot.data().categories;
+              // console.log("Received doc snapshot: " + (docSnapshot.data().categories));
+          },
+              err => {
+                  console.log(`Encountered error: ${err}`);
+              });
+  }
+};
 
 export default class SideBar extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      categories: props.categories,
+      // categories: props.categories,
       left: false,
       selectPromotions: false,
     }
+  }
+  componentDidMount(){
+    getCategories(this.props.restaurant);
   }
 
   componentWillReceiveProps(nextProps) {  // activate drawer from app bar
@@ -48,7 +67,7 @@ export default class SideBar extends Component {
     >
       <Divider />
       <List>
-        {Array.from(this.state.categories).map((category) => (
+        {Array.from(categories).map((category) => (
           <ListItem button key={category} onClick={() => this.handleSelectCategory(category)}>
             <Divider />
             <ListItemIcon>{<StarsIcon />}</ListItemIcon>
