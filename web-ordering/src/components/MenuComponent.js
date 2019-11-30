@@ -36,12 +36,12 @@ const Menu = (props) => {
     const [detailDish, setDetailDish] = useState(null);
     const [addAlert, setAddAlert] = useState(false);
 
+ 
+
     function handleAddButton(dishRef, tableID) {
         const increment = firebase.firestore.FieldValue.increment(1);
-
-        if (dic.has(dishRef)) {
-            console.log("hoho");
-            var gt = dic.get(dishRef);
+            console.log(dishRef.name);
+            var gt = dishRef.name;
             const st = restaurants.doc(props.restaurant).collection("tables").doc(tableID).collection("cart").doc(gt);
             restaurants.doc(props.restaurant).collection("tables").doc(tableID).collection("cart").doc(gt).get().then(function (doc) {
                 if (doc.exists) {
@@ -49,7 +49,7 @@ const Menu = (props) => {
                     st.update({ number: increment });
                 } else {
                     // doc.data() will be undefined in this case
-                    const fa = String(Math.random());
+                    const fa = dishRef.name;
                     restaurants.doc(props.restaurant).collection('tables').doc(tableID).collection('cart').doc(fa)
                         .set({
                             dishRef,
@@ -60,33 +60,8 @@ const Menu = (props) => {
             }).catch(function (error) {
                 console.log("Error getting document:", error);
             });
-        } else {
-            console.log("haha");
-            const fa = String(Math.random());
-            restaurants.doc(props.restaurant).collection('tables').doc(tableID).collection('cart').doc(fa)
-                .set({
-                    dishRef,
-                    number: 1,
-                })
-            dic.set(dishRef, fa);
-        }
+        
     }
-
-    // function handleAddButton(dishRef, tableID) {
-    //     if (props.restaurant !== "[restaurant_name]" && dishRef != null && tableID != null && String(tableID).charAt(0) === 't') {
-    //         restaurants.doc(props.restaurant).collection('tables').doc(tableID).collection('cart')
-    //             .add({
-    //                 dishRef,
-    //                 number: 1,
-    //             }
-    //             ).then(ref => {
-    //                 console.log('Added document with ID: ', ref.id);
-    //                 setAddAlert(true);
-    //             });
-    //     } else {
-    //         console.log("dishRef: ", dishRef, ", tableID: ", tableID)
-    //     }
-    // }
 
 
     function filterMenuByCategory(menu, currentCategory) {
