@@ -22,8 +22,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 
 import { Box } from '@material-ui/core';
 import { restaurants } from '../Firebase/firebase'
-
-
+import firebase from "firebase";
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -84,16 +83,34 @@ export default function Promotion(props) {
   }
   var promptDish = filterMenuByCategory(props.menu);
 
-  function handleAddButton(dishRef, restaurant, tableID) {
-    restaurants.doc(restaurant).collection('tables').doc(tableID).collection('cart')
-      .add({
-        dishRef,
-        number: 1
-      }
-      ).then(ref => {
-        console.log('Added document with ID: ', ref.id);
-        setAddAlert(true);
+  function handleAddButton(dishRef, tableID) {
+
+    const increment = firebase.firestore.FieldValue.increment(1);
+    console.log(dishRef.name);
+    var gt = dishRef.name;
+    const st = restaurants.doc(props.restaurant).collection("tables").doc(tableID).collection("cart").doc(gt);
+    restaurants.doc(props.restaurant).collection("tables").doc(tableID).collection("cart").doc(gt)
+      .get()
+      .then(function (doc) {
+        if (doc.exists) {
+          console.log("Document data:", doc.data());
+          st.update({ number: increment })
+            .then(setAddAlert(true))
+        } else {
+          // doc.data() will be undefined in this case
+          const fa = dishRef.name;
+          restaurants.doc(props.restaurant).collection('tables').doc(tableID).collection('cart').doc(fa)
+            .set({
+              dishRef,
+              number: 1,
+            })
+            .then(setAddAlert(true))
+        }
+      })
+      .catch(function (error) {
+        console.log("Error getting document:", error);
       });
+
   }
   return (
     <div>
@@ -117,7 +134,7 @@ export default function Promotion(props) {
         </CardActionArea>
         <CardActions>
           <IconButton
-            onClick={() => handleAddButton(promptDish[0], props.restaurant, props.table)}
+            onClick={() => handleAddButton(promptDish[0], props.table)}
             className={classes.icon}
           >
             <AddShoppingCartIcon />
@@ -161,7 +178,7 @@ export default function Promotion(props) {
         </CardActionArea>
         <CardActions>
           <IconButton
-            onClick={() => handleAddButton(promptDish[1], props.restaurant, props.table)}
+            onClick={() => handleAddButton(promptDish[1], props.table)}
             // tooltip="Add this food to the cart"
             // aria-label={`info about ${dish.name}`}
             className={classes.icon}

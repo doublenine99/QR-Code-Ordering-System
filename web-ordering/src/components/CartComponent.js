@@ -103,10 +103,10 @@ const theme = createMuiTheme({
 });
 
 
-var testcart;
-var bccc;
 const Cart = (props) => {
   var tablenumber = props.table;
+  var testcart = props.cart;
+  var bccc;
 
   const [totalPrice, setTotalPrice] = React.useState(0);
   const [totalPricer, setTotalPricer] = React.useState(0);
@@ -116,25 +116,13 @@ const Cart = (props) => {
   // const [testcart, setCart] = React.useState();
   const [cart, setCart] = React.useState([]);
 
-  function addItemToCart(e) {
-    const item = e;
-    console.log(item);
-    setCart(cart => [...cart, item]);
-  }
-
-
+  // function addItemToCart(e) {
+  //   const item = e;
+  //   console.log(item);
+  //   setCart(cart => [...cart, item]);
+  // }
   var overallPrice = 0;
-  // const cart = snapshot.docs.map(doc => doc.data());
-
-  restaurants.doc(props.restaurant).collection("tables").doc(props.table).collection("cart")
-    .onSnapshot(snapshot => {
-      testcart = snapshot.docs.map(doc => doc.data());
-      // setCart(snapshot.docs.map(doc => doc.data()));
-    });
-  var oldnumber;
   const classes = useStyles();
-  // const [value, setValue] = React.useState(0);
-
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -156,7 +144,7 @@ const Cart = (props) => {
 
 
   const updatepc = () => {
-    const prin = restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart")
+    restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart")
       .get()
       .then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {
@@ -167,53 +155,20 @@ const Cart = (props) => {
         bccc = String(overallPrice);
       })
 
-      restaurants.doc(props.restaurant).collection("tables").doc(props.table).collection("cart")
-    .onSnapshot(snapshot => {
-      testcart = snapshot.docs.map(doc => doc.data());
-      console.log("update date!")
-    });
+    restaurants.doc(props.restaurant).collection("tables").doc(props.table).collection("cart")
+      .onSnapshot(snapshot => {
+        testcart = snapshot.docs.map(doc => doc.data());
+        console.log("update date!")
+      });
   }
 
-  // const setid = () => {
-  //   const prin = restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart")
-  //     .get()
-  //     .then(function (querySnapshot) {
-  //       querySnapshot.forEach(function (doc) {
-  //         overallPrice = parseInt(doc.data().dishRef.price) * parseInt(doc.data().number) + overallPrice;
-  //       });
-  //       setTotalPrice(overallPrice);
-  //       setTotalPricer(overallPrice * 1.05);
-  //       bccc = String(overallPrice);
-  //     })
-  // }
 
   restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart")
     .get()
     .then(function (querySnapshot) {
-      // var qiangbimingdan = new Set();
-      // var dic = new Map();
       querySnapshot.forEach(function (doc) {
         var nn = doc.id;
         restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart").doc(doc.id).update({ ID: nn });
-        // if (dic.has(doc.data().dishRef.id.path)) {
-        //   qiangbimingdan.add(doc.data().ID);
-        //   var right = dic.get(doc.data().dishRef.id.path);
-        //   if (right != null) {
-        //     restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart").doc(right).get().then(function (dddoc) {
-        //       oldnumber = dddoc.data().number;
-        //       console.log("dddd!" + oldnumber);
-        //       handleAdd(parseInt(oldnumber), right);
-        //     })
-        //   }
-        // } else {
-        //   dic.set(doc.data().dishRef.id.path, doc.data().ID);
-        //   // console.log("put!");
-        // }
-        // qiangbimingdan.forEach(function (kkk) {
-        //   if (kkk != null) {
-        //     restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart").doc(kkk).delete();
-        //   }
-        // })
       });
       setFinishFilter(true);
     })
@@ -224,39 +179,42 @@ const Cart = (props) => {
   const handleAdd = (newnum, idid) => {
     // idid = Object.prototype.toString.call(idid) ;
     updatepc();
-    addItemToCart();
-    console.log(typeof(idid));
+    // addItemToCart();
+    console.log(typeof (idid));
     console.log(String(idid));
+    if (idid == null) {
+      return;
+    }
     const increment = firebase.firestore.FieldValue.increment(1);
     const st = restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart").doc(idid);
-    st.update({number : increment});
+    st.update({ number: increment });
 
     var millisecondsToWait = 500;
-setTimeout(function() {
-  addItemToCart();
-}, millisecondsToWait);
-    addItemToCart();
+    // setTimeout(function () {
+    //   addItemToCart();
+    // }, millisecondsToWait);
+    // addItemToCart();
 
   }
 
   const handleMin = (newnum, idid) => {
     updatepc();
     console.log(idid);
-    addItemToCart();
+    if (idid == null) {
+      return;
+    }
+    // addItemToCart();
 
     const dec = firebase.firestore.FieldValue.increment(-1);
     const st = restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart").doc(idid);
-    st.update({number : dec});
+    st.update({ number: dec });
     if (newnum === 1) {
       restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart").doc(idid).delete();
-    } 
+    }
     updatepc();
-    addItemToCart();
+    // addItemToCart();
 
   }
-
-
-
 
   const handleOrder = (vv) => {
     const fa = String(Math.random());
@@ -290,13 +248,13 @@ setTimeout(function() {
     });
   };
 
-  if (!finishFilter) {
-    return (
-      <div>
-        Loading
-    </div>
-    )
-  }
+  // if (!finishFilter) {
+  //   return (
+  //     <div>
+  //       Loading
+  //   </div>
+  //   )
+  // }
 
   return (
     <ThemeProvider theme={theme}>
@@ -411,7 +369,7 @@ setTimeout(function() {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
-            <DialogTitle id="alert-dialog-title">{"Confirm clear?"}</DialogTitle>
+            <DialogTitle id="alert-dialog-title">{"Are you sure to delete all the dishes?"}</DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
               </DialogContentText>

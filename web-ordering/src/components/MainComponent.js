@@ -33,10 +33,11 @@ class Main extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            restaurant: this.props.pathArray[0] ? this.props.pathArray[0] : "[restaurant_name]",
-            table: this.props.pathArray[1] ? this.props.pathArray[1] : "[table_ID]",
+            restaurant: this.props.pathArray[0] ? this.props.pathArray[0] : null,
+            table: this.props.pathArray[1] ? this.props.pathArray[1] : null,
             orders: [],
-            menu: []
+            menu: [],
+            cart: []
         }
         console.log("(Main)props tableID: ", this.state.table);
         // if ()
@@ -47,6 +48,7 @@ class Main extends Component {
     componentDidMount() {
         this.getOrders(this.state.restaurant, this.state.table);
         this.getMenu(this.state.restaurant);
+        this.getCart(this.state.restaurant, this.state.table);
     }
 
     render() {
@@ -54,7 +56,7 @@ class Main extends Component {
             <div>
                 <BrowserRouter >
                     <Route path={'/' + this.state.restaurant + '/' + this.state.table + '/promotions'} component={() => <Promotion restaurant={this.state.restaurant} table={this.state.table} menu={this.state.menu} />} />
-                    <Route path={'/' + this.state.restaurant + '/' + this.state.table + '/cart'} component={() => <Cart restaurant={this.state.restaurant} table={this.state.table} cart={this.props.cart} />} />
+                    <Route path={'/' + this.state.restaurant + '/' + this.state.table + '/cart'} component={() => <Cart restaurant={this.state.restaurant} table={this.state.table} cart={this.state.cart} />} />
                     <Route path={'/' + this.state.restaurant + '/' + this.state.table + '/menu'} component={() => <Menu restaurant={this.state.restaurant} table={this.state.table} menu={this.state.menu} currentCategory={this.props.currentCategory} />} />
                     <Route path={'/' + this.state.restaurant + '/' + this.state.table + '/orderHistory'} component={() => <OrderHistory restaurant={this.state.restaurant} table={this.state.table} orders={this.state.orders} />} />
                     <Redirect
@@ -64,6 +66,7 @@ class Main extends Component {
             </div>
         );
     }
+
     getMenu = (restaurantName) => {
         const menuRef = restaurantName + "Menu";
         if (restaurantName != null) {
@@ -75,6 +78,21 @@ class Main extends Component {
                 .catch((err) => {
                     console.log('Error fetching menu', err);
                 });
+        }
+    };
+    getCart = (restaurantName, tablename) => {
+        if (restaurantName != null && tablename != null) {
+            restaurants.doc(restaurantName).collection('tables').doc(tablename).collection('cart')
+                .onSnapshot(snapshot => {
+
+                    const cart = snapshot.docs.map(doc => doc.data());
+                    // console.log("Received doc snapshot: ", (orders));
+                    this.setState({ cart: cart });
+
+                },
+                    err => {
+                        console.log(`Encountered error: ${err}`);
+                    });
         }
     };
     getOrders = (restaurantName, tablename) => {
