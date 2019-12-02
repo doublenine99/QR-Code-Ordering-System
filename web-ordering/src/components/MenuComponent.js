@@ -36,7 +36,6 @@ const Menu = (props) => {
     const [detailDish, setDetailDish] = useState(null);
     const [addAlert, setAddAlert] = useState(false);
 
- 
 
     function handleAddButton(dishRef, tableID) {
         const increment = firebase.firestore.FieldValue.increment(1);
