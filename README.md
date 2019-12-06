@@ -8,7 +8,11 @@ Clone the whole repo, and go to "web-ordering" folder and "QR-Dining-MobileApp" 
 
 Since we have already host our website using fire base hosting,https://qr-code-ordering-system.firebaseapp.com/[restaurant_name]/[table_ID]/ there are two ways of running the ordering pages
 1. Scan the QR codes in the repo directly, go to the page about corresponding table.
-2. use "npm start" run on local server, it will pop the webpage with the address (http://localhost:3000/[restaurant_name]/[table_ID]/promotions)
+2. use "npm start" run on local server, it will pop the webpage with the address
+
+### because our web app designed for mobile use and have not considered the bigger screen size, it's better to use "F12" to change to iphone x screen size for test
+
+(http://localhost:3000/[restaurant_name]/[table_ID]/promotions)
 you should manually type the [restaurant_name] and [table_ID] (e.g. (http://localhost:3000/koisushi/table0/promotions), right now we only have the database for koisushi restaurant, but you can type any [table_ID] exist or created from the mobile app.
 
 The default display is promote page which show two of the latest promoted dishes.
