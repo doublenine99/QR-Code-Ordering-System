@@ -7,7 +7,7 @@ Clone the whole repo, and go to "web-ordering" folder and "QR-Dining-MobileApp" 
 ## Web-ordering
 
 Since we have already host our website using fire base hosting,https://qr-code-ordering-system.firebaseapp.com/[restaurant_name]/[table_ID]/ there are two ways of running the ordering pages
-1. Scan the QR codes in the repo directly, go to the page about corresponding table.
+1. Scan the QR codes in the repo directly, go to the page about corresponding table. (recommended)
 2. use "npm start" run on local server, it will pop the webpage with the address
 
 ### because our web app designed for mobile use and have not considered the bigger screen size, it's better to use "F12" to change to iphone x screen size for test
