@@ -37,8 +37,6 @@ function filterMenuByCategory(menu, currentCategory) {
 
 describe("Firebase", () => {
     it("check getMenu return correct result from firebase", () => {
-
-
         const menu = [];
         const currentCategory = "";
         filterMenuByCategory(menu, currentCategory);
