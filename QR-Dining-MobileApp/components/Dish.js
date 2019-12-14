@@ -1,19 +1,23 @@
 import React, { Component } from 'react';
-import { ScrollView, Button, TextInput, Alert,Picker, TouchableHighlight, Switch, Dimensions, StyleSheet, View, Text, Image, TouchableOpacity, Modal } from 'react-native';
-import { FontAwesome, MaterialIcons, Ionicons } from '@expo/vector-icons';
+import { ScrollView, Button, TextInput, Alert, Picker, TouchableHighlight, Switch, Dimensions, StyleSheet, View, Text, Image, TouchableOpacity, Modal } from 'react-native';
+// import { FontAwesome, MaterialIcons, Ionicons } from '@expo/vector-icons';
 // import DishElement from '../components/Dish';
 import * as ImagePicker from 'expo-image-picker';
 import * as firebase from 'firebase';
-import { koiSushiMenu } from '../config';
+// import { koiSushiMenu } from '../config';
 import DishElement from './DishElement';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
-//import {Card} from 'reaact-native-elements';
+
+import { loggedUser } from '../screens/Login';
+
+var MenuRef;
 
 export default class Dish extends Component {
 
   constructor(props) {
     super(props);
+    MenuRef = firebase.firestore().collection(String(loggedUser.displayName) + "Menu");
     this.fetchTable();
   }
 
@@ -26,7 +30,7 @@ export default class Dish extends Component {
 
   fetchTable = () => {
     if (this.state.id != null) {
-      koiSushiMenu.doc(this.state.id)
+      MenuRef.doc(this.state.id)
         .onSnapshot(
           (doc) => {
             this.setState({ tableData: doc.data() });
@@ -61,21 +65,21 @@ export default class Dish extends Component {
           this.fetchTable();
         })
         .catch((error) => {
-            Alert.alert('Error: ', error.message);
+          Alert.alert('Error: ', error.message);
         });
-    } 
+    }
   }
 
   uploadImage = async (uri, imageName) => {
     const response = await fetch(uri);
     const blob = await response.blob();
-    var ref = firebase.storage().ref("koisushiMenu/" + imageName);
+    var ref = firebase.storage().ref(String(loggedUser.displayName) + "/" + imageName);
     const url = ref.put(blob);
 
-    ref.put(blob).then(function(result){
+    ref.put(blob).then(function (result) {
       //Get URL and store to pass
       ref.getDownloadURL().then((url) => {
-        koiSushiMenu.doc(imageName).update({image: url.toString()});
+        MenuRef.doc(imageName).update({ image: url.toString() });
       });
     });
   }
@@ -88,7 +92,7 @@ export default class Dish extends Component {
 
     let user = firebase.auth().currentUser;
     return (
-      <View style={{ flex: 1,backgroundColor:'#64d8cb', margin: 3,height:150 }}>
+      <View style={{ flex: 1, backgroundColor: '#64d8cb', margin: 3, height: 150 }}>
         <Modal
           style={{ margin: 0, justifyContent: 'center', position: 'absolute', alignItems: 'center', backgroundColor: 'yellow' }}
           animationType="slide"
@@ -100,21 +104,21 @@ export default class Dish extends Component {
         </Modal>
 
         <View style={styles.banner}>
-          <View style={{ flexDirection: 'row' ,flex:1}}>
+          <View style={{ flexDirection: 'row', flex: 1 }}>
 
-            <View style={{ justifyContent: 'center'}}>
+            <View style={{ justifyContent: 'center' }}>
               <Text> Name: {this.state.tableData.name}</Text>
               <Text> Price: {this.state.tableData.price}</Text>
               <View style={{ flexDirection: 'row' }}>
                 <Text>Availability</Text>
                 <Switch value={this.state.tableData.availability}
                   onValueChange={availability =>
-                    koiSushiMenu.doc(this.state.id).update({ "availability": availability })} />
+                    MenuRef.doc(this.state.id).update({ "availability": availability })} />
               </View>
             </View>
-            <TouchableOpacity style = {{flex:1}} onPress={() => this.pickImage()}>
-              <Image style = {{flex:1}}
-                source = {{url: this.state.tableData.image}}
+            <TouchableOpacity style={{ flex: 1 }} onPress={() => this.pickImage()}>
+              <Image style={{ flex: 1 }}
+                source={{ url: this.state.tableData.image }}
               />
               <Text>Change Image</Text>
             </TouchableOpacity>

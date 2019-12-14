@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableWithoutFeedback, SafeAreaView} from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableWithoutFeedback, SafeAreaView } from 'react-native';
 import { Card, COLOR } from 'react-native-material-ui';
-import { koiSushiTables } from '../config';
-import { withOrientation } from 'react-navigation';
+// import { koiSushiTables } from '../config';
+import firebase from 'firebase';
+import { loggedUser } from '../screens/Login';
 
 
 
@@ -19,15 +20,15 @@ class Order extends React.Component {
   componentDidUpdate(prevProps) {
     // Typical usage (don't forget to compare props):
     if (this.props.filter !== prevProps.filter) {
-      this.setState({filter : this.props.filter});
+      this.setState({ filter: this.props.filter });
     }
   }
-  
+
   loadOrders() {
     var result = []
     // console.log(this.props.tableNumber)
     // console.log("orders: ", koiSushiTables.doc(this.props.tableNumber).collection("orders").ordertime);
-    koiSushiTables.doc(this.props.tableNumber).collection("orders")
+    firebase.firestore().collection("restaurants").doc(String(loggedUser.displayName)).collection("tables").doc(this.props.tableNumber).collection("orders")
       .get()
       .then(snapshot => {
         snapshot.forEach(doc => {
@@ -43,11 +44,11 @@ class Order extends React.Component {
 
   }
 
-  orderDish(dish){
-    return <View style={{ flexDirection: "row"}}>
-    <Text style={Object.assign({}, { flex: 1.5 }, styles.tableData)}>{dish ? dish.name : "N/A"}</Text> 
-    <Text style={Object.assign({}, { flex: 1.5 }, styles.tableData)}>{dish ? dish.quantity : 0}</Text>
-    <Text style={Object.assign({}, { flex: 1.5 }, styles.tableData)}>{dish ? dish.price : 0}</Text>
+  orderDish(dish) {
+    return <View style={{ flexDirection: "row" }}>
+      <Text style={Object.assign({}, { flex: 1.5 }, styles.tableData)}>{dish ? dish.name : "N/A"}</Text>
+      <Text style={Object.assign({}, { flex: 1.5 }, styles.tableData)}>{dish ? dish.quantity : 0}</Text>
+      <Text style={Object.assign({}, { flex: 1.5 }, styles.tableData)}>{dish ? dish.price : 0}</Text>
     </View>
   }
 
@@ -61,11 +62,11 @@ class Order extends React.Component {
       let total_quantity = 0;
       let order_number = index + 1;
       let mTop = index === 0 ? 0 : 20;
-      if(order.dishes){
-        for(let i = 0; i < order.dishes.length; i++){
+      if (order.dishes) {
+        for (let i = 0; i < order.dishes.length; i++) {
           price = order.dishes[i].price;
           quantity = order.dishes[i].quantity;
-          total += price*quantity;
+          total += price * quantity;
           total_quantity += quantity;
         }
       }
@@ -73,30 +74,30 @@ class Order extends React.Component {
       let day = "Day";
       let month = "Month";
       let year = "Year";
-      if(date != "No Date"){
+      if (date != "No Date") {
         day = date.toLocaleString();
       }
-      return <View style={{ flexDirection: "column"}}>
+      return <View style={{ flexDirection: "column" }}>
 
-        <Text style={{backgroundColor: COLOR.pinkA400, color: "white", fontWeight: "bold", textAlign: "center", paddingVertical: 7}}>{"Order #"+order_number+ " : "+day}</Text>
+        <Text style={{ backgroundColor: COLOR.pinkA400, color: "white", fontWeight: "bold", textAlign: "center", paddingVertical: 7 }}>{"Order #" + order_number + " : " + day}</Text>
         {/* <Text style={Object.assign({}, { flex: 1.5 }, styles.tableData)}>{order.quantity ? order.quantity : 4}</Text> */}
         {/*<Text style={Object.assign({}, { flex: 1.5 }, styles.tableData)}>{order.price ? order.price : 10}</Text>*/}
         <View style={{ flexDirection: "column" }}>
-              <View style={{ flexDirection: "row", backgroundColor: COLOR.pinkA400 }}>
-                <Text style={Object.assign({}, { flex: 2 }, styles.tableHeader)}>Item</Text>
-                <Text style={Object.assign({}, { flex: 1.5 }, styles.tableHeader)}>Quantity</Text>
-                <Text style={Object.assign({}, { flex: 1.5 }, styles.tableHeader)}>Price</Text>
-              </View>
-              <FlatList
-                data={order.dishes? order.dishes : [{name: "N/A", price: 0, quantity: 0}]}
-                renderItem={({ item }) => this.orderDish(item)}
-                keyExtractor={(item, index) => index.toString()} />
-                <View style={{ flexDirection: "row", backgroundColor: COLOR.pinkA400, marginVertical: 20}}>
-                <Text style={Object.assign({}, { flex: 2 }, styles.tableHeader)}>Total</Text>
-                <Text style={Object.assign({}, { flex: 1.5 }, styles.tableHeader)}>{total_quantity}</Text>
-                <Text style={Object.assign({}, { flex: 1.5 }, styles.tableHeader)}>{total}</Text>
-              </View>
-    </View>
+          <View style={{ flexDirection: "row", backgroundColor: COLOR.pinkA400 }}>
+            <Text style={Object.assign({}, { flex: 2 }, styles.tableHeader)}>Item</Text>
+            <Text style={Object.assign({}, { flex: 1.5 }, styles.tableHeader)}>Quantity</Text>
+            <Text style={Object.assign({}, { flex: 1.5 }, styles.tableHeader)}>Price</Text>
+          </View>
+          <FlatList
+            data={order.dishes ? order.dishes : [{ name: "N/A", price: 0, quantity: 0 }]}
+            renderItem={({ item }) => this.orderDish(item)}
+            keyExtractor={(item, index) => index.toString()} />
+          <View style={{ flexDirection: "row", backgroundColor: COLOR.pinkA400, marginVertical: 20 }}>
+            <Text style={Object.assign({}, { flex: 2 }, styles.tableHeader)}>Total</Text>
+            <Text style={Object.assign({}, { flex: 1.5 }, styles.tableHeader)}>{total_quantity}</Text>
+            <Text style={Object.assign({}, { flex: 1.5 }, styles.tableHeader)}>{total}</Text>
+          </View>
+        </View>
       </View>
     }
   }
@@ -106,21 +107,21 @@ class Order extends React.Component {
     this.loadOrders();
     if (this.state.orders != null && this.state.orders.length != 0) {
       data = this.state.orders.filter(order => order.finished === this.props.filter);
-      if(data.length === 0) return <View></View>
+      if (data.length === 0) return <View></View>
       return (
-        <View style={{padding: 10}}>
-          <Card style={{ container: {borderRadius: 10, marginVertical: 25, marginHorizontal: 0} }}>
+        <View style={{ padding: 10 }}>
+          <Card style={{ container: { borderRadius: 10, marginVertical: 25, marginHorizontal: 0 } }}>
             <View style={styles.header}>
               <Text style={styles.header}>Table Number: {this.props.tableNumber}</Text>
               {/* <Text style={{ fontSize: 20 }}>Time: {this.props.ordertime ? this.props.ordertime : "3:00PM"}</Text> */}
             </View>
             <FlatList
               data={data}
-              renderItem={({item, index}) => this.tableItem(item, index)}
+              renderItem={({ item, index }) => this.tableItem(item, index)}
               keyExtractor={(item, index) => index.toString()}
             />
           </Card>
-          </View>
+        </View>
       )
     } else {
       return <View></View>

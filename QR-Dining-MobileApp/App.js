@@ -1,5 +1,5 @@
-import bugsnag from '@bugsnag/expo';
-const bugsnagClient = bugsnag();
+/*import bugsnag from '@bugsnag/expo';
+const bugsnagClient = bugsnag();*/
 
 import React, { Component, useState } from 'react';
 //import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity, KeyboardAvoidingView} from 'react-native';
@@ -51,5 +51,5 @@ export default class App extends React.Component {
     );
   }
 }
-bugsnagClient.notify(new Error('Test error'))
+/*bugsnagClient.notify(new Error('Test error'))*/
 AppRegistry.registerComponent('App', () => App);

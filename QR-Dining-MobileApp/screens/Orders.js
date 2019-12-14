@@ -12,13 +12,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { koiSushiTables } from '../config';
+
 
 import { Button } from 'react-native-material-ui';
 import { withOrientation } from 'react-navigation';
 import { COLOR, ThemeContext, getTheme } from 'react-native-material-ui';
 import SafeAreaView from 'react-native-safe-area-view';
-
+import firebase from 'firebase';
+import { loggedUser } from './Login';
 
 export default class tables extends React.Component {
   constructor() {
@@ -34,7 +35,8 @@ export default class tables extends React.Component {
 
   loadTables() {
     var result = []
-    koiSushiTables
+    // koiSushiTables
+    firebase.firestore().collection("restaurants").doc(String(loggedUser.displayName)).collection("tables")
       .get()
       .then(tablesSnapshot => {
         tablesSnapshot.forEach((tableDoc) => {
@@ -60,7 +62,7 @@ export default class tables extends React.Component {
     this.setState({ unfinished: false });
   }
 
-  renderObjects(){
+  renderObjects() {
     return (
       <View>
         <Divider style={{ backgroundColor: 'blue' }} />;
@@ -71,17 +73,17 @@ export default class tables extends React.Component {
   render() {
     // console.log("tables", this.state.tables.length);
     let i = 0;
-    if (this.state.tables != null && this.state.tables.length != 0) {
-      let tables = this.state.tables;
+    /*if (this.state.tables != null && this.state.tables.length != 0) {*/
+      let tables = this.state.tables ? this.state.tables : [];
       let filter = !this.state.unfinished;
       return (
         <SafeAreaView>
-        {/*<ScrollView contentContainerStyle={{ alignItems: "center", paddingTop: 10 }}>*/}
+          {/*<ScrollView contentContainerStyle={{ alignItems: "center", paddingTop: 10 }}>*/}
           {/*Segmented Tab*/}
           <View style={{ flexDirection: "column", alignSelf: "center" }}>
             <View style={{ flexDirection: "row", marginVertical: 20 }}>
-              <Button raised text="In Progress" onPress={() => this.handleProgress()} style={{ container: Object.assign({}, this.state.unfinished ? styles.activeTabStyle : styles.tabStyle, styles.leftTabStyle), text: this.state.unfinished ? styles.activeTabTextStyle : styles.tabTextStyle }} />
-              <Button raised text="Served" onPress={() => this.handleServed()} style={{ container: Object.assign({}, !this.state.unfinished ? styles.activeTabStyle : styles.tabStyle, styles.rightTabStyle), text: !this.state.unfinished ? styles.activeTabTextStyle : styles.tabTextStyle }} />
+              <Button raised text="In Progress" onPress={() => this.handleProgress()} style={{ container: Object.assign({}, this.state.unfinished ?  styles.tabStyle: styles.activeTabStyle , styles.leftTabStyle), text: this.state.unfinished ? styles.tabTextStyle : styles.activeTabTextStyle }} />
+              <Button raised text="Served" onPress={() => this.handleServed()} style={{ container: Object.assign({}, !this.state.unfinished ? styles.tabStyle : styles.activeTabStyle, styles.rightTabStyle), text: !this.state.unfinished ? styles.tabTextStyle : styles.activeTabTextStyle }} />
             </View>
           </View>
           <FlatList
@@ -90,16 +92,16 @@ export default class tables extends React.Component {
             keyExtractor={(item) => item}
             extraData={this.state.unfinished}
           />
-        {/*</ScrollView>*/}
+          {/*</ScrollView>*/}
         </SafeAreaView>
       )
-    } else {
+   /* } else {
       return <View>
         <Text>
           Loading
         </Text>
       </View>
-    }
+    }*/
   }
 }
 

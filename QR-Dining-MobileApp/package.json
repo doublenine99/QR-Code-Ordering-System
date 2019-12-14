@@ -9,7 +9,7 @@
     "test": "jest"
   },
   "jest": {
-    "preset": "react-native"
+    "preset": "jest-expo"
   },
   "dependencies": {
     "@bugsnag/expo": "^6.4.1",
@@ -35,7 +35,8 @@
   },
   "devDependencies": {
     "babel-preset-expo": "^7.0.0",
-    "jest": "^24.9.0"
+    "jest": "^24.9.0",
+    "jest-expo": "^35.0.0"
   },
   "private": true
 }

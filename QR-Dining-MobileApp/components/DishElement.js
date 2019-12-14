@@ -1,147 +1,155 @@
-import React, {Component} from 'react';
-import {ScrollView,Button,TextInput,CheckBox,Alert, TouchableHighlight, Switch, Dimensions, StyleSheet, View, Text, Image, TouchableOpacity,Modal} from 'react-native';
+import React, { Component } from 'react';
+import { ScrollView, Button, TextInput, CheckBox, Alert, TouchableHighlight, Switch, Dimensions, StyleSheet, View, Text, Image, TouchableOpacity, Modal } from 'react-native';
 import { FontAwesome, MaterialIcons, Ionicons } from '@expo/vector-icons';
 // import DishElement from '../components/Dish';
 import * as firebase from 'firebase';
-import {koiSushiMenu, koiSushiRestaurant} from '../config';
+// import { koiSushiMenu, koiSushiRestaurant } from '../config';
 
-export default class DishElement extends Component{
+import { loggedUser } from '../screens/Login';
+
+var MenuRef;
+var RestaurantRef;
+export default class DishElement extends Component {
 
     constructor(props) {
         super(props);
+        MenuRef = firebase.firestore().collection(String(loggedUser.displayName) + "Menu");
+        RestaurantRef = firebase.firestore().collection("restaurants").doc(String(loggedUser.displayName));
         this.fetchTable();
         this.fetchCategory();
 
     }
 
     state = {
-        name: "", price:0,categories: [], description:"", 
-        id:this.props.id,
-        restauCatogories:[],
-        checkeds :{},
+        name: "", price: 0, categories: [], description: "",
+        id: this.props.id,
+        restauCatogories: [],
+        checkeds: {},
         //image:""
-        promptPrice:0,
+        promptPrice: 0,
     };
-        
-    fetchTable=()=>{
-        temp=[];
 
-        koiSushiMenu.doc(this.state.id).get().then(
-            (doc)=> {
-            if (doc.exists) {
-            this.setState({name:doc.data().name});
-            this.setState({price:doc.data().price});
-            this.setState({categories:doc.data().categories});
-            this.setState({description:doc.data().description});
-            if (focus.data().newPrice.exists){
-                
-                this.setState({promptPrice:doc.data().newPrice});
-            }
-            // this.setState({image:doc.data().image});
-            }
-            else {
-                console.log("No such doc");
-            }
-        });
-    }
+    fetchTable = () => {
+        temp = [];
 
-    fetchCategory(){
-        koiSushiRestaurant
-        .get()
-        .then(
+        MenuRef.doc(this.state.id).get().then(
             (doc) => {
-              this.setState({restauCatogories:doc.data().categories});
-        }).then(()=>{
-            
-            temp = {};
-            this.state.restauCatogories.forEach((e) => {
-                temp[e] = false;
-            });
-            this.state.categories.forEach((e) => {
-                if ( e in temp ) {
-                    temp[e] = true;
+                if (doc.exists) {
+                    this.setState({ name: doc.data().name });
+                    this.setState({ price: doc.data().price });
+                    this.setState({ categories: doc.data().categories });
+                    this.setState({ description: doc.data().description });
+                    if (focus.data().newPrice.exists) {
+
+                        this.setState({ promptPrice: doc.data().newPrice });
+                    }
+                    // this.setState({image:doc.data().image});
+                }
+                else {
+                    console.log("No such doc");
                 }
             });
-
-            this.setState({checkeds: temp});
-        });
     }
 
-    updateAll =() => {
-        koiSushiMenu.doc(this.state.id).update({name: this.state.name});
-        koiSushiMenu.doc(this.state.id).update({price: this.state.price});
-        koiSushiMenu.doc(this.state.id).update({newPrice: this.state.promptPrice});
-        koiSushiMenu.doc(this.state.id).update({description: this.state.description});
-        
-        this.updateCategories();// koiSushiMenu.doc(this.state.id).update({promptPrice: this.state.promptPrice});
+    fetchCategory() {
+        RestaurantRef
+            .get()
+            .then(
+                (doc) => {
+                    this.setState({ restauCatogories: doc.data().categories });
+                }).then(() => {
+
+                    temp = {};
+                    this.state.restauCatogories.forEach((e) => {
+                        temp[e] = false;
+                    });
+                    this.state.categories.forEach((e) => {
+                        if (e in temp) {
+                            temp[e] = true;
+                        }
+                    });
+
+                    this.setState({ checkeds: temp });
+                });
     }
 
-    updateCategories =()=>{
+    updateAll = () => {
+        MenuRef.doc(this.state.id).update({ name: this.state.name });
+        MenuRef.doc(this.state.id).update({ price: this.state.price });
+        MenuRef.doc(this.state.id).update({ newPrice: this.state.promptPrice });
+        MenuRef.doc(this.state.id).update({ description: this.state.description });
+
+        this.updateCategories();
+    }
+
+    updateCategories = () => {
         list = [];
-        Object.entries(this.state.checkeds).forEach(([key,value]) => {
-            if (value===true) {
+        Object.entries(this.state.checkeds).forEach(([key, value]) => {
+            if (value === true) {
                 list.push(key);
             }
         });
-        koiSushiMenu.doc(this.state.id).update({categories: list});
+        MenuRef.doc(this.state.id).update({ categories: list });
     }
 
     change2Num = (n) => {
-        this.setState({price: Number(n)});
+        this.setState({ price: Number(n) });
     }
 
-    createCheckBox(){
-        checkboxlist=[];
+    createCheckBox() {
+        checkboxlist = [];
 
         this.state.restauCatogories.forEach((e) => {
             temp = this.state.checkeds;
             checkboxlist.push(
-                <View style={{flexDirection:'row'}}>
+                <View style={{ flexDirection: 'row' }}>
                     <Text>{e}</Text>
-                   <Switch
+                    <Switch
 
-                       value={temp[e]}
-                       onValueChange={() => {temp[e] = !temp[e];
-                                            if (e === "prompt" && temp[e] === true){
-                                                Alert.alert("Don't forget to set Prompt Price!");
-                                            }
-                                            this.setState({checkeds: temp})}}
-                   />
-               </View>
+                        value={temp[e]}
+                        onValueChange={() => {
+                            temp[e] = !temp[e];
+                            if (e === "prompt" && temp[e] === true) {
+                                Alert.alert("Don't forget to set Prompt Price!");
+                            }
+                            this.setState({ checkeds: temp })
+                        }}
+                    />
+                </View>
             );
         });
         return checkboxlist;
     }
 
-    render(){
-        return(
+    render() {
+        return (
             //<View style={{justifyContent: 'center', alignItems:'center',backgroundColor:'yellow', padding:10}}>
             <View style={styles.container}>
                 <Text>id: {this.state.id}</Text>
                 <Text>Name</Text>
-                <TextInput placeholder = {this.state.name} style={styles.label} onChangeText={name => this.setState({name})}/>
+                <TextInput placeholder={this.state.name} style={styles.label} onChangeText={name => this.setState({ name })} />
                 <Text>Price</Text>
-                <TextInput placeholder = {this.state.price.toString()} stle={styles.label} onChangeText={price => this.change2Num(price)}/>
+                <TextInput placeholder={this.state.price.toString()} stle={styles.label} onChangeText={price => this.change2Num(price)} />
                 <Text>Prompt Price</Text>
-                <TextInput placeholder = {this.state.promptPrice.toString()} style={styles.label} onChangeText={promptPrice => this.setState({promptPrice: Number(promptPrice)})}/>
+                <TextInput placeholder={this.state.promptPrice.toString()} style={styles.label} onChangeText={promptPrice => this.setState({ promptPrice: Number(promptPrice) })} />
                 <Text>Category: </Text>
                 {this.state.restauCatogories != null ? this.createCheckBox() : "aa"}
                 <Text>Description</Text>
-                <TextInput placeholder = {this.state.description} style={styles.label} onChangeText={description => this.setState({description})}/>
+                <TextInput placeholder={this.state.description} style={styles.label} onChangeText={description => this.setState({ description })} />
 
-                <View style={{flexDirection:'row'}}>
-                    <TouchableHighlight 
-                    // style={styles.container}
-                    onPress={() => {this.updateAll();this.props.setModalVisible()}}>
-                    <Text style={{fontSize:20, padding: 20}}>Save</Text>
+                <View style={{ flexDirection: 'row' }}>
+                    <TouchableHighlight
+                        // style={styles.container}
+                        onPress={() => { this.updateAll(); this.props.setModalVisible() }}>
+                        <Text style={{ fontSize: 20, padding: 20 }}>Save</Text>
                     </TouchableHighlight>
-                    <TouchableHighlight onPress={() => {this.props.setModalVisible()}}>
-                    <Text style={{fontSize:20, padding:20}}>Cancel</Text>
+                    <TouchableHighlight onPress={() => { this.props.setModalVisible() }}>
+                        <Text style={{ fontSize: 20, padding: 20 }}>Cancel</Text>
                     </TouchableHighlight>
                 </View>
             </View>
 
-            
+
         );
     }
 }
@@ -149,19 +157,19 @@ export default class DishElement extends Component{
 const styles = StyleSheet.create({
     container: {
         height: Dimensions.get('window').height,
-       // flexGrow: 1,
+        // flexGrow: 1,
         alignItems: 'center',
         //height: Dimensions.get('window').height,
         justifyContent: 'center',
-      },
+    },
 
-      label: {
+    label: {
         fontSize: 15,
         fontWeight: "bold",
         color: "rgb(236, 19, 19)",
-      },
+    },
 
-      menuICons: {
+    menuICons: {
         flex: 1,
         margin: 0,
         flexDirection: "row",
@@ -169,38 +177,38 @@ const styles = StyleSheet.create({
         alignSelf: "stretch",
         justifyContent: "flex-start",
         //resizeMode: 'contain'
-      },
-      profileInfo:{
+    },
+    profileInfo: {
         flex: 2,
-      },
-      displayName: {
+    },
+    displayName: {
         alignSelf: 'center',
         color: 'white',
         fontWeight: 'bold',
         fontSize: 32,
         marginBottom: 15
-      },
+    },
 
-      modalView: {
+    modalView: {
         backgroundColor: '#aaa',
         height: 500,
         justifyContent: 'center', alignItems: 'center',
-        paddingTop:30
-      },
+        paddingTop: 30
+    },
 
-      banner: {
+    banner: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
         //backgroundColor: 'rgb(236, 19, 19)',
         //width: '100%',
-      },
+    },
 
-    profPic:{
-        
+    profPic: {
+
         //height: "50%",
         alignSelf: 'center',
-    
+
         //backgroundColor: 'green',
-    },  
+    },
 });

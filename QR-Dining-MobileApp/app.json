@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "UW Live Well",
-    "slug": "uw-live-well",
+    "name": "QR-Code Ordering",
+    "icon": "./utilities/logo_2.png",
+    "slug": "QR-Code-Ordering",
     "privacy": "public",
     "sdkVersion": "35.0.0",
     "platforms": [
@@ -11,7 +12,6 @@
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -24,7 +24,11 @@
       "**/*"
     ],
     "ios": {
+      "bundleIdentifier": "com.cs506.ordering",
       "supportsTablet": true
+    },
+    "android": {
+      "package": "com.cs506.ordering",
     },
     "extra": {
       "bugsnag": {

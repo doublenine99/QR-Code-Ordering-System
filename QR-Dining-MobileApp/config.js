@@ -16,7 +16,7 @@
   firebase.initializeApp(firebaseConfig);
   //firebase.analytics();
 
-  const db = firebase.firestore();
-  export const koiSushiMenu = db.collection("koisushiMenu");
-  export const koiSushiRestaurant = db.collection("restaurants").doc("koisushi");
-  export const koiSushiTables = koiSushiRestaurant.collection('tables');
+  export const db = firebase.firestore();
+  // export const koiSushiMenu = db.collection("koisushiMenu");
+  // export const koiSushiRestaurant = db.collection("restaurants").doc("koisushi");
+  // export const koiSushiTables = koiSushiRestaurant.collection('tables');

@@ -6,15 +6,23 @@ import {
 } from 'react-native';
 import { FontAwesome, MaterialIcons, Ionicons } from '@expo/vector-icons';
 import * as firebase from 'firebase';
-import { koiSushiMenu, koiSushiRestaurant } from '../config';
+// import { koiSushiMenu, koiSushiRestaurant } from '../config';
 import Dish from '../components/Dish';
 import { Button, Paragraph, Dialog, Portal } from 'react-native-paper';
 import { Checkbox } from 'react-native-paper';
 import { TextInput } from 'react-native-paper';
+import { loggedUser } from './Login';
+
+
+var MenuRef;
 
 export default class Menu extends Component {
+  constructor(props) {
+    super(props);
+    MenuRef = firebase.firestore().collection(String(loggedUser.displayName) + "Menu")
+  }
   fetchCategories = () => {
-    koiSushiRestaurant
+    firebase.firestore().collection("restaurants").doc(String(loggedUser.displayName))
       .get()
       .then(
         (doc) => {
@@ -23,13 +31,13 @@ export default class Menu extends Component {
         });
   }
 
-  getCurIndex =()=>{
-    koiSushiRestaurant
-    .get()
-    .then(
-      (doc) => {
-        this.setState({ currentIndex: doc.data().index });
-      });
+  getCurIndex = () => {
+    firebase.firestore().collection("restaurants").doc(String(loggedUser.displayName))
+      .get()
+      .then(
+        (doc) => {
+          this.setState({ currentIndex: doc.data().index });
+        });
   }
 
   componentDidMount() {
@@ -51,28 +59,29 @@ export default class Menu extends Component {
   }
 
   createNew = () => {
-    koiSushiMenu.doc(this.state.currentIndex.toString())
+    MenuRef.doc(this.state.currentIndex.toString())
       .set({
-        image: "", name: this.state.currentIndex.toString(), price: 0, categories: ["all"], description: "",
-        id: this.state.currentIndex.toString(), availability: true,newPrice:0
+        image: "", name: this.state.currentIndex.toString(), price: 0, categories: ["All"], description: "",
+        id: this.state.currentIndex.toString(), availability: true, newPrice: 0
       })
       .then(
-        koiSushiRestaurant.update({index: this.state.currentIndex+1})
+        firebase.firestore().collection("restaurants").doc(String(loggedUser.displayName))
+          .update({ index: this.state.currentIndex + 1 })
       ).then(
         this.setState({ currentIndex: (this.state.currentIndex + 1) })
       );
-      
-     this.getAllID();
+
+    this.getAllID();
   }
 
   deleteDish = (DishId) => {
-    koiSushiMenu.doc(DishId).delete();
+    MenuRef.doc(DishId).delete();
     this.getAllID();
   }
 
   getAllID = () => {
     const list = [];
-    koiSushiMenu
+    MenuRef
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach((doc) => {
@@ -84,7 +93,8 @@ export default class Menu extends Component {
 
   addCategory = () => {
     if (this.state.newCategory != null) {
-      koiSushiRestaurant
+      // koiSushiRestaurant
+      firebase.firestore().collection("restaurants").doc(String(loggedUser.displayName))
         .update({
           categories: firebase.firestore.FieldValue.arrayUnion(this.state.newCategory)
         })
@@ -100,7 +110,8 @@ export default class Menu extends Component {
 
   delteCategory = (category) => {
     if (category != null) {
-      koiSushiRestaurant
+      // koiSushiRestaurant
+      firebase.firestore().collection("restaurants").doc(String(loggedUser.displayName))
         .update({
           categories: firebase.firestore.FieldValue.arrayRemove(category)
         })
@@ -149,7 +160,7 @@ export default class Menu extends Component {
                 keyExtractor={(item, index) => index.toString()}
               />
               <TextInput
-                label='Enter New Category'
+                placeholder='Enter New Category'
                 value={this.state.newCategory}
                 onChangeText={inputCategory => this.setState({ newCategory: inputCategory })}
               />

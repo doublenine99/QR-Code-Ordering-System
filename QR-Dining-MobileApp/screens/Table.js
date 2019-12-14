@@ -16,10 +16,11 @@ import { COLOR } from 'react-native-material-ui';
 // import { IconButton, Colors } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { RadioButton } from 'react-native-paper';
-import { koiSushiRestaurant } from '../config';
-import tabNavigator from '../components/MainTab';
+import * as firebase from 'firebase';
+import { loggedUser } from './Login';
+import { db } from '../config.js';
 
-const tableRef = koiSushiRestaurant.collection('tables');
+var tableRef;
 
 // handler for press the add table button
 function _addTable() {
@@ -28,18 +29,18 @@ function _addTable() {
     .then((querySnapshot => {
       const tableList = querySnapshot.docs.map(doc => doc.data());
       // console.log(tableList.length);
-      var tableName = 'table' + (tableList.length);
-      if (tablename != null) {
-        tableRef.doc(tableName).set(
-          {
-            name: tableName,
-            needAssistance: true,
-            status: 'NEEDTO_ORDER',
-          },
-        );
-      }
+
+
+      tableRef.doc('table' + (tableList.length)).set(
+        {
+          name: 'table' + (tableList.length),
+          needAssistance: true,
+          status: 'NEEDTO_ORDER',
+        },
+      );
+
     }))
-  }
+}
 
 const numColumns = 3;
 const formatData = (data, numColumns) => {
@@ -57,9 +58,9 @@ var reN = /[^0-9]/g;
 
 function sortAlphaNum(a, b) {
   // console.log(a);
-  a=a.name;
+  a = a.name;
   // console.log(a);
-  b=b.name;
+  b = b.name;
   var aA = a.replace(reA, "");
   var bA = b.replace(reA, "");
   if (aA === bA) {
@@ -83,7 +84,14 @@ export default class Table extends React.Component {
       orders: [],
       unfinishOrder: [],
     }
+    console.log("Table.js 93", loggedUser.displayName);
+    tableRef = db.collection("restaurants").doc(String(loggedUser.displayName)).collection("tables");
+
     this.fetchTable();
+  }
+  componentDidMount = () => {
+
+
   }
   _hideEditTableDialog = () => this.setState({ editTableDialogOpen: false });
   _hideOrdersDialog = () => this.setState({ orderDialogOpen: false });
@@ -122,7 +130,7 @@ export default class Table extends React.Component {
               <Button onPress={this._hideOrdersDialog}>Done</Button>
             </Dialog.Actions>
             <Dialog.Actions>
-              <Button onPress={() => {  this.clearOrder(this.state.selectedTable) ;this._hideOrdersDialog();}}>Clear</Button>
+              <Button onPress={() => { this.clearOrder(this.state.selectedTable); this._hideOrdersDialog(); }}>Clear</Button>
             </Dialog.Actions>
           </Dialog>
         </Portal>
@@ -179,7 +187,7 @@ export default class Table extends React.Component {
     );
   }
   change(x) {
-    return x*10;
+    return x * 10;
   }
 
   // handler for long press one table
@@ -193,7 +201,7 @@ export default class Table extends React.Component {
   // helper to delte the table and close the dialog
   deleteTable(tablename) {
     console.log("delete: ", tablename);
-    if (tablename != null){
+    if (tablename != null) {
       tableRef.doc(tablename).delete();
       this.setState({ editTableDialogOpen: false })
     }
@@ -213,7 +221,7 @@ export default class Table extends React.Component {
       });
       // tableList.sort((a, b) => a.name1- b.name1)
 
-      this.setState({ tables: tableList.sort(sortAlphaNum)});
+      this.setState({ tables: tableList.sort(sortAlphaNum) });
     })
   };
 
@@ -248,35 +256,35 @@ export default class Table extends React.Component {
     this.setState({ selectedTable: tablename });
     if (tablename != null) {
       tableRef.doc(tablename).collection("orders")
-      .get()
-      .then(snapshot => {
+        .get()
+        .then(snapshot => {
 
-        // const allOrderIDs = snapshot.docs.map(docs => allOrderIDs[doc.ref.id] = doc.data());
-        // console.log(allOrderIDs);
-        const fetchedOrder = snapshot.docs.map(doc => doc.data());
-        const unfinish = fetchedOrder.filter(order => order.finished == false);
-        // const unfinishedId = 
-        // console.log(unfinish)
-        this.setState({ unfinishOrder: unfinish })
-      }
-      )
+          // const allOrderIDs = snapshot.docs.map(docs => allOrderIDs[doc.ref.id] = doc.data());
+          // console.log(allOrderIDs);
+          const fetchedOrder = snapshot.docs.map(doc => doc.data());
+          const unfinish = fetchedOrder.filter(order => order.finished == false);
+          // const unfinishedId = 
+          // console.log(unfinish)
+          this.setState({ unfinishOrder: unfinish })
+        }
+        )
     }
   };
 
   // Set orders as finished for the table.
   clearOrder = (tablename) => {
-    if(tablename != null) {
-    let orderRef = tableRef.doc(tablename).collection("orders");
-    orderRef.get().then(function(querySnapshot) {
-      querySnapshot.forEach(function(doc) {
+    if (tablename != null) {
+      let orderRef = tableRef.doc(tablename).collection("orders");
+      orderRef.get().then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
           var orderDoc = orderRef.doc(doc.id);
           return orderDoc.update({
-              finished: true
+            finished: true
           });
+        });
       });
-  });
-}
-};
+    }
+  };
 
   // Update the table's current status
   updateStatus = (tablename, value) => {
@@ -288,8 +296,8 @@ export default class Table extends React.Component {
   // Get the status of the selected table.
   fetchStatus = () => {
     var tableObj = this.state.tables.filter(tb => tb.name == this.state.selectedTable);
-    if(tableObj.length!=0){
-      return(tableObj[0].status)
+    if (tableObj.length != 0) {
+      return (tableObj[0].status)
     }
   }
   // Update table color to indicate the table status.
