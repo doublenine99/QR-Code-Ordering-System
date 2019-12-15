@@ -1,47 +1,71 @@
 # In-Dining-QR-Code-Ordering-System
+Our System provides a web application accessed by restaurants customers scanning the code on the table where they can check the menu and order
+AND
+a mobile application for restaurant owners to see the status and orders of each table and customize on their menu at any time
+## Getting Started
 
-## Environment Setting
-
-Clone the whole repo, and go to "web-ordering" folder and "QR-Dining-MobileApp" folder. Run "npm install" in each folder to install all dependencies. 
-
-## Web-ordering
-
-Since we have already host our website using fire base hosting,https://qr-code-ordering-system.firebaseapp.com/[restaurant_name]/[table_ID]/ there are two ways of running the ordering pages
-1. Scan the QR codes in the repo directly, go to the page about corresponding table.
-2. use "npm start" run on local server, it will pop the webpage with the address (http://localhost:3000/[restaurant_name]/[table_ID]/promotions)
-you should manually type the [restaurant_name] and [table_ID] (e.g. (http://localhost:3000/koisushi/table0/promotions), right now we only have the database for koisushi restaurant, but you can type any [table_ID] exist or created from the mobile app.
-
-The default display is promote page which show two of the latest promoted dishes.
-
-If you want to add the food to the cart directly in promotion page, you can just directly press the add button.
-You can navigate to other categories by press the sidebar activator go to menu page filtered by category .
-Or you can type some text to search the dish by their name.
-
-Click on the image of one dish in menu page will guide you to the detail page introduce the dish.
-
-You can check what you and your friends have already added by pressing the shopping cart icon.
-In here, you can still add or delete the number of dishes you want to eat.
-
-Then, you can press either confirm/clear button to make order or keep looking for other menu.
-After you successfully do order, then you can check your order history by pressing following icon: 
-While you are waiting for the order or need some extra help, you can press the following icon to ask for help. After pressing it, it will show the following message “Message sent, please wait for someone comes to help you”.
-
-**Tips: All data is shared within each table, you can use multiple devices to scan on same QR code to order together;**
+Clone the whole repo, and  and "QR-Dining-MobileApp" folder. Run "npm install" in each folder to install all dependencies. 
 
 ## Restaurant Mobile App
 
-1. ‘npm start’ respectively.  
-2. A web page will open in browser. Scan the QR code with smartphone’s camera to access the app.
-3. create an account first, right now no matter which account you are, we will give you the control of Koisushi restaurant.
-4. On the table Page, you can see or control the status of table by long press,  check the order of each table by normal press.
+go to "QR-Dining-MobileApp" folder. Run
 
-                          the color of each table means different things. 
-* Green: this table do not need your interfere(still browsing menu or no one using the system)
+	npm install
+for downloading all the dependencies, then Run
+
+	npm start
+to run the expo mobile app.
+
+First create an account, Note **restaurant name** is the unique identifier for the customers to access your menu so that cannot change later, please be cautious for entering.
+Then login to use the app.
+
+	On the table Page, you can add your tables and see or control the orders and status of each table by normal press and long press.
+The color on each table means different status of the table
+* Green: this table do not need your interfere(still browsing menu or no one using the system on this table)
 * Yellow: this table has already ordered and need the restaurant to make and serve the food.
 * Orange: all dishes for this table have been served, need them to pay after finish.
 * Red: this table need some help
-5. On the order page, you can see all orders finished or still processing
-6.  On the profile page, you can change your profile information or go to Menu page
-7. On the  Menu page, you can edit the dish information and categories you want to have.
+
+![enter image description here](https://firebasestorage.googleapis.com/v0/b/qr-code-ordering-system.appspot.com/o/Table%20Page.png?alt=media&token=3650de26-22b1-44b4-8950-0537d24a6d9d)
+
+
+
+	
+	On the order page, you can see all orders made from all the tables which either finished or still processing
+
+![Orders](https://firebasestorage.googleapis.com/v0/b/qr-code-ordering-system.appspot.com/o/Orders.png?alt=media&token=6d576bab-13bd-4a78-8a75-75a9649c09d6)
+
+	On the  Menu page, you can edit the dish information and categories you want to have.
+
+![enter image description here](https://firebasestorage.googleapis.com/v0/b/qr-code-ordering-system.appspot.com/o/Edit%20Menu.png?alt=media&token=e0bbd464-dd6c-479e-9028-8f13c2fba6e0)
+
+
+##  Web-ordering
+
+Since we have already host our website using fire base hosting:
+https://qr-code-ordering-system.firebaseapp.com/[restaurant_name]/[table_ID]
+First replace [] with your restaurant name and table name, then copy the link to [QR Code Generator](https://www.qr-code-generator.com) to create a QR code relevant to this table and scan it.
+ 
+
+	The default display is promote page which show two of the latest promoted dishes.
+![Promotions](https://firebasestorage.googleapis.com/v0/b/qr-code-ordering-system.appspot.com/o/Promotions.png?alt=media&token=550a9020-7f30-435e-8fd3-47a2eebc9fb2)
+
+	Then customers can use the Top app bar to navigate to different pages or ask for help from restaurants.
+![enter image description here](https://firebasestorage.googleapis.com/v0/b/qr-code-ordering-system.appspot.com/o/AppBar.png?alt=media&token=6cadbf75-8118-4b6d-b6ab-2992ce85c932)
+
+
+	This is the menu pages use to browse dishes by categories or search key words
+![enter image description here](https://firebasestorage.googleapis.com/v0/b/qr-code-ordering-system.appspot.com/o/menu.png?alt=media&token=c30772a8-eb3a-478c-9996-c442b241aabb)
+
+	You can check and edit what you and your friends in the same tables have already ordered in the cart page
+![enter image description here](https://firebasestorage.googleapis.com/v0/b/qr-code-ordering-system.appspot.com/o/Cart.png?alt=media&token=cbef1d78-b196-4bc7-84a3-be8e69740c32)
+
+	After you placing the order, you can go to Order History page to double check it or continue order more dishes.
+![enter image description here](https://firebasestorage.googleapis.com/v0/b/qr-code-ordering-system.appspot.com/o/OrderHistory.png?alt=media&token=9f48a7bc-061d-4eef-b0f8-e828b4356d0e)
+
+
+**Tips: All data is shared within each table, you can use multiple devices to scan on same QR code to order together;**
+
+
 
 
