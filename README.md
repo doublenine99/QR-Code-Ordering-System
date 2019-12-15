@@ -2,9 +2,6 @@
 Our System provides a web application accessed by restaurants customers scanning the code on the table where they can check the menu and order
 AND
 a mobile application for restaurant owners to see the status and orders of each table and customize on their menu at any time
-## Getting Started
-
-Clone the whole repo, and  and "QR-Dining-MobileApp" folder. Run "npm install" in each folder to install all dependencies. 
 
 ## Restaurant Mobile App
 
