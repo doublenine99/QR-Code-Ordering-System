@@ -19,6 +19,8 @@ import { withStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import MuiDialogContent from '@material-ui/core/DialogContent';
+// import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
 
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -29,6 +31,7 @@ import moment from 'moment';
 
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/core/styles';
+import { restaurants } from '../Firebase/firebase'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -118,19 +121,30 @@ export default function OrderHistory(props) {
   const [open, setOpen] = React.useState(false);
   const [fullWidth] = React.useState(true);
   const [scroll, setScroll] = React.useState('paper');
+  const [paymentChoice, setPaymentChoice] = React.useState("inPerson");
+  const [assistAlert, setAssistAlert] = React.useState(false);
 
   const handleClickOpen = scrollType => () => {
     setOpen(true);
     setScroll(scrollType);
   };
-  const handleClose = () => {
+  const handlePaymentConfirm = (event) => {
+    if (paymentChoice === "inPerson") {
+      restaurants.doc(props.restaurant).collection('tables').doc(props.table)
+        .update({ status: "NEEDTO_ASSIST" })
+        .then(console.log("set the assistance flag of", props.table, "to true"))
+        .then(setAssistAlert(true))
+    }
+    else if (paymentChoice === "venmo") {
+      setAssistAlert(true);
+    }
     setOpen(false);
   };
 
-  const [value, setValue] = React.useState('female');
 
-  const handleChange = event => {
-    setValue(event.target.value);
+
+  const handlePaymentChange = event => {
+    setPaymentChoice(event.target.value);
   };
 
   function subtotal(orders) {
@@ -147,9 +161,9 @@ export default function OrderHistory(props) {
     return subtotal;
   };
 
-  const invoiceSubtotal = subtotal(unfinishedOrders);
-  const invoiceTaxes = 0.05 * invoiceSubtotal;
-  const invoiceTotal = invoiceTaxes + invoiceSubtotal;
+  const invoiceSubtotal = parseFloat(subtotal(unfinishedOrders)).toFixed(2);
+  const invoiceTaxes = parseFloat(0.05 * invoiceSubtotal).toFixed(2);
+  const invoiceTotal = parseFloat(invoiceSubtotal * 1.05).toFixed(2);
 
   return (
     <ThemeProvider theme={theme}>
@@ -187,14 +201,14 @@ export default function OrderHistory(props) {
                       </DialogTitle>
                       <DialogContent dividers>
                         <FormControl component="fieldset" className={classes.formControl}>
-                          <RadioGroup aria-label="payment" name="payment" value={value} onChange={handleChange}>
-                            <FormControlLabel value="Venmo" control={<Radio />} label="Venmo" />
-                            <FormControlLabel value="Paypal" control={<Radio />} label="Paypal" />
+                          <RadioGroup aria-label="payment" name="payment" value={paymentChoice} onChange={handlePaymentChange}>
+                            <FormControlLabel value="inPerson" control={<Radio />} label="In Person" />
+                            <FormControlLabel value="venmo" control={<Radio />} label="Venmo" />
                           </RadioGroup>
                         </FormControl>
                       </DialogContent>
-                      <Button autoFocus size="large" color="primary" onClick={handleClose}>
-                        PAY
+                      <Button autoFocus size="large" color="primary" onClick={handlePaymentConfirm}>
+                        Confirm
                       </Button>
                     </Dialog>
                   </div>
@@ -241,6 +255,29 @@ export default function OrderHistory(props) {
 
         </div>
       </div>
-    </ThemeProvider>
+      <div>
+        <Dialog
+          open={assistAlert}
+          onClose={() => { setAssistAlert(false) }}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogContent>
+            {paymentChoice === "venmo" ?
+              < img
+                width={200}
+                height={200}
+                src="https://firebasestorage.googleapis.com/v0/b/qr-code-ordering-system.appspot.com/o/koisushiMenu%2Flogo.png?alt=media&token=9dda257c-9f74-47f1-bfd3-90caadd8d439"
+              /> :
+              < DialogContentText id="alert-dialog-description">
+                Message sent, please wait for someone comes to help you
+            </DialogContentText>
+
+            }
+          </DialogContent>
+
+        </Dialog>
+      </div>
+    </ThemeProvider >
   );
 }

@@ -40,9 +40,7 @@ class Main extends Component {
             cart: []
         }
         console.log("(Main)props tableID: ", this.state.table);
-        // if ()
-        // getOrders(this.state.restaurant, this.state.table);
-        // getMenu(this.state.restaurant);
+  
     }
 
     componentDidMount() {
@@ -60,7 +58,7 @@ class Main extends Component {
                     <Route path={'/' + this.state.restaurant + '/' + this.state.table + '/menu'} component={() => <Menu restaurant={this.state.restaurant} table={this.state.table} menu={this.state.menu} currentCategory={this.props.currentCategory} />} />
                     <Route path={'/' + this.state.restaurant + '/' + this.state.table + '/orderHistory'} component={() => <OrderHistory restaurant={this.state.restaurant} table={this.state.table} orders={this.state.orders} />} />
                     <Redirect
-                        to={'/' + this.state.restaurant + '/' + this.state.table + '/promotions'}
+                        to={'/' + this.state.restaurant + '/' + this.state.table + '/menu'}
                     />
                 </BrowserRouter>
             </div>

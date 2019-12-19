@@ -148,7 +148,7 @@ const Cart = (props) => {
       .get()
       .then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {
-          overallPrice = parseInt(doc.data().dishRef.price) * parseInt(doc.data().number) + overallPrice;
+          overallPrice = parseFloat(parseFloat(doc.data().dishRef.price) * parseInt(doc.data().number) + overallPrice).toFixed(2);
         });
         setTotalPrice(overallPrice);
         setTotalPricer(overallPrice * 1.05);
@@ -318,7 +318,7 @@ const Cart = (props) => {
               <ListItemText primary="Before tax" secondary={"$" + totalPrice} />
             </ListItem>
             <ListItem>
-              <ListItemText primary="After tax" secondary={"$" + totalPricer} />
+              <ListItemText primary="After tax" secondary={"$" + parseFloat(totalPricer).toFixed(2)} />
             </ListItem>
           </List>
         </div>

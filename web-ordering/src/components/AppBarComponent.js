@@ -53,7 +53,7 @@ export const TopAppBar = (props) => {
         setSideBarState(Math.random());
     }
     const handleAssistant = () => {
-        if (props.table != null && String(props.table).charAt(0) === 't') {
+        if (props.table != null) {
             restaurants.doc(props.restaurant).collection('tables').doc(props.table)
                 .update({ status: "NEEDTO_ASSIST" })
                 .then(console.log("set the assistance flag of", props.table, "to true"))
