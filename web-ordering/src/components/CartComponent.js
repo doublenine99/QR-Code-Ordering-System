@@ -143,15 +143,15 @@ const Cart = (props) => {
   };
 
 
-  const updatepc = () => {
+  const updatepc = (taxRate) => {
     restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart")
       .get()
       .then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {
-          overallPrice = parseFloat(parseFloat(doc.data().dishRef.price) * parseInt(doc.data().number) + overallPrice).toFixed(2);
+          overallPrice = parseFloat(parseFloat(doc.data().dishRef.price) * parseInt(doc.data().number) + parseFloat(overallPrice)).toFixed(2);
         });
         setTotalPrice(overallPrice);
-        setTotalPricer(overallPrice * 1.05);
+        setTotalPricer((overallPrice * (1 + taxRate)).toFixed(2));
         bccc = String(overallPrice);
       })
 
@@ -174,11 +174,11 @@ const Cart = (props) => {
     })
 
 
-  updatepc();
+  updatepc(props.tax);
 
   const handleAdd = (newnum, idid) => {
     // idid = Object.prototype.toString.call(idid) ;
-    updatepc();
+    updatepc(props.tax);
     // addItemToCart();
     console.log(typeof (idid));
     console.log(String(idid));
@@ -189,16 +189,10 @@ const Cart = (props) => {
     const st = restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart").doc(idid);
     st.update({ number: increment });
 
-    var millisecondsToWait = 500;
-    // setTimeout(function () {
-    //   addItemToCart();
-    // }, millisecondsToWait);
-    // addItemToCart();
-
   }
 
   const handleMin = (newnum, idid) => {
-    updatepc();
+    updatepc(props.tax);
     console.log(idid);
     if (idid == null) {
       return;
@@ -211,7 +205,7 @@ const Cart = (props) => {
     if (newnum === 1) {
       restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart").doc(idid).delete();
     }
-    updatepc();
+    updatepc(props.tax);
     // addItemToCart();
 
   }
@@ -230,7 +224,7 @@ const Cart = (props) => {
           quantity: doc.number,
         }),
         subtotal: totalPrice,
-        taxrate: 0.05,
+
         ordertime: firebase.firestore.FieldValue.serverTimestamp(),
         finished: false,
       });
@@ -247,14 +241,6 @@ const Cart = (props) => {
       restaurants.doc(props.restaurant).collection("tables").doc(tablenumber).collection("cart").doc(doc.ID).delete();
     });
   };
-
-  // if (!finishFilter) {
-  //   return (
-  //     <div>
-  //       Loading
-  //   </div>
-  //   )
-  // }
 
   return (
     <ThemeProvider theme={theme}>
@@ -318,7 +304,7 @@ const Cart = (props) => {
               <ListItemText primary="Before tax" secondary={"$" + totalPrice} />
             </ListItem>
             <ListItem>
-              <ListItemText primary="After tax" secondary={"$" + parseFloat(totalPricer).toFixed(2)} />
+              <ListItemText primary="After tax" secondary={"$" + totalPricer} />
             </ListItem>
           </List>
         </div>

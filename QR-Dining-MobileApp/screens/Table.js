@@ -10,37 +10,20 @@ import {
   Alert,
   SafeAreaView,
   Dimensions,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { Button, Dialog, Portal } from 'react-native-paper';
 import { COLOR } from 'react-native-material-ui';
 // import { IconButton, Colors } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { RadioButton } from 'react-native-paper';
+import { RadioButton, TextInput } from 'react-native-paper';
 import * as firebase from 'firebase';
 import { loggedUser } from './Login';
 import { db } from '../config.js';
 
 var tableRef;
 
-// handler for press the add table button
-function _addTable() {
-  tableRef
-    .get()
-    .then((querySnapshot => {
-      const tableList = querySnapshot.docs.map(doc => doc.data());
-      // console.log(tableList.length);
 
-
-      tableRef.doc('table' + (tableList.length)).set(
-        {
-          name: 'table' + (tableList.length),
-          needAssistance: true,
-          status: 'NEEDTO_ORDER',
-        },
-      );
-
-    }))
-}
 
 const numColumns = 3;
 const formatData = (data, numColumns) => {
@@ -76,6 +59,8 @@ export default class Table extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      newTableName: "",
+      addTableDialogOpen: false,
       orderDialogOpen: false,
       editTableDialogOpen: false,
       selectedTable: null,
@@ -93,6 +78,7 @@ export default class Table extends React.Component {
 
 
   }
+  _hideAddTableDialog = () => this.setState({ addTableDialogOpen: false });
   _hideEditTableDialog = () => this.setState({ editTableDialogOpen: false });
   _hideOrdersDialog = () => this.setState({ orderDialogOpen: false });
 
@@ -103,7 +89,7 @@ export default class Table extends React.Component {
           icon="plus"
           mode="contained"
           color="#26a69a"
-          onPress={() => { _addTable() }}
+          onPress={() => { this.setState({ addTableDialogOpen: true }) }}
         >
           <Text style={{ fontSize: 15 }}>Add new table</Text>
         </Button>
@@ -113,6 +99,27 @@ export default class Table extends React.Component {
           keyExtractor={item => item.name}
           numColumns={numColumns}
         />
+
+        <Portal>
+          <Dialog
+            visible={this.state.addTableDialogOpen}
+            onDismiss={this._hideAddTableDialog}>
+            {/* <Dialog.Title>Enter new table name</Dialog.Title> */}
+            <Dialog.Content>
+              <TextInput
+                label="Enter new table name:"
+                value={this.state.newTableName}
+                onChangeText={name => this.setState({ newTableName: name })} />
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={() => this._hideAddTableDialog()}>Cancel</Button>
+              <Button onPress={() => { this._addTable(this.state.newTableName); this.setState({ newTableName: "" }) }}>Done</Button>
+            </Dialog.Actions>
+            <Dialog.Actions>
+
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
         <Portal>
           <Dialog
             visible={this.state.orderDialogOpen}
@@ -127,10 +134,10 @@ export default class Table extends React.Component {
               />
             </Dialog.Content>
             <Dialog.Actions>
-              <Button onPress={this._hideOrdersDialog}>Done</Button>
+              <Button onPress={this._hideOrdersDialog}>Cancel</Button>
             </Dialog.Actions>
             <Dialog.Actions>
-              <Button onPress={() => { this.clearOrder(this.state.selectedTable); this._hideOrdersDialog(); }}>Clear</Button>
+              <Button onPress={() => { this.clearOrder(this.state.selectedTable); this._hideOrdersDialog(); }}>Finished</Button>
             </Dialog.Actions>
           </Dialog>
         </Portal>
@@ -190,6 +197,21 @@ export default class Table extends React.Component {
     return x * 10;
   }
 
+
+
+
+  // handler for press the add table button
+  _addTable(tableName) {
+    tableRef.doc(tableName)
+      .set(
+        {
+          name: tableName,
+          needAssistance: false,
+          status: 'NEEDTO_ORDER',
+        })
+      .then(this._hideAddTableDialog());
+
+  }
   // handler for long press one table
   editTable(tablename) {
     this.setState({
@@ -219,7 +241,6 @@ export default class Table extends React.Component {
           status,
         })
       });
-      // tableList.sort((a, b) => a.name1- b.name1)
 
       this.setState({ tables: tableList.sort(sortAlphaNum) });
     })
@@ -246,7 +267,10 @@ export default class Table extends React.Component {
         <Text style={styles.title}>
           {item.name}
         </Text>
-      </TouchableOpacity>
+        <Text style={{ color: this.changeTableColor(item) }}>
+          {item.status}
+        </Text>
+      </TouchableOpacity >
     );
   };
 
@@ -275,14 +299,21 @@ export default class Table extends React.Component {
   clearOrder = (tablename) => {
     if (tablename != null) {
       let orderRef = tableRef.doc(tablename).collection("orders");
-      orderRef.get().then(function (querySnapshot) {
-        querySnapshot.forEach(function (doc) {
-          var orderDoc = orderRef.doc(doc.id);
-          return orderDoc.update({
-            finished: true
+      orderRef
+        .get()
+        .then(function (querySnapshot) {
+          querySnapshot.forEach(function (doc) {
+            var orderDoc = orderRef.doc(doc.id);
+            return orderDoc.update({
+              finished: true
+            });
           });
-        });
-      });
+        })
+        .then(
+          tableRef.doc(tablename)
+            .update({ status: 'NEEDTO_ORDER' })
+        )
+
     }
   };
 
@@ -308,7 +339,7 @@ export default class Table extends React.Component {
       //   return ('#64d8cb');
 
       case 'NEEDTO_ORDER':
-        return ('#64d8cb');
+        return ('#00796b');
 
       case 'NEEDTO_SERVE':
         return ('#FFFF00');

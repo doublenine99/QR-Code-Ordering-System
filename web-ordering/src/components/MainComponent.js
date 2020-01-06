@@ -37,10 +37,11 @@ class Main extends Component {
             table: this.props.pathArray[1] ? this.props.pathArray[1] : null,
             orders: [],
             menu: [],
-            cart: []
+            cart: [],
+            tax: null
         }
         console.log("(Main)props tableID: ", this.state.table);
-  
+
     }
 
     componentDidMount() {
@@ -54,9 +55,9 @@ class Main extends Component {
             <div>
                 <BrowserRouter >
                     <Route path={'/' + this.state.restaurant + '/' + this.state.table + '/promotions'} component={() => <Promotion restaurant={this.state.restaurant} table={this.state.table} menu={this.state.menu} />} />
-                    <Route path={'/' + this.state.restaurant + '/' + this.state.table + '/cart'} component={() => <Cart restaurant={this.state.restaurant} table={this.state.table} cart={this.state.cart} />} />
+                    <Route path={'/' + this.state.restaurant + '/' + this.state.table + '/cart'} component={() => <Cart restaurant={this.state.restaurant} table={this.state.table} cart={this.state.cart} tax={this.state.tax} />} />
                     <Route path={'/' + this.state.restaurant + '/' + this.state.table + '/menu'} component={() => <Menu restaurant={this.state.restaurant} table={this.state.table} menu={this.state.menu} currentCategory={this.props.currentCategory} />} />
-                    <Route path={'/' + this.state.restaurant + '/' + this.state.table + '/orderHistory'} component={() => <OrderHistory restaurant={this.state.restaurant} table={this.state.table} orders={this.state.orders} />} />
+                    <Route path={'/' + this.state.restaurant + '/' + this.state.table + '/orderHistory'} component={() => <OrderHistory restaurant={this.state.restaurant} table={this.state.table} orders={this.state.orders} tax={this.state.tax} />} />
                     <Redirect
                         to={'/' + this.state.restaurant + '/' + this.state.table + '/menu'}
                     />
@@ -80,6 +81,11 @@ class Main extends Component {
     };
     getCart = (restaurantName, tablename) => {
         if (restaurantName != null && tablename != null) {
+            // get the tax
+            restaurants.doc(restaurantName)
+                .get()
+                .then(doc => this.setState({ tax: doc.data().tax }))
+
             restaurants.doc(restaurantName).collection('tables').doc(tablename).collection('cart')
                 .onSnapshot(snapshot => {
 

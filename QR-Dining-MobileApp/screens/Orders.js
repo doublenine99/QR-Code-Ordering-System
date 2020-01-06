@@ -74,34 +74,26 @@ export default class tables extends React.Component {
     // console.log("tables", this.state.tables.length);
     let i = 0;
     /*if (this.state.tables != null && this.state.tables.length != 0) {*/
-      let tables = this.state.tables ? this.state.tables : [];
-      let filter = !this.state.unfinished;
-      return (
-        <SafeAreaView>
-          {/*<ScrollView contentContainerStyle={{ alignItems: "center", paddingTop: 10 }}>*/}
-          {/*Segmented Tab*/}
-          <View style={{ flexDirection: "column", alignSelf: "center" }}>
-            <View style={{ flexDirection: "row", marginVertical: 20 }}>
-              <Button raised text="In Progress" onPress={() => this.handleProgress()} style={{ container: Object.assign({}, this.state.unfinished ?  styles.tabStyle: styles.activeTabStyle , styles.leftTabStyle), text: this.state.unfinished ? styles.tabTextStyle : styles.activeTabTextStyle }} />
-              <Button raised text="Served" onPress={() => this.handleServed()} style={{ container: Object.assign({}, !this.state.unfinished ? styles.tabStyle : styles.activeTabStyle, styles.rightTabStyle), text: !this.state.unfinished ? styles.tabTextStyle : styles.activeTabTextStyle }} />
-            </View>
+    let tables = this.state.tables ? this.state.tables : [];
+    let filter = !this.state.unfinished;
+    return (
+      <View style={{ flex: 1 }}>
+        <View style={{ flexDirection: "column", alignSelf: "center" }}>
+          <View style={{ flexDirection: "row", marginVertical: 1 }}>
+            <Button raised text="In Progress" onPress={() => this.handleProgress()} style={{ container: Object.assign({}, this.state.unfinished ? styles.tabStyle : styles.activeTabStyle, styles.leftTabStyle), text: this.state.unfinished ? styles.tabTextStyle : styles.activeTabTextStyle }} />
+            <Button raised text="Served" onPress={() => this.handleServed()} style={{ container: Object.assign({}, !this.state.unfinished ? styles.tabStyle : styles.activeTabStyle, styles.rightTabStyle), text: !this.state.unfinished ? styles.tabTextStyle : styles.activeTabTextStyle }} />
           </View>
-          <FlatList
-            data={this.state.tables}
-            renderItem={({ item }) => <Order key={item} tableNumber={item} filter={!this.state.unfinished} />}
-            keyExtractor={(item) => item}
-            extraData={this.state.unfinished}
-          />
-          {/*</ScrollView>*/}
-        </SafeAreaView>
-      )
-   /* } else {
-      return <View>
-        <Text>
-          Loading
-        </Text>
+        </View>
+        <FlatList
+          data={this.state.tables}
+          renderItem={({ item }) => <Order key={item} tableNumber={item} filter={!this.state.unfinished} />}
+          keyExtractor={(item) => item}
+          extraData={this.state.unfinished}
+        />
+
       </View>
-    }*/
+    )
+
   }
 }
 

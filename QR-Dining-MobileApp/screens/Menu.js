@@ -143,7 +143,8 @@ export default class Menu extends Component {
 
   render() {
     return (
-      <View >
+      <View style={{ flex: 1 }}>
+
         <Text style={{ alignSelf: 'center', fontWeight: 'bold', fontSize: 20 }}> MENU </Text>
         <Button icon="playlist-edit"
           onPress={() => { this.setState({ categoryDialogOpen: true }) }}
@@ -154,23 +155,20 @@ export default class Menu extends Component {
             onDismiss={this.hideCategoryDialog}>
             <Dialog.Title>All Categories</Dialog.Title>
             <Dialog.Content>
-              <FlatList
-                data={this.state.restauCatogories}
-                renderItem={({ item, index }) => this.renderCategory(item, index)}
-                keyExtractor={(item, index) => index.toString()}
-              />
               <TextInput
                 placeholder='Enter New Category'
                 value={this.state.newCategory}
                 onChangeText={inputCategory => this.setState({ newCategory: inputCategory })}
               />
-
-
               <Button
                 icon="plus"
                 onPress={this.addCategory}
               >Add</Button>
-
+              <FlatList
+                data={this.state.restauCatogories}
+                renderItem={({ item, index }) => this.renderCategory(item, index)}
+                keyExtractor={(item, index) => index.toString()}
+              />
             </Dialog.Content>
             <Dialog.Actions>
               <Button onPress={this.hideCategoryDialog}>Done</Button>
@@ -178,7 +176,7 @@ export default class Menu extends Component {
           </Dialog>
         </Portal>
 
-        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingBottom: 40 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingBottom: 10 }}>
           <Button icon='step-backward'
             onPress={() => { this.props.navigation.navigate('Profile') }}
           >Back</Button>
@@ -187,15 +185,15 @@ export default class Menu extends Component {
           >Add New Dish</Button>
         </View>
 
-        <View style={{ height: 700 }}>
+        <View style={{ flex: 1 }}>
           <FlatList
+            // contentContainerStyle={{ paddingBottom: 20 }}
             data={this.state.DATA}
             renderItem={({ item }) => <Dish id={item.toString()} modalVisible={false} deleteDish={this.deleteDish} />}
             keyExtractor={item => item}
             numColumns={2}
           />
         </View>
-
       </View >
 
     );

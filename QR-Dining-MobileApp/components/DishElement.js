@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { ScrollView, Button, TextInput, CheckBox, Alert, TouchableHighlight, Switch, Dimensions, StyleSheet, View, Text, Image, TouchableOpacity, Modal } from 'react-native';
-import { FontAwesome, MaterialIcons, Ionicons } from '@expo/vector-icons';
-// import DishElement from '../components/Dish';
+import { ScrollView, SafeAreaView, Alert, TouchableHighlight, Dimensions, StyleSheet, View, Text } from 'react-native';
+import { TextInput, Switch } from 'react-native-paper';
 import * as firebase from 'firebase';
 // import { koiSushiMenu, koiSushiRestaurant } from '../config';
-
+import { Button, Dialog, Portal } from 'react-native-paper';
 import { loggedUser } from '../screens/Login';
 
 var MenuRef;
@@ -15,7 +14,7 @@ export default class DishElement extends Component {
         super(props);
         MenuRef = firebase.firestore().collection(String(loggedUser.displayName) + "Menu");
         RestaurantRef = firebase.firestore().collection("restaurants").doc(String(loggedUser.displayName));
-        this.fetchTable();
+        this.fetchDish();
         this.fetchCategory();
 
     }
@@ -27,9 +26,10 @@ export default class DishElement extends Component {
         checkeds: {},
         //image:""
         promptPrice: 0,
+        availability: "",
     };
 
-    fetchTable = () => {
+    fetchDish = () => {
         temp = [];
 
         MenuRef.doc(this.state.id).get().then(
@@ -39,10 +39,11 @@ export default class DishElement extends Component {
                     this.setState({ price: doc.data().price });
                     this.setState({ categories: doc.data().categories });
                     this.setState({ description: doc.data().description });
-                    if (focus.data().newPrice.exists) {
+                    this.setState({ availability: doc.data().availability });
+                    // if (focus.data().newPrice.exists) {
 
-                        this.setState({ promptPrice: doc.data().newPrice });
-                    }
+                    //     this.setState({ promptPrice: doc.data().newPrice });
+                    // }
                     // this.setState({image:doc.data().image});
                 }
                 else {
@@ -78,6 +79,7 @@ export default class DishElement extends Component {
         MenuRef.doc(this.state.id).update({ price: this.state.price });
         MenuRef.doc(this.state.id).update({ newPrice: this.state.promptPrice });
         MenuRef.doc(this.state.id).update({ description: this.state.description });
+        MenuRef.doc(this.state.id).update({ availability: this.state.availability });
 
         this.updateCategories();
     }
@@ -105,7 +107,6 @@ export default class DishElement extends Component {
                 <View style={{ flexDirection: 'row' }}>
                     <Text>{e}</Text>
                     <Switch
-
                         value={temp[e]}
                         onValueChange={() => {
                             temp[e] = !temp[e];
@@ -123,32 +124,68 @@ export default class DishElement extends Component {
 
     render() {
         return (
-            //<View style={{justifyContent: 'center', alignItems:'center',backgroundColor:'yellow', padding:10}}>
-            <View style={styles.container}>
-                <Text>id: {this.state.id}</Text>
-                <Text>Name</Text>
-                <TextInput placeholder={this.state.name} style={styles.label} onChangeText={name => this.setState({ name })} />
-                <Text>Price</Text>
-                <TextInput placeholder={this.state.price.toString()} stle={styles.label} onChangeText={price => this.change2Num(price)} />
-                <Text>Prompt Price</Text>
-                <TextInput placeholder={this.state.promptPrice.toString()} style={styles.label} onChangeText={promptPrice => this.setState({ promptPrice: Number(promptPrice) })} />
-                <Text>Category: </Text>
-                {this.state.restauCatogories != null ? this.createCheckBox() : "aa"}
-                <Text>Description</Text>
-                <TextInput placeholder={this.state.description} style={styles.label} onChangeText={description => this.setState({ description })} />
-
+            <View
+                style={{
+                    padding: 10,
+                    alignItems: "center",
+                }}>
                 <View style={{ flexDirection: 'row' }}>
                     <TouchableHighlight
-                        // style={styles.container}
                         onPress={() => { this.updateAll(); this.props.setModalVisible() }}>
                         <Text style={{ fontSize: 20, padding: 20 }}>Save</Text>
                     </TouchableHighlight>
                     <TouchableHighlight onPress={() => { this.props.setModalVisible() }}>
                         <Text style={{ fontSize: 20, padding: 20 }}>Cancel</Text>
                     </TouchableHighlight>
+                </View >
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={{
+                        width: 200,
+                        padding: 10,
+                        // alignItems: "center"
+                    }}
+                    >
+
+                        {/* <Text>Food Name: {this.state.name}</Text> */}
+                        <TextInput
+                            label="Enter the food name:"
+                            value={this.state.name}
+                            // autoFocus={true}
+                            onChangeText={na => this.setState({ name: na })} />
+
+
+                        {/* <Text>Price</Text> */}
+                        <TextInput
+                            label="Enter the price:"
+                            value={'$' + this.state.price.toString()}
+                            keyboardType="numeric"
+                            onChangeText={pri => this.change2Num(pri)} />
+                        {/* <Text>Promotion Price</Text> */}
+                        <TextInput
+                            label="Promotion price:"
+                            value={'$' + this.state.promptPrice.toString()}
+                            keyboardType="numeric"
+                            onChangeText={newPrice => this.setState({ promptPrice: Number(newPrice) })} />
+                        {/* <Text>Description</Text> */}
+                        <TextInput
+                            label="Enter the description:"
+                            value={this.state.description}
+                            multiline={true}
+                            onChangeText={des => this.setState({ description: des })} />
+                        <View style={{ flexDirection: 'row' }}>
+                            <Text>Availability:</Text>
+                            <Switch
+                                value={this.state.availability}
+                                onValueChange={availability => this.setState({ availability })} />
+                        </View>
+
+                    </View>
+                    <ScrollView>
+                        <Text>Category: </Text>
+                        {this.state.restauCatogories != null ? this.createCheckBox() : "aa"}
+                    </ScrollView>
                 </View>
             </View>
-
 
         );
     }
@@ -161,6 +198,17 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         //height: Dimensions.get('window').height,
         justifyContent: 'center',
+    },
+    inputStyle: {
+        height: 80,
+        width: 300,
+        fontSize: 50,
+        color: '#212121',
+        fontSize: 40,
+        padding: 18,
+        margin: 10,
+        marginBottom: 0,
+        alignItems: 'stretch',
     },
 
     label: {

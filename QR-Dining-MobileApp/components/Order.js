@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableWithoutFeedback, SafeAreaView } from 'react-native';
 import { Card, COLOR } from 'react-native-material-ui';
+import { Divider } from 'react-native-paper';
 // import { koiSushiTables } from '../config';
 import firebase from 'firebase';
 import { loggedUser } from '../screens/Login';
@@ -79,7 +80,7 @@ class Order extends React.Component {
       }
       return <View style={{ flexDirection: "column" }}>
 
-        <Text style={{ backgroundColor: COLOR.pinkA400, color: "white", fontWeight: "bold", textAlign: "center", paddingVertical: 7 }}>{"Order #" + order_number + " : " + day}</Text>
+        <Text style={{ backgroundColor: COLOR.pinkA400, color: "white", fontWeight: "bold", textAlign: "center"}}>{"Order #" + order_number + " : " + day}</Text>
         {/* <Text style={Object.assign({}, { flex: 1.5 }, styles.tableData)}>{order.quantity ? order.quantity : 4}</Text> */}
         {/*<Text style={Object.assign({}, { flex: 1.5 }, styles.tableData)}>{order.price ? order.price : 10}</Text>*/}
         <View style={{ flexDirection: "column" }}>
@@ -92,7 +93,7 @@ class Order extends React.Component {
             data={order.dishes ? order.dishes : [{ name: "N/A", price: 0, quantity: 0 }]}
             renderItem={({ item }) => this.orderDish(item)}
             keyExtractor={(item, index) => index.toString()} />
-          <View style={{ flexDirection: "row", backgroundColor: COLOR.pinkA400, marginVertical: 20 }}>
+          <View style={{ flexDirection: "row", backgroundColor: COLOR.pinkA400, marginVertical: 5 }}>
             <Text style={Object.assign({}, { flex: 2 }, styles.tableHeader)}>Total</Text>
             <Text style={Object.assign({}, { flex: 1.5 }, styles.tableHeader)}>{total_quantity}</Text>
             <Text style={Object.assign({}, { flex: 1.5 }, styles.tableHeader)}>{total}</Text>
@@ -113,14 +114,15 @@ class Order extends React.Component {
           <Card style={{ container: { borderRadius: 10, marginVertical: 25, marginHorizontal: 0 } }}>
             <View style={styles.header}>
               <Text style={styles.header}>Table Number: {this.props.tableNumber}</Text>
-              {/* <Text style={{ fontSize: 20 }}>Time: {this.props.ordertime ? this.props.ordertime : "3:00PM"}</Text> */}
             </View>
+            <Divider />
             <FlatList
               data={data}
               renderItem={({ item, index }) => this.tableItem(item, index)}
               keyExtractor={(item, index) => index.toString()}
             />
           </Card>
+          <Divider />
         </View>
       )
     } else {
@@ -135,7 +137,7 @@ let styles = StyleSheet.create({
     color: "white",
     backgroundColor: COLOR.pinkA400,
     fontWeight: "bold",
-    fontSize: 22,
+    fontSize: 15,
     padding: 10,
     // fontFamily: "Roboto",
   },

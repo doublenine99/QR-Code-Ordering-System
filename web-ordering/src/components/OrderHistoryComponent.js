@@ -162,8 +162,8 @@ export default function OrderHistory(props) {
   };
 
   const invoiceSubtotal = parseFloat(subtotal(unfinishedOrders)).toFixed(2);
-  const invoiceTaxes = parseFloat(0.05 * invoiceSubtotal).toFixed(2);
-  const invoiceTotal = parseFloat(invoiceSubtotal * 1.05).toFixed(2);
+  const invoiceTaxes = parseFloat(props.tax * invoiceSubtotal).toFixed(2);
+  const invoiceTotal = parseFloat(invoiceSubtotal * (1+ props.tax)).toFixed(2);
 
   return (
     <ThemeProvider theme={theme}>

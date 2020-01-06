@@ -22,17 +22,17 @@ class Profile extends Component {
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={styles.banner}>
           <View style={styles.profPic}>
-            <FontAwesome name="user-circle-o" size={150} color="#0198E1" />
+            <FontAwesome name="user-circle-o" size={150} color="#64d8cb" />
           </View>
           <Text style={styles.displayName}>{"Welcome " + user.displayName + "!"}</Text>
           <View style={styles.menuICons}>
             <TouchableOpacity style={styles.menuIcon} onPress={() => { this.props.navigation.navigate('Menu') }}>
-              <FontAwesome name="book" size={50} color="rgb(236, 19, 19)" />
-              <Text style={{ fontWeight: "bold"}}>MENU</Text>
+              <FontAwesome name="book" size={50} color="#64d8cb" />
+              <Text style={{ fontWeight: "bold"}}>Menu</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.menuIcon} onPress={() => { Alert.alert('Tel: 608-555-555') }}>
-              <FontAwesome name="plus" size={50} color="rgb(236, 19, 19)" />
-              <Text style={{ fontWeight: "bold"}}>ASSISTANCE</Text>
+            <TouchableOpacity style={styles.menuIcon} onPress={() => { Alert.alert("Email: pjj851135136@gmail.com\nTel: 6083815169") }}>
+              <FontAwesome name="plus" size={50} color="#64d8cb" />
+              <Text style={{ fontWeight: "bold"}}>Help</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -50,7 +50,7 @@ class Profile extends Component {
           </View>
         
         <ProfileElement label="Password" value={user.password} />
-        <Button title="Logout" style={{ flex: 1, width: 20 }} onPress={() => this.handleLogOut()} />
+        <Button color = "#64d8cb" title="Logout" style={{ flex: 1, width: 20 }} onPress={() => this.handleLogOut()} />
       </ScrollView>
 
     );
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   },
   displayName: {
     alignSelf: 'center',
-    color: 'rgb(236, 19, 19)',
+    // color: 'rgb(236, 19, 19)',
     fontWeight: 'bold',
     fontSize: 32,
     marginBottom: 15
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 15,
     fontWeight: "bold",
-    color: "rgb(236, 19, 19)",
+    color: "#64d8cb",
 },
 value: {
     fontSize: 25,

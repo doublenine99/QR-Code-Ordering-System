@@ -8,6 +8,7 @@ import * as firebase from 'firebase';
 import DishElement from './DishElement';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
+import { Avatar } from 'react-native-paper';
 
 import { loggedUser } from '../screens/Login';
 
@@ -92,7 +93,14 @@ export default class Dish extends Component {
 
     let user = firebase.auth().currentUser;
     return (
-      <View style={{ flex: 1, backgroundColor: '#64d8cb', margin: 3, height: 150 }}>
+      <View
+        style={{
+          flex: 10,
+          backgroundColor: '#64d8cb',
+          margin: 1,
+          // height: 50
+        }}
+      >
         <Modal
           style={{ margin: 0, justifyContent: 'center', position: 'absolute', alignItems: 'center', backgroundColor: 'yellow' }}
           animationType="slide"
@@ -103,36 +111,24 @@ export default class Dish extends Component {
 
         </Modal>
 
-        <View style={styles.banner}>
-          <View style={{ flexDirection: 'row', flex: 1 }}>
 
-            <View style={{ justifyContent: 'center' }}>
-              <Text> Name: {this.state.tableData.name}</Text>
-              <Text> Price: {this.state.tableData.price}</Text>
-              <View style={{ flexDirection: 'row' }}>
-                <Text>Availability</Text>
-                <Switch value={this.state.tableData.availability}
-                  onValueChange={availability =>
-                    MenuRef.doc(this.state.id).update({ "availability": availability })} />
-              </View>
-            </View>
-            <TouchableOpacity style={{ flex: 1 }} onPress={() => this.pickImage()}>
-              <Image style={{ flex: 1 }}
-                source={{ url: this.state.tableData.image }}
-              />
-              <Text>Change Image</Text>
-            </TouchableOpacity>
 
-          </View>
-
+        <View>
+          <Text> Name: {this.state.tableData.name}</Text>
+          <Text> Price: {this.state.tableData.price}</Text>
+          <TouchableOpacity
+            onPress={() => this.pickImage()}>
+            <Avatar.Image size={50}
+              source={{ uri: (this.state.tableData.image !== "") ? this.state.tableData.image : "https://firebasestorage.googleapis.com/v0/b/qr-code-ordering-system.appspot.com/o/koisushiMenu%2Fdefault-food-image.jpg?alt=media&token=e6958bef-eae1-4144-b670-e717768d518f" }}
+            />
+            <Text>Change Image</Text>
+          </TouchableOpacity>
           <View style={{ flexDirection: 'row' }}>
             <Button title='Edit' onPress={() => { this.setModalVisible(); }} />
             <Button title='Delete' onPress={() => { this.props.deleteDish(this.state.id); }} />
           </View>
         </View>
-
       </View>
-
     );
   }
 }
