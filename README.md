@@ -23,7 +23,7 @@ The color on each table means different status of the table
 * Orange: all dishes for this table have been served, need them to pay after finish.
 * Red: this table need some help
 
-![enter image description here](https://firebasestorage.googleapis.com/v0/b/qr-code-ordering-system.appspot.com/o/Table%20Page.png?alt=media&token=3650de26-22b1-44b4-8950-0537d24a6d9d)
+![Table Page](https://firebasestorage.googleapis.com/v0/b/qr-code-ordering-system.appspot.com/o/table%20page.png?alt=media&token=3c3195de-5dfa-4f09-87ba-f858c4da3645)
 
 
 
@@ -34,7 +34,7 @@ The color on each table means different status of the table
 
 	On the  Menu page, you can edit the dish information and categories you want to have.
 
-![enter image description here](https://firebasestorage.googleapis.com/v0/b/qr-code-ordering-system.appspot.com/o/Edit%20Menu.png?alt=media&token=e0bbd464-dd6c-479e-9028-8f13c2fba6e0)
+![Menu Page](https://firebasestorage.googleapis.com/v0/b/qr-code-ordering-system.appspot.com/o/menu%20page.png?alt=media&token=1badacbf-fd41-45a2-9bc9-c8ec14effd83)
 
 
 ##  Web-ordering
