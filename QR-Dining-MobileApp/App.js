@@ -1,8 +1,5 @@
-/*import bugsnag from '@bugsnag/expo';
-const bugsnagClient = bugsnag();*/
 
 import React, { Component, useState } from 'react';
-//import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity, KeyboardAvoidingView} from 'react-native';
 import { YellowBox } from 'react-native';
 import Login from './screens/Login';
 import Signup from './screens/Signup';

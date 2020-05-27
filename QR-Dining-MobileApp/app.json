@@ -31,15 +31,10 @@
       "package": "com.cs506.ordering",
     },
     "extra": {
-      "bugsnag": {
-        "apiKey": "69892527312a0ebe3aa44b0b4dffd2ff"
-      }
     },
     "hooks": {
       "postPublish": [
         {
-          "file": "@bugsnag/expo/hooks/post-publish.js",
-          "config": {}
         }
       ]
     }

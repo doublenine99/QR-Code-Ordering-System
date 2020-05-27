@@ -12,7 +12,6 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "@bugsnag/expo": "^6.4.1",
     "expo": "^35.0.0",
     "expo-constants": "^7.0.1",
     "expo-image-picker": "^7.0.0",
