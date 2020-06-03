@@ -7,6 +7,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
+import Slider from '@material-ui/core/Slider';
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
@@ -69,11 +70,13 @@ export default function DishDetailDialog(props) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
+  const [amount, setAmount] = useState(1);  // the slider value for chooseing the amount
   const [open, setOpen] = React.useState(false);
   const [addAlert, setAddAlert] = useState(false);
 
   function handleAddButton(dishRef, tableID) {
-    const increment = firebase.firestore.FieldValue.increment(1);
+    console.log(amount)
+    const increment = firebase.firestore.FieldValue.increment(amount);
     console.log(dishRef.name);
     var gt = dishRef.name;
     const st = restaurants.doc(props.restaurant).collection("tables").doc(tableID).collection("cart").doc(gt);
@@ -89,11 +92,11 @@ export default function DishDetailDialog(props) {
           restaurants.doc(props.restaurant).collection('tables').doc(tableID).collection('cart').doc(fa)
             .set({
               dishRef,
-              number: 1,
+              number: amount,
             })
 
         }
-        console.log("aaa");
+        // console.log("aaa");
         setAddAlert(true);
       }).catch(function (error) {
         console.log("Error getting document:", error);
@@ -110,12 +113,31 @@ export default function DishDetailDialog(props) {
   const handleClose = () => {
     setOpen(false);
   };
+  const marks = [
+    {
+      value: 1,
+      label: '1',
+    },
+    {
+      value: 2,
+      label: '2',
+    },
+    {
+      value: 3,
+      label: '3',
+    },
+    {
+      value: 5,
+      label: '5',
+    },
+  ];
+  
+  function valuetext(value) {
+    return `${value}`;
+  }
   if (props.dish != null) {
     return (
       <div>
-
-
-
         <Dialog
           fullScreen={fullScreen}
           onClose={handleClose}
@@ -134,9 +156,23 @@ export default function DishDetailDialog(props) {
               alt={props.dish.name}
             />
             <Typography gutterBottom>
+              {console.log(props.dish)}
               {props.dish.description}
             </Typography>
-
+            <Slider
+              defaultValue={1}
+              getAriaValueText={valuetext}
+              aria-labelledby="discrete-slider-always"
+              step={1}
+              marks={marks}
+              valueLabelDisplay="on"
+              min={1}
+              max={10}
+              onChange={(event, value)=>{
+                setAmount(value)
+                console.log(amount)
+              }}
+            />
           </DialogContent>
           <DialogActions>
             <Box m={2} fontFamily="Monospace" fontStyle="italic" textAlign="left">

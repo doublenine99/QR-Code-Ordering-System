@@ -121,7 +121,7 @@ export default function OrderHistory(props) {
   const [open, setOpen] = React.useState(false);
   const [fullWidth] = React.useState(true);
   const [scroll, setScroll] = React.useState('paper');
-  const [paymentChoice, setPaymentChoice] = React.useState("inPerson");
+  const [paymentChoice, setPaymentChoice] = React.useState('EFECTIVO');
   const [assistAlert, setAssistAlert] = React.useState(false);
 
   const handleClickOpen = scrollType => () => {
@@ -129,15 +129,27 @@ export default function OrderHistory(props) {
     setScroll(scrollType);
   };
   const handlePaymentConfirm = (event) => {
-    if (paymentChoice === "inPerson") {
+    // if (paymentChoice === "inPerson") {
+    //   restaurants.doc(props.restaurant).collection('tables').doc(props.table)
+    //     .update({ status: "NEEDTO_ASSIST" })
+    //     .then(console.log("set the assistance flag of", props.table, "to true"))
+    //     .then(setAssistAlert(true))
+    // }
+    // else if (paymentChoice === "venmo") {
+    //   setAssistAlert(true);
+    // }
+    console.log(paymentChoice)
+    if (paymentChoice === "EFECTIVO" || paymentChoice === 'VISA') {
+      restaurants.doc(props.restaurant).collection('tables').doc(props.table)
+        .update({
+          paymentChoice: paymentChoice
+        })
       restaurants.doc(props.restaurant).collection('tables').doc(props.table)
         .update({ status: "NEEDTO_ASSIST" })
         .then(console.log("set the assistance flag of", props.table, "to true"))
         .then(setAssistAlert(true))
     }
-    else if (paymentChoice === "venmo") {
-      setAssistAlert(true);
-    }
+
     setOpen(false);
   };
 
@@ -163,7 +175,7 @@ export default function OrderHistory(props) {
 
   const invoiceSubtotal = parseFloat(subtotal(unfinishedOrders)).toFixed(2);
   const invoiceTaxes = parseFloat(props.tax * invoiceSubtotal).toFixed(2);
-  const invoiceTotal = parseFloat(invoiceSubtotal * (1+ props.tax)).toFixed(2);
+  const invoiceTotal = parseFloat(invoiceSubtotal * (1 + props.tax)).toFixed(2);
 
   return (
     <ThemeProvider theme={theme}>
@@ -191,7 +203,7 @@ export default function OrderHistory(props) {
                     </Button>
                     </Link>
                     <Button variant="contained" size="small" color="primary" className={classes.button} onClick={handleClickOpen('paper')}>
-                      MAKE A PAYMENT
+                      Ready to Check
                     </Button>
                     <Dialog fullWidth={fullWidth} scroll={scroll} aria-labelledby="dialog-title" open={open}>
                       <DialogTitle disableTypography="true" id="dialog-title">
@@ -202,14 +214,18 @@ export default function OrderHistory(props) {
                       <DialogContent dividers>
                         <FormControl component="fieldset" className={classes.formControl}>
                           <RadioGroup aria-label="payment" name="payment" value={paymentChoice} onChange={handlePaymentChange}>
-                            <FormControlLabel value="inPerson" control={<Radio />} label="In Person" />
-                            <FormControlLabel value="venmo" control={<Radio />} label="Venmo" />
+                            <FormControlLabel value="EFECTIVO" control={<Radio />} label="EFECTIVO" />
+                            <FormControlLabel value="VISA" control={<Radio />} label="VISA" />
                           </RadioGroup>
                         </FormControl>
                       </DialogContent>
+                      <Button autoFocus size="large" color="primary" onClick={()=>{setOpen(false)}}>
+                        Cancel
+                      </Button>
                       <Button autoFocus size="large" color="primary" onClick={handlePaymentConfirm}>
                         Confirm
                       </Button>
+
                     </Dialog>
                   </div>
                 </Paper>

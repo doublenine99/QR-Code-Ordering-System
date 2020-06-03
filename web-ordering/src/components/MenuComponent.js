@@ -68,7 +68,7 @@ const Menu = (props) => {
         var MenuAfterfiltered = [];
         var menu = Array.from(menu).filter(dish => dish.availability === true);
         var k = String(currentCategory).charAt(0);
-        console.log(k);
+        console.log('category char: '+ k);
 
         if (currentCategory.charAt(0) != "#") {
             for (var dish of menu) {
