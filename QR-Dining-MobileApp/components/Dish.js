@@ -96,13 +96,13 @@ export default class Dish extends Component {
       <View
         style={{
           flex: 10,
-          backgroundColor: '#64d8cb',
+          border: 'solid',
           margin: 1,
-          // height: 50
+
         }}
       >
         <Modal
-          style={{ margin: 0, justifyContent: 'center', position: 'absolute', alignItems: 'center', backgroundColor: 'yellow' }}
+          style={{ margin: 0, justifyContent: 'center', position: 'absolute', alignItems: 'center' }}
           animationType="slide"
           transparent={false}
           visible={this.state.modalVisible}>
@@ -115,7 +115,7 @@ export default class Dish extends Component {
 
         <View>
           <Text> Name: {this.state.tableData.name}</Text>
-          <Text> Price: {this.state.tableData.price}</Text>
+          <Text> Price: ${this.state.tableData.price}</Text>
           <TouchableOpacity
             onPress={() => this.pickImage()}>
             <Avatar.Image size={50}

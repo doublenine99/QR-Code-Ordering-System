@@ -49,7 +49,7 @@ class Profile extends Component {
             </View>
           </View>
         
-        <ProfileElement label="Password" value={user.password} />
+        {/* <ProfileElement label="Password" value={user.password} /> */}
         <Button color = "#64d8cb" title="Logout" style={{ flex: 1, width: 20 }} onPress={() => this.handleLogOut()} />
       </ScrollView>
 

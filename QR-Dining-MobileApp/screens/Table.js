@@ -12,7 +12,7 @@ import {
   Dimensions,
   KeyboardAvoidingView,
 } from 'react-native';
-import { Button, Dialog, Portal } from 'react-native-paper';
+import { Button, Dialog, Portal, Divider } from 'react-native-paper';
 import { COLOR } from 'react-native-material-ui';
 // import { IconButton, Colors } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -146,7 +146,7 @@ export default class Table extends React.Component {
           <Dialog
             visible={this.state.editTableDialogOpen}
             onDismiss={this._hideEditTableDialog}>
-            <Dialog.Title>Edit table</Dialog.Title>
+            <Dialog.Title>Table Status</Dialog.Title>
             <Dialog.Content>
               <RadioButton.Group
                 onValueChange={(value) => { this.updateStatus(this.state.selectedTable, value) }}
@@ -164,10 +164,28 @@ export default class Table extends React.Component {
                   <Text>Wait for Pay</Text>
                   <RadioButton value="NEEDTO_PAY" />
                 </View>
-                <View>
+                {/* <View>
                   <Text>Need to help</Text>
                   <RadioButton value="NEEDTO_ASSIST" />
+                </View> */}
+              </RadioButton.Group>
+              <Divider></Divider>
+              <Divider></Divider>
+
+              <RadioButton.Group
+                onValueChange={() => { "s" }}
+                value={this.fetchPaymentOption()}
+            
+              >
+                <View>
+                  <Text>EFECTIVO</Text>
+                  <RadioButton value="EFECTIVO" />
                 </View>
+                <View>
+                  <Text>VISA </Text>
+                  <RadioButton value="VISA" />
+                </View>
+
               </RadioButton.Group>
 
               <Button
@@ -202,14 +220,17 @@ export default class Table extends React.Component {
 
   // handler for press the add table button
   _addTable(tableName) {
-    tableRef.doc(tableName)
-      .set(
-        {
-          name: tableName,
-          needAssistance: false,
-          status: 'NEEDTO_ORDER',
-        })
-      .then(this._hideAddTableDialog());
+    if (tableName !== "") {
+      tableRef.doc(tableName)
+        .set(
+          {
+            name: tableName,
+            needAssistance: false,
+            status: 'NEEDTO_ORDER',
+          })
+        .then(this._hideAddTableDialog());
+
+    }
 
   }
   // handler for long press one table
@@ -234,11 +255,12 @@ export default class Table extends React.Component {
     tableRef.onSnapshot(querySnapshot => {
       const tableList = [];
       querySnapshot.forEach(doc => {
-        const { name, status } = doc.data();
+        const { name, status, paymentChoice } = doc.data();
         // const name = Number(name.substring(5));
         tableList.push({
           name,
           status,
+          paymentChoice
         })
       });
 
@@ -329,6 +351,16 @@ export default class Table extends React.Component {
     var tableObj = this.state.tables.filter(tb => tb.name == this.state.selectedTable);
     if (tableObj.length != 0) {
       return (tableObj[0].status)
+    }
+  }
+
+  // 
+  fetchPaymentOption =  () => {
+    
+    var tableObj = this.state.tables.filter(tb => tb.name == this.state.selectedTable);
+    console.log(tableObj)
+    if (tableObj.length != 0) {
+      return (tableObj[0].paymentChoice)
     }
   }
   // Update table color to indicate the table status.

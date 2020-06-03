@@ -18,7 +18,6 @@ export default class DishElement extends Component {
         this.fetchCategory();
 
     }
-
     state = {
         name: "", price: 0, categories: [], description: "",
         id: this.props.id,
@@ -40,11 +39,7 @@ export default class DishElement extends Component {
                     this.setState({ categories: doc.data().categories });
                     this.setState({ description: doc.data().description });
                     this.setState({ availability: doc.data().availability });
-                    // if (focus.data().newPrice.exists) {
-
-                    //     this.setState({ promptPrice: doc.data().newPrice });
-                    // }
-                    // this.setState({image:doc.data().image});
+                 
                 }
                 else {
                     console.log("No such doc");
@@ -146,7 +141,7 @@ export default class DishElement extends Component {
                     }}
                     >
 
-                        {/* <Text>Food Name: {this.state.name}</Text> */}
+                   
                         <TextInput
                             label="Enter the food name:"
                             value={this.state.name}
@@ -154,19 +149,20 @@ export default class DishElement extends Component {
                             onChangeText={na => this.setState({ name: na })} />
 
 
-                        {/* <Text>Price</Text> */}
+                     
                         <TextInput
                             label="Enter the price:"
-                            value={'$' + this.state.price.toString()}
+                            value={String(this.state.price)}
                             keyboardType="numeric"
-                            onChangeText={pri => this.change2Num(pri)} />
-                        {/* <Text>Promotion Price</Text> */}
-                        <TextInput
+                            onChangeText={pri =>this.setState({ price: Number(pri) })} />
+                            {/* onChangeText={pri => this.change2Num(pri)} /> */}
+                   
+                        {/* <TextInput
                             label="Promotion price:"
-                            value={'$' + this.state.promptPrice.toString()}
+                            value={String(this.state.promptPrice)}
                             keyboardType="numeric"
-                            onChangeText={newPrice => this.setState({ promptPrice: Number(newPrice) })} />
-                        {/* <Text>Description</Text> */}
+                            onChangeText={newPrice => this.setState({ promptPrice: Number(newPrice) })} /> */}
+                        
                         <TextInput
                             label="Enter the description:"
                             value={this.state.description}
@@ -191,72 +187,72 @@ export default class DishElement extends Component {
     }
 }
 
-const styles = StyleSheet.create({
-    container: {
-        height: Dimensions.get('window').height,
-        // flexGrow: 1,
-        alignItems: 'center',
-        //height: Dimensions.get('window').height,
-        justifyContent: 'center',
-    },
-    inputStyle: {
-        height: 80,
-        width: 300,
-        fontSize: 50,
-        color: '#212121',
-        fontSize: 40,
-        padding: 18,
-        margin: 10,
-        marginBottom: 0,
-        alignItems: 'stretch',
-    },
+// const styles = StyleSheet.create({
+//     container: {
+//         height: Dimensions.get('window').height,
+//         // flexGrow: 1,
+//         alignItems: 'center',
+//         //height: Dimensions.get('window').height,
+//         justifyContent: 'center',
+//     },
+//     inputStyle: {
+//         height: 80,
+//         width: 300,
+//         fontSize: 50,
+//         color: '#212121',
+//         fontSize: 40,
+//         padding: 18,
+//         margin: 10,
+//         marginBottom: 0,
+//         alignItems: 'stretch',
+//     },
 
-    label: {
-        fontSize: 15,
-        fontWeight: "bold",
-        color: "rgb(236, 19, 19)",
-    },
+//     label: {
+//         fontSize: 15,
+//         fontWeight: "bold",
+//         color: "rgb(236, 19, 19)",
+//     },
 
-    menuICons: {
-        flex: 1,
-        margin: 0,
-        flexDirection: "row",
-        alignItems: "center",
-        alignSelf: "stretch",
-        justifyContent: "flex-start",
-        //resizeMode: 'contain'
-    },
-    profileInfo: {
-        flex: 2,
-    },
-    displayName: {
-        alignSelf: 'center',
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: 32,
-        marginBottom: 15
-    },
+//     menuICons: {
+//         flex: 1,
+//         margin: 0,
+//         flexDirection: "row",
+//         alignItems: "center",
+//         alignSelf: "stretch",
+//         justifyContent: "flex-start",
+//         //resizeMode: 'contain'
+//     },
+//     profileInfo: {
+//         flex: 2,
+//     },
+//     displayName: {
+//         alignSelf: 'center',
+//         color: 'white',
+//         fontWeight: 'bold',
+//         fontSize: 32,
+//         marginBottom: 15
+//     },
 
-    modalView: {
-        backgroundColor: '#aaa',
-        height: 500,
-        justifyContent: 'center', alignItems: 'center',
-        paddingTop: 30
-    },
+//     modalView: {
+//         backgroundColor: '#aaa',
+//         height: 500,
+//         justifyContent: 'center', alignItems: 'center',
+//         paddingTop: 30
+//     },
 
-    banner: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        //backgroundColor: 'rgb(236, 19, 19)',
-        //width: '100%',
-    },
+//     banner: {
+//         flex: 1,
+//         alignItems: 'center',
+//         justifyContent: 'center',
+//         //backgroundColor: 'rgb(236, 19, 19)',
+//         //width: '100%',
+//     },
 
-    profPic: {
+//     profPic: {
 
-        //height: "50%",
-        alignSelf: 'center',
+//         //height: "50%",
+//         alignSelf: 'center',
 
-        //backgroundColor: 'green',
-    },
-});
+//         //backgroundColor: 'green',
+//     },
+// });
