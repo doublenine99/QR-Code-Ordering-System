@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "QR-Code Ordering",
-    "icon": "./utilities/logo_2.png",
+    "icon": "./utilities/PIDEAPP_LOG.png",
     "slug": "QR-Code-Ordering",
     "privacy": "public",
     "sdkVersion": "35.0.0",

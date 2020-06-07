@@ -172,11 +172,10 @@ export default class Table extends React.Component {
               <Divider></Divider>
               <Divider></Divider>
 
-            <Text>customer's chosen payment method</Text>
+            <Text>Customer's chosen payment method</Text>
               <RadioButton.Group
                 onValueChange={() => { "s" }}
-                value={this.fetchPaymentOption()}
-            
+                value={this.fetchPaymentOption()}    
               >
                 <View>
                   <Text>EFECTIVO</Text>

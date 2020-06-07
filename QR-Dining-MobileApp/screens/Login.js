@@ -61,11 +61,11 @@ export default class Login extends Component {
   render() {
     return (
       <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-        <Image source={require('./../utilities/logo_2.png')} style={styles.logo} />
+        <Image source={require('./../utilities/PIDEAPP_LOG.png')} style={styles.logo} />
         <View style={styles.inputBoxStyle}><TextInput placeholder="email" style={styles.inputTextStyle} placeholderTextColor="rgba(255, 255, 255, 0.3)" onChangeText={email => this.setState({ email })} /></View>
         <View style={styles.inputBoxStyle}><TextInput placeholder="Password" style={styles.inputTextStyle} placeholderTextColor="rgba(255, 255, 255, 0.3)" secureTextEntry onChangeText={password => this.setState({ password })} /></View>
         <TouchableOpacity style={styles.loginButton} onPress={this.handleSignIn.bind(this)}><Text style={styles.loginText}>Log In</Text></TouchableOpacity>
-        {/* <TouchableOpacity style={styles.loginButton} onPress={this.handleForgetPassword.bind(this)}><Text style={styles.loginText}>Forgot Password</Text></TouchableOpacity>
+        {/* <TouchableOpacity style={styles.loginButton} onPress={this.handleForgetPassword.bind(this)}><Text style={styles.loginText}>Forgot Password</Text></TouchableOpacity> 
         <View><Text style={styles.signupMessage}>Don't have an account? <Text style={styles.signUpLink} onPress={() => this.props.navigation.navigate('Signup')}>Sign Up Here!</Text></Text></View> */}
       </KeyboardAvoidingView>
     );
@@ -82,7 +82,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   inputBoxStyle: {
-    backgroundColor: "#64d8cb",
+    // backgroundColor: "#64d8cb",
+    backgroundColor: "#4e68f0",
     width: "80%",
     paddingHorizontal: 15,
     paddingVertical: 5,
@@ -95,7 +96,7 @@ const styles = StyleSheet.create({
     color: "black"
   },
   loginButton: {
-    backgroundColor: "#64d8cb",
+    backgroundColor: "#4e68f0",
     width: "60%",
     color: "white",
     paddingVertical: 5,

@@ -24,7 +24,7 @@ class Profile extends Component {
           <View style={styles.profPic}>
             <FontAwesome name="user-circle-o" size={150} color="#64d8cb" />
           </View>
-          <Text style={styles.displayName}>{"Welcome " + user.displayName + "!"}</Text>
+          <Text style={styles.displayName}>{"" + user.displayName + ""}</Text>
           <View style={styles.menuICons}>
             <TouchableOpacity style={styles.menuIcon} onPress={() => { this.props.navigation.navigate('Menu') }}>
               <FontAwesome name="book" size={50} color="#64d8cb" />

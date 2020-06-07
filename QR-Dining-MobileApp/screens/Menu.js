@@ -1,15 +1,11 @@
 import React, { Component } from 'react';
 import {
-  ScrollView,
-  // Button, 
-  CheckBox, Dimensions, StyleSheet, SafeAreaView, FlatList, View, Text, Image, TouchableOpacity, Modal
+  FlatList, View, Text, Image, TouchableOpacity, Modal
 } from 'react-native';
-import { FontAwesome, MaterialIcons, Ionicons } from '@expo/vector-icons';
 import * as firebase from 'firebase';
 // import { koiSushiMenu, koiSushiRestaurant } from '../config';
 import Dish from '../components/Dish';
 import { Button, Paragraph, Dialog, Portal } from 'react-native-paper';
-import { Checkbox } from 'react-native-paper';
 import { TextInput } from 'react-native-paper';
 import { loggedUser } from './Login';
 
@@ -199,39 +195,3 @@ export default class Menu extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    height: Dimensions.get('window').height,
-    flexGrow: 1,
-    //alignItems: 'center',
-    //height: Dimensions.get('window').height,
-    justifyContent: 'center',
-  },
-  container2: {
-    //flex:1,
-    alignItems: 'flex-start',
-  },
-  displayName: {
-    alignSelf: 'center',
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 32,
-    marginBottom: 15
-  },
-  banner: {
-    flex: 1,
-    //alignItems: 'center',
-    //justifyContent: 'flex-end',
-    backgroundColor: 'rgb(236, 19, 19)',
-    //width: '100%',
-  },
-
-  profPic: {
-
-    //height: "50%",
-    alignSelf: 'center',
-
-    //backgroundColor: 'green',
-  },
-});
