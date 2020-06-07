@@ -65,8 +65,8 @@ export default class Login extends Component {
         <View style={styles.inputBoxStyle}><TextInput placeholder="email" style={styles.inputTextStyle} placeholderTextColor="rgba(255, 255, 255, 0.3)" onChangeText={email => this.setState({ email })} /></View>
         <View style={styles.inputBoxStyle}><TextInput placeholder="Password" style={styles.inputTextStyle} placeholderTextColor="rgba(255, 255, 255, 0.3)" secureTextEntry onChangeText={password => this.setState({ password })} /></View>
         <TouchableOpacity style={styles.loginButton} onPress={this.handleSignIn.bind(this)}><Text style={styles.loginText}>Log In</Text></TouchableOpacity>
-        <TouchableOpacity style={styles.loginButton} onPress={this.handleForgetPassword.bind(this)}><Text style={styles.loginText}>Forgot Password</Text></TouchableOpacity>
-        <View><Text style={styles.signupMessage}>Don't have an account? <Text style={styles.signUpLink} onPress={() => this.props.navigation.navigate('Signup')}>Sign Up Here!</Text></Text></View>
+        {/* <TouchableOpacity style={styles.loginButton} onPress={this.handleForgetPassword.bind(this)}><Text style={styles.loginText}>Forgot Password</Text></TouchableOpacity>
+        <View><Text style={styles.signupMessage}>Don't have an account? <Text style={styles.signUpLink} onPress={() => this.props.navigation.navigate('Signup')}>Sign Up Here!</Text></Text></View> */}
       </KeyboardAvoidingView>
     );
 

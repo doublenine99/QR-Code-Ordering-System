@@ -19,7 +19,10 @@ export default class DishElement extends Component {
 
     }
     state = {
-        name: "", price: 0, categories: [], description: "",
+        name: "",
+         price: 0, 
+         categories: [], 
+         description: "",
         id: this.props.id,
         restauCatogories: [],
         checkeds: {},
@@ -39,7 +42,7 @@ export default class DishElement extends Component {
                     this.setState({ categories: doc.data().categories });
                     this.setState({ description: doc.data().description });
                     this.setState({ availability: doc.data().availability });
-                 
+
                 }
                 else {
                     console.log("No such doc");
@@ -71,9 +74,8 @@ export default class DishElement extends Component {
 
     updateAll = () => {
         MenuRef.doc(this.state.id).update({ name: this.state.name });
-        MenuRef.doc(this.state.id).update({ price: this.state.price });
-        MenuRef.doc(this.state.id).update({ newPrice: this.state.promptPrice });
-        MenuRef.doc(this.state.id).update({ description: this.state.description });
+        MenuRef.doc(this.state.id).update({ price: Number(this.state.price) });
+        MenuRef.doc(this.state.id).update({ description: String(this.state.description) });
         MenuRef.doc(this.state.id).update({ availability: this.state.availability });
 
         this.updateCategories();
@@ -88,11 +90,6 @@ export default class DishElement extends Component {
         });
         MenuRef.doc(this.state.id).update({ categories: list });
     }
-
-    change2Num = (n) => {
-        this.setState({ price: Number(n) });
-    }
-
     createCheckBox() {
         checkboxlist = [];
 
@@ -140,34 +137,22 @@ export default class DishElement extends Component {
                         // alignItems: "center"
                     }}
                     >
-
-                   
                         <TextInput
                             label="Enter the food name:"
                             value={this.state.name}
                             // autoFocus={true}
                             onChangeText={na => this.setState({ name: na })} />
-
-
-                     
                         <TextInput
                             label="Enter the price:"
                             value={String(this.state.price)}
                             keyboardType="numeric"
-                            onChangeText={pri =>this.setState({ price: Number(pri) })} />
-                            {/* onChangeText={pri => this.change2Num(pri)} /> */}
-                   
-                        {/* <TextInput
-                            label="Promotion price:"
-                            value={String(this.state.promptPrice)}
-                            keyboardType="numeric"
-                            onChangeText={newPrice => this.setState({ promptPrice: Number(newPrice) })} /> */}
-                        
+                            onChangeText={pri => this.setState({ price: (pri) })} />
+
                         <TextInput
                             label="Enter the description:"
                             value={this.state.description}
                             multiline={true}
-                            onChangeText={des => this.setState({ description: des })} />
+                            onChangeText={des => this.setState({ description: String(des) })} />
                         <View style={{ flexDirection: 'row' }}>
                             <Text>Availability:</Text>
                             <Switch

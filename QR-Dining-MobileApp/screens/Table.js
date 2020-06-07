@@ -160,18 +160,19 @@ export default class Table extends React.Component {
                   <Text>Need to Serve</Text>
                   <RadioButton value="NEEDTO_SERVE" />
                 </View>
-                <View>
+                {/* <View>
                   <Text>Wait for Pay</Text>
                   <RadioButton value="NEEDTO_PAY" />
-                </View>
-                {/* <View>
+                </View> */}
+                <View>
                   <Text>Need to help</Text>
                   <RadioButton value="NEEDTO_ASSIST" />
-                </View> */}
+                </View>
               </RadioButton.Group>
               <Divider></Divider>
               <Divider></Divider>
 
+            <Text>customer's chosen payment method</Text>
               <RadioButton.Group
                 onValueChange={() => { "s" }}
                 value={this.fetchPaymentOption()}

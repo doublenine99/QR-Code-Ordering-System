@@ -45,8 +45,9 @@ class Order extends React.Component {
 
   }
 
-  orderDish(dish) {
+  orderDish(dish, index) {
     return <View style={{ flexDirection: "row" }}>
+        <Text style={Object.assign({}, { flex: 1.5 }, styles.tableData)}>{dish ? index+1 : "N/A"}</Text>
       <Text style={Object.assign({}, { flex: 1.5 }, styles.tableData)}>{dish ? dish.name : "N/A"}</Text>
       <Text style={Object.assign({}, { flex: 1.5 }, styles.tableData)}>{dish ? dish.quantity : 0}</Text>
       <Text style={Object.assign({}, { flex: 1.5 }, styles.tableData)}>{dish ? dish.price : 0}</Text>
@@ -56,9 +57,7 @@ class Order extends React.Component {
   tableItem(order, index) {
     // console.log("order is :", order.ordertime)
     if (order != null) {
-      // return <View>
-      //   <Text>{Date(order.ordertime)}</Text>
-      // </View>
+
       let total = 0;
       let total_quantity = 0;
       let order_number = index + 1;
@@ -72,26 +71,24 @@ class Order extends React.Component {
         }
       }
       date = (order.ordertime ? order.ordertime.toDate() : "No date");
-      let day = "Day";
-      let month = "Month";
-      let year = "Year";
+      let day;
+
       if (date != "No Date") {
         day = date.toLocaleString();
       }
       return <View style={{ flexDirection: "column" }}>
 
         <Text style={{ backgroundColor: COLOR.pinkA400, color: "white", fontWeight: "bold", textAlign: "center"}}>{"Order #" + order_number + " : " + day}</Text>
-        {/* <Text style={Object.assign({}, { flex: 1.5 }, styles.tableData)}>{order.quantity ? order.quantity : 4}</Text> */}
-        {/*<Text style={Object.assign({}, { flex: 1.5 }, styles.tableData)}>{order.price ? order.price : 10}</Text>*/}
         <View style={{ flexDirection: "column" }}>
           <View style={{ flexDirection: "row", backgroundColor: COLOR.pinkA400 }}>
+           <Text style={Object.assign({}, { flex: 2 }, styles.tableHeader)}>Index</Text>
             <Text style={Object.assign({}, { flex: 2 }, styles.tableHeader)}>Item</Text>
-            <Text style={Object.assign({}, { flex: 1.5 }, styles.tableHeader)}>Quantity</Text>
-            <Text style={Object.assign({}, { flex: 1.5 }, styles.tableHeader)}>Price</Text>
+            <Text style={Object.assign({}, { flex: 1.5 }, styles.tableHeader)}>Amount</Text>
+            <Text style={Object.assign({}, { flex: 1.5 }, styles.tableHeader)}>Each Price</Text>
           </View>
           <FlatList
             data={order.dishes ? order.dishes : [{ name: "N/A", price: 0, quantity: 0 }]}
-            renderItem={({ item }) => this.orderDish(item)}
+            renderItem={({ item,index }) => this.orderDish(item,index)}
             keyExtractor={(item, index) => index.toString()} />
           <View style={{ flexDirection: "row", backgroundColor: COLOR.pinkA400, marginVertical: 5 }}>
             <Text style={Object.assign({}, { flex: 2 }, styles.tableHeader)}>Total</Text>

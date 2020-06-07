@@ -26,7 +26,7 @@ import { restaurants } from '../Firebase/firebase';
 
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/core/styles';
-
+import { Link } from 'react-router-dom';
 
 
 const useStyles = makeStyles(theme => ({
@@ -273,7 +273,6 @@ const Cart = (props) => {
                         <IconButton
                           //  onClick={() => addItemToCart()}
                           onClick={() => handleAdd(parseInt(dish.number), dish.ID)}
-
                         >
                           <AddIcon />
                         </IconButton>
@@ -291,40 +290,34 @@ const Cart = (props) => {
 
             </Grid>
           </Paper>
-
-
-
         ))}
-
-
-
         <div>
           <List className={classes.root}>
             <ListItem >
               <ListItemText primary="Before tax" secondary={"$" + totalPrice} />
             </ListItem>
-            <ListItem>
+            {/* <ListItem>
               <ListItemText primary="After tax" secondary={"$" + totalPricer} />
-            </ListItem>
+            </ListItem> */}
           </List>
         </div>
         <div>
 
-          <div>
-            <ButtonGroup color="primary" size="large" aria-label="small outlined button group">
+          <div className={classes.root}>
+            <ButtonGroup color="primary" >
               <Button
-                // onClick={() => handleOrder(testcart)}
                 onClick={handleClickOpen}
-              > Confirm</Button>
+              > Place Order</Button>
               <Button
                 onClick={handleClickOpen1}
-              >Clear</Button>
+              >Clear all the dishes</Button>
             </ButtonGroup>
+
+            <Link to={'/' + props.restaurant + '/' + props.table + '/orderHistory'}>
+                <Button>check Ordered dishes</Button>
+              </Link>
           </div>
         </div>
-
-
-
         <div>
           <Dialog
             open={open}

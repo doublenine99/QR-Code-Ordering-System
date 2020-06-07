@@ -1,23 +1,16 @@
 import * as WebBrowser from 'expo-web-browser';
 import React, { Component } from 'react';
 import Order from '../components/Order'
-//import SegmentedTab from '../components/SegmentedTab'
 import {
-  Image,
-  Platform,
   StyleSheet,
   FlatList,
-  Text,
-  ScrollView,
-  TouchableOpacity,
   View,
 } from 'react-native';
 
 
 import { Button } from 'react-native-material-ui';
-import { withOrientation } from 'react-navigation';
-import { COLOR, ThemeContext, getTheme } from 'react-native-material-ui';
-import SafeAreaView from 'react-native-safe-area-view';
+import { COLOR } from 'react-native-material-ui';
+
 import firebase from 'firebase';
 import { loggedUser } from './Login';
 

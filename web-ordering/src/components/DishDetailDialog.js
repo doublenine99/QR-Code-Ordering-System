@@ -156,7 +156,7 @@ export default function DishDetailDialog(props) {
               alt={props.dish.name}
             />
             <Typography gutterBottom>
-              {console.log(props.dish)}
+              {/* {console.log(props.dish)} */}
               {props.dish.description}
             </Typography>
             <Slider
