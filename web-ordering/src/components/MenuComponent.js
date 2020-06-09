@@ -111,7 +111,7 @@ const Menu = (props) => {
                         .map(dish => (
                             <GridListTile key={dish.id}>
                                 <img
-                                    src={dish.image !== "" ? dish.image : "https://firebasestorage.googleapis.com/v0/b/qr-code-ordering-system.appspot.com/o/koisushiMenu%2Fdefault-food-image.jpg?alt=media&token=e6958bef-eae1-4144-b670-e717768d518f"}
+                                    src={dish.image !== "" ? dish.image : "https://firebasestorage.googleapis.com/v0/b/qr-code-ordering-system.appspot.com/o/koisushiMenu%2Fdefault-food-image.jpg?alt=media&token=4d5719ce-bbc1-4458-973b-0b4cc43740d0"}
                                     alt={dish.name}
                                     onClick={() => RenderDishDetail(dish)}
                                 />

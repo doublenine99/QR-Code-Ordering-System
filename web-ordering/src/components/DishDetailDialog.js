@@ -107,6 +107,7 @@ export default function DishDetailDialog(props) {
   useEffect(() => {
     // console.log('get dish', props.dish);
     if (props.open != null) {
+      
       setOpen(true);
     }
   }, [props.open])
@@ -127,8 +128,32 @@ export default function DishDetailDialog(props) {
       label: '3',
     },
     {
+      value: 4,
+      label: '4',
+    },
+    {
       value: 5,
       label: '5',
+    },
+    {
+      value: 6,
+      label: '6',
+    },
+    {
+      value: 7,
+      label: '7',
+    },
+    {
+      value: 8,
+      label: '8',
+    },
+    {
+      value: 9,
+      label: '9',
+    },
+    {
+      value: 10,
+      label: '10',
     },
   ];
   
@@ -151,14 +176,14 @@ export default function DishDetailDialog(props) {
             <img
               style={{ width: '350px' }}
               src={
-                props.dish.image != null ? props.dish.image : "https://firebasestorage.googleapis.com/v0/b/qr-code-ordering-system.appspot.com/o/koisushiMenu%2Fdefault-food-image.jpg?alt=media&token=e6958bef-eae1-4144-b670-e717768d518f"
+                props.dish.image ? props.dish.image : "https://firebasestorage.googleapis.com/v0/b/qr-code-ordering-system.appspot.com/o/koisushiMenu%2Fdefault-food-image.jpg?alt=media&token=e6958bef-eae1-4144-b670-e717768d518f"
               }
               alt={props.dish.name}
             />
             <Typography gutterBottom>
-              {/* {console.log(props.dish)} */}
-              {props.dish.description}
+              Choose the amount you want
             </Typography>
+           
             <Slider
               defaultValue={1}
               getAriaValueText={valuetext}
@@ -173,6 +198,9 @@ export default function DishDetailDialog(props) {
                 console.log(amount)
               }}
             />
+            <Typography gutterBottom>
+              {props.dish.description}
+            </Typography>
           </DialogContent>
           <DialogActions>
             <Box m={2} fontFamily="Monospace" fontStyle="italic" textAlign="left">

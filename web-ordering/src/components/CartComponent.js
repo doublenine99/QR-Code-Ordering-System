@@ -253,7 +253,7 @@ const Cart = (props) => {
                 <img
                   width={120}
                   height={120}
-                  src={dish.dishRef.image}
+                  src={dish.dishRef.image  ? dish.dishRef.image : "https://firebasestorage.googleapis.com/v0/b/qr-code-ordering-system.appspot.com/o/koisushiMenu%2Fdefault-food-image.jpg?alt=media&token=4d5719ce-bbc1-4458-973b-0b4cc43740d0"}
                   alt={dish.dishRef.name}
                 />
               </Grid>
