@@ -125,20 +125,24 @@ export default class Table extends React.Component {
             visible={this.state.orderDialogOpen}
             onDismiss={this._hideOrdersDialog}>
             <Dialog.Title>Orders</Dialog.Title>
-            <Dialog.Content>
+            {/* <Dialog.Content> */}
               {/* <Paragraph>This is simple dialog</Paragraph> */}
               <FlatList
                 data={this.state.unfinishOrder}
                 renderItem={({ item, index }) => this.renderOrder(item, index)}
                 keyExtractor={(item, index) => index.toString()}
               />
-            </Dialog.Content>
+            {/* </Dialog.Content> */}
+            <View style={{ flexDirection: 'row' }}>
             <Dialog.Actions>
               <Button onPress={this._hideOrdersDialog}>Cancel</Button>
             </Dialog.Actions>
             <Dialog.Actions>
               <Button onPress={() => { this.clearOrder(this.state.selectedTable); this._hideOrdersDialog(); }}>Finished</Button>
             </Dialog.Actions>
+            </View>
+
+           
           </Dialog>
         </Portal>
 
